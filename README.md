@@ -1,6 +1,12 @@
 # Student Vocab – แอปพลิเคชันท่องศัพท์ Flashcards & แบบทดสอบ Quiz
 
-แอปพลิเคชันคลังคำศัพท์และทบทวนเตรียมสอบภาษาอังกฤษ (TOEIC & IT Vocab) พัฒนาด้วย Static Web (HTML, CSS, Vanilla JavaScript) เชื่อมต่อฐานข้อมูลและระบบสมาชิกด้วย **Supabase (PostgreSQL & Supabase Auth)** พร้อมรองรับการเผยแพร่ผ่าน GitHub Pages และ Localhost
+แอปพลิเคชันคลังคำศัพท์และทบทวนเตรียมสอบภาษาอังกฤษ (TOEIC & IT Vocab) พัฒนาด้วย Static Web (HTML, CSS, Vanilla JavaScript) 
+
+มี 2 รูปแบบให้เลือกใช้งาน:
+1. **📱 Interactive Prototype (แอปต้นแบบจำลอง — ไม่ต้องต่อ API):**  
+   เปิดไฟล์ `prototype/app.html` ได้ทันทีแบบ 100% Offline รองรับการท่องการ์ด 3D, อ่านออกเสียง TTS, ทำแบบทดสอบ Quiz 15 วินาที, เพิ่ม/แก้ไข/ลบคำศัพท์ และบันทึกข้อมูลลง LocalStorage ทันทีโดยไม่ต้องตั้งค่าฐานข้อมูลหรือ API
+2. **🚀 Live Production App (แอปพลิเคชันเต็มรูปแบบ):**  
+   เปิดไฟล์ `app/index.html` เชื่อมต่อฐานข้อมูล PostgreSQL, Supabase Auth และ RLS Policies จริง
 
 ---
 

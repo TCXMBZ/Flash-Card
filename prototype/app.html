@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Student Vocab — Interactive Prototype (Zero API)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+      padding: 16px 12px 32px !important;
+      min-height: 100vh;
+      background: #f1f5f9;
+    }
+    /* Prototype top bar banner */
+    .proto-top-bar {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      color: #94a3b8;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .proto-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+    .proto-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
+    }
+    .proto-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .proto-nav-links a {
+      color: #f8fafc;
+      text-decoration: none;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+      transition: background 0.15s;
+    }
+    .proto-nav-links a:hover {
+      background: rgba(56, 189, 248, 0.25);
+      color: #38bdf8;
+    }
+    .proto-nav-links button {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .proto-nav-links button:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fff;
+    }
+    @media (max-width: 480px) {
+      .proto-top-bar {
+        border-radius: 0;
+        margin-bottom: 0;
+        font-size: 11px;
+        padding: 6px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PROTOTYPE HELPER TOP BAR -->
+  <div class="proto-top-bar">
+    <div class="proto-badge">
+      <span class="proto-dot"></span>
+      <span>แอปต้นแบบ (Prototype Mode)</span>
+    </div>
+    <div class="proto-nav-links">
+      <a href="../index.html" title="กลับหน้าหลักโปรเจกต์">← หน้าแรก</a>
+      <a href="overview_6screens.html" title="ดู Wireframe 6 หน้าจอ">Wireframes</a>
+      <a href="wireframe_flow.html" title="ดูแผนผังการไหลของหน้าจอ">Flow</a>
+      <button onclick="resetMockData()" title="รีเซ็ตข้อมูลตัวอย่างกลับเป็นค่าเริ่มต้น">🔄 รีเซ็ต</button>
+    </div>
+  </div>
+
+  <div class="app-viewport">
+    <div class="app-content">
+
+      <!-- SCREEN 1: LOGIN / REGISTER -->
+      <section id="screen1" class="view-screen auth">
+        <h1 class="title">Student Vocab</h1>
+        <p id="auth-sub-title" class="subtitle" style="margin-bottom: 24px;">เข้าสู่ระบบเพื่อทบทวนคำศัพท์เตรียมสอบ</p>
+
+        <!-- Quick Demo Login Button -->
+        <div style="background: var(--accent-light); border: 1px dashed var(--accent-border); border-radius: 12px; padding: 12px; margin-bottom: 20px; text-align: center;">
+          <div style="font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 6px;">💡 โหมดทดลองสำหรับพรีเซนต์ (ไม่ต้องเชื่อม API)</div>
+          <button type="button" class="btn btn-primary btn-block" onclick="demoLogin()">⚡ เข้าสู่ระบบทันที (Demo Login)</button>
+        </div>
+
+        <div id="auth-login-section">
+          <form onsubmit="handleLoginSubmit(event)">
+            <div class="form-group">
+              <label class="form-label">อีเมลหรือชื่อผู้ใช้</label>
+              <input type="text" id="login-identifier" class="form-input" value="theeradech_019@vec.go.th" placeholder="อีเมลของคุณ">
+            </div>
+            <div class="form-group" style="margin-bottom: 20px;">
+              <label class="form-label">รหัสผ่าน</label>
+              <input type="password" id="login-password" class="form-input" value="12345678" placeholder="รหัสผ่าน">
+            </div>
+            <button type="submit" class="btn btn-outline btn-block">เข้าสู่ระบบด้วยบัญชีนี้</button>
+            <p style="text-align: center; margin-top: 18px;">
+              <span class="link" onclick="switchAuthTab(true)">ยังไม่มีบัญชี? สมัครใช้งาน</span>
+            </p>
+          </form>
+        </div>
+
+        <div id="auth-register-section" style="display: none;">
+          <form onsubmit="handleRegisterSubmit(event)">
+            <div class="form-group">
+              <label class="form-label">ชื่อ-นามสกุล</label>
+              <input type="text" id="reg-fullname" class="form-input" placeholder="เช่น นายธีรเดช ผกามาด" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">รหัสนักศึกษา</label>
+                <input type="text" id="reg-studentid" class="form-input" placeholder="เช่น 019" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">ชื่อผู้ใช้</label>
+                <input type="text" id="reg-username" class="form-input" placeholder="เช่น theeradech_019" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">อีเมล</label>
+              <input type="email" id="reg-email" class="form-input" placeholder="เช่น student@vec.go.th" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 20px;">
+              <label class="form-label">รหัสผ่าน</label>
+              <input type="password" id="reg-password" class="form-input" placeholder="รหัสผ่านอย่างน้อย 6 ตัวอักษร" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">สมัครสมาชิก (บันทึกข้อมูลจำลอง)</button>
+            <p style="text-align: center; margin-top: 18px;">
+              <span class="link" onclick="switchAuthTab(false)">มีบัญชีอยู่แล้ว? เข้าสู่ระบบ</span>
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: DASHBOARD -->
+      <section id="screen2" class="view-screen active">
+        <div class="screen-head">
+          <div>
+            <h2 id="dash-user-name" class="title">สวัสดี</h2>
+            <p id="dash-target-exam" class="subtitle"></p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddForm()">+ เพิ่มศัพท์</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div id="dash-stat-total" class="stat-num">0</div>
+            <div class="label">ทั้งหมด</div>
+          </div>
+          <div class="stat">
+            <div id="dash-stat-remembered" class="stat-num ok">0</div>
+            <div class="label">จำได้แล้ว</div>
+          </div>
+          <div class="stat">
+            <div id="dash-stat-unremembered" class="stat-num bad">0</div>
+            <div class="label">ยังจำไม่ได้</div>
+          </div>
+        </div>
+
+        <div class="progress">
+          <div class="progress-top"><span>ความคืบหน้า</span><b id="dash-progress-pct">0%</b></div>
+          <div class="bar"><div id="dash-progress-fill" class="bar-fill"></div></div>
+        </div>
+
+        <button class="row-cta" onclick="navigateTo('screen6')">
+          <div>
+            <div class="t">ทำแบบทดสอบ (Quiz Challenge)</div>
+            <div class="d">5 ข้อ สุ่มคำศัพท์ จับเวลาข้อละ 15 วินาที</div>
+          </div>
+          <span class="go">เริ่ม →</span>
+        </button>
+
+        <div class="section-head">
+          <h3>ต้องทบทวน</h3>
+          <span class="link" onclick="setFlashcardFilter('unremembered'); navigateTo('screen3');">ท่องทั้งหมด</span>
+        </div>
+        <div id="dash-urgent-list" class="word-list"></div>
+      </section>
+
+      <!-- SCREEN 3: FLASHCARDS -->
+      <section id="screen3" class="view-screen">
+        <div class="screen-head">
+          <h2 class="title">ท่องการ์ด</h2>
+          <button class="btn btn-outline btn-sm" onclick="openAddForm()">+ เพิ่มการ์ด</button>
+        </div>
+
+        <div class="tabs">
+          <div id="pill-unremembered" class="filter-pill active" onclick="setFlashcardFilter('unremembered')">ยังจำไม่ได้</div>
+          <div id="pill-remembered" class="filter-pill" onclick="setFlashcardFilter('remembered')">จำได้แล้ว</div>
+          <div id="pill-all" class="filter-pill" onclick="setFlashcardFilter('all')">ทั้งหมด</div>
+        </div>
+
+        <div class="flashcard-stage" onclick="flipCard()">
+          <div id="flashcard-inner" class="flashcard-inner">
+
+            <!-- Card Front -->
+            <div class="flashcard-front">
+              <div class="card-top">
+                <span id="card-front-cat" class="badge">TOEIC</span>
+                <div class="tools">
+                  <button class="icon-btn" title="ฟังการออกเสียง (TTS)" onclick="event.stopPropagation(); speakWord(document.getElementById('card-front-word').innerText)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  </button>
+                  <button class="icon-btn" title="แก้ไขการ์ดนี้" onclick="event.stopPropagation(); handleEditCurrentCard();">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button class="icon-btn danger" title="ลบการ์ดนี้" onclick="event.stopPropagation(); handleDeleteCurrentCard();">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <h1 id="card-front-word" class="card-word">Requirement</h1>
+                <div id="card-front-pos" class="label" style="margin-top: 4px;">Noun (คำนาม)</div>
+                <p id="card-front-example" class="card-example"></p>
+              </div>
+              <div class="card-foot">
+                แตะเพื่อพลิกดูคำแปล · <span id="card-indicator">1 / 1</span>
+              </div>
+            </div>
+
+            <!-- Card Back -->
+            <div class="flashcard-back">
+              <div class="card-top">
+                <span id="card-back-cat" class="badge">TOEIC</span>
+                <div class="tools">
+                  <span id="card-back-pos" class="label" style="margin-right: 6px;">Noun</span>
+                  <button class="icon-btn" title="ฟังการออกเสียง" onclick="event.stopPropagation(); speakWord(document.getElementById('card-front-word').innerText)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  </button>
+                  <button class="icon-btn" title="แก้ไขการ์ดนี้" onclick="event.stopPropagation(); handleEditCurrentCard();">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button class="icon-btn danger" title="ลบการ์ดนี้" onclick="event.stopPropagation(); handleDeleteCurrentCard();">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="card-back-word" class="label" style="margin-bottom: 6px;"></div>
+                <h2 id="card-back-meaning" class="card-meaning"></h2>
+                <p id="card-back-example" class="card-example"></p>
+              </div>
+              <div class="card-foot">แตะเพื่อพลิกกลับด้านหน้า</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="actions-2">
+          <button class="btn btn-danger" onclick="markCardRemembered(false)">❌ ยังจำไม่ได้</button>
+          <button class="btn btn-success" onclick="markCardRemembered(true)">✅ จำได้แล้ว</button>
+        </div>
+
+        <div class="pager">
+          <span onclick="prevCard()">← ก่อนหน้า</span>
+          <span onclick="nextCard()">ถัดไป →</span>
+        </div>
+      </section>
+
+      <!-- SCREEN 6: QUIZ -->
+      <section id="screen6" class="view-screen">
+        <div class="screen-head">
+          <h2 class="title">แบบทดสอบ</h2>
+          <span id="quiz-timer" class="title" style="font-variant-numeric: tabular-nums; font-size: 20px;">00:15</span>
+        </div>
+
+        <div class="quiz-meta">
+          <span id="quiz-question-counter">ข้อที่ 1 / 5</span>
+          <span><span id="quiz-cat-badge" class="badge">TOEIC</span> · <span id="quiz-pos-badge" class="badge">Noun</span></span>
+        </div>
+        <div class="bar"><div id="quiz-progress-fill" class="bar-fill" style="width: 20%;"></div></div>
+
+        <div class="quiz-header-card">
+          <h1 id="quiz-word" class="quiz-word">Requirement</h1>
+          <p id="quiz-sentence" class="quiz-sentence"></p>
+        </div>
+
+        <div id="quiz-choices-container" style="flex: 1;"></div>
+      </section>
+
+      <!-- SCREEN 4: ADD / EDIT CARD -->
+      <section id="screen4" class="view-screen">
+        <h2 id="card-form-title" class="title">เพิ่มคำศัพท์</h2>
+        <p id="card-form-subtitle" class="subtitle" style="margin-bottom: 24px;">กรอกข้อมูลเพื่อบันทึกลงคลังคำศัพท์</p>
+
+        <form onsubmit="handleCardFormSubmit(event)">
+          <input type="hidden" id="edit-vocab-id" value="">
+
+          <div class="form-group">
+            <label class="form-label">คำศัพท์ภาษาอังกฤษ</label>
+            <input type="text" id="add-word" class="form-input" placeholder="เช่น Requirement" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">ชนิดของคำ</label>
+              <select id="add-pos" class="form-select">
+                <option value="Noun (คำนาม)" selected>Noun (คำนาม)</option>
+                <option value="Verb (คำกริยา)">Verb (คำกริยา)</option>
+                <option value="Adjective (คำคุณศัพท์)">Adjective (คำคุณศัพท์)</option>
+                <option value="Adverb (คำกริยาวิเศษณ์)">Adverb (คำกริยาวิเศษณ์)</option>
+                <option value="Phrase (สำนวน/วลี)">Phrase (สำนวน/วลี)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">หมวดหมู่</label>
+              <select id="add-category" class="form-select">
+                <option value="TOEIC" selected>TOEIC</option>
+                <option value="IT Vocab">IT Vocab</option>
+                <option value="General English">General English</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">คำแปลภาษาไทย</label>
+            <input type="text" id="add-meaning" class="form-input" placeholder="เช่น ความต้องการ, เงื่อนไขที่จำเป็น" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label class="form-label">ตัวอย่างประโยค</label>
+            <textarea id="add-example" class="form-textarea" placeholder="The client outlined clear software requirements."></textarea>
+          </div>
+
+          <button type="submit" id="card-form-submit-btn" class="btn btn-primary btn-block" style="margin-bottom: 8px;">บันทึกคำศัพท์</button>
+          <button type="button" class="btn btn-outline btn-block" onclick="cancelCardForm()">ยกเลิก</button>
+        </form>
+      </section>
+
+      <!-- SCREEN 5: PROFILE -->
+      <section id="screen5" class="view-screen">
+        <div class="profile-head">
+          <div id="prof-avatar" class="avatar">TP</div>
+          <div>
+            <div id="prof-fullname" style="font-size: 17px; font-weight: 700;"></div>
+            <div id="prof-username" class="subtitle"></div>
+            <div id="prof-student-badge" class="label" style="margin-top: 2px;"></div>
+          </div>
+        </div>
+
+        <div class="section-head"><h3>ข้อมูลบัญชี</h3></div>
+        <div class="kv">
+          <div class="kv-row"><span class="k">รหัสผู้ใช้</span><span id="prof-user-id" class="v"></span></div>
+          <div class="kv-row"><span class="k">ชื่อผู้ใช้</span><span id="prof-account-username" class="v"></span></div>
+          <div class="kv-row"><span class="k">อีเมล</span><span id="prof-email" class="v"></span></div>
+          <div class="kv-row"><span class="k">สร้างเมื่อ</span><span id="prof-created-at" class="v"></span></div>
+        </div>
+
+        <div class="section-head"><h3>สถิติการเรียนรู้</h3></div>
+        <div class="kv">
+          <div class="kv-row"><span class="k">คำศัพท์ทั้งหมด</span><span id="prof-total-cards" class="v"></span></div>
+          <div class="kv-row"><span class="k">จำได้แล้ว</span><span id="prof-remembered-cards" class="v"></span></div>
+          <div class="kv-row"><span class="k">คะแนนทดสอบล่าสุด</span><span id="prof-latest-quiz" class="v"></span></div>
+          <div class="kv-row"><span class="k">เป้าหมายสอบ</span><span id="prof-target-badge" class="v"></span></div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn btn-outline btn-block" onclick="openEditProfileModal()">แก้ไขข้อมูลส่วนตัว</button>
+          <div class="actions-2" style="margin-top: 8px;">
+            <button class="btn btn-outline btn-sm" onclick="resetMockData()">รีเซ็ตคำศัพท์เริ่มต้น</button>
+            <button class="btn btn-outline btn-sm btn-text-danger" onclick="logout()">ออกจากระบบ</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav id="app-navbar" class="app-navbar"></nav>
+
+    <!-- Toast Notification -->
+    <div id="app-toast" class="app-toast"></div>
+
+    <!-- Quiz Result Modal -->
+    <div id="quiz-result-modal" class="app-modal-overlay">
+      <div class="app-modal" style="text-align: center;">
+        <h3>ผลการทดสอบ</h3>
+        <div id="quiz-result-score" class="score-big">0 / 5</div>
+        <p id="quiz-result-badge" class="badge" style="display: inline-block; margin-bottom: 20px; font-size: 13px; padding: 4px 12px;"></p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="closeQuizResultModal(); startQuiz();">ทำแบบทดสอบอีกครั้ง</button>
+          <button class="btn btn-outline" onclick="closeQuizResultModal(); navigateTo('screen2');">กลับสู่หน้าหลัก</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="profile-edit-modal" class="app-modal-overlay">
+      <div class="app-modal">
+        <h3 style="margin-bottom: 16px;">แก้ไขข้อมูลส่วนตัว</h3>
+        <form onsubmit="handleProfileEditSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">ชื่อ-นามสกุล</label>
+            <input type="text" id="edit-fullname" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">รหัสนักศึกษา</label>
+            <input type="text" id="edit-studentid" class="form-input" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label">เป้าหมายการสอบ</label>
+            <input type="text" id="edit-targetexam" class="form-input" required>
+          </div>
+          <div class="modal-actions row">
+            <button type="submit" class="btn btn-primary">บันทึก</button>
+            <button type="button" class="btn btn-outline" onclick="closeEditProfileModal()">ยกเลิก</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="app-modal-overlay">
+      <div class="app-modal">
+        <h3>วิธีใช้งานแอปต้นแบบ (Prototype)</h3>
+        <p>
+          • <strong>โหมดทดลอง:</strong> ทำงานแบบ Standalone ไม่ต้องต่อ API หรือฐานข้อมูล<br>
+          • <strong>การบันทึก:</strong> ข้อมูลถูกจัดเก็บใน LocalStorage บนเบราว์เซอร์อัตโนมัติ<br>
+          • <strong>ท่องการ์ด:</strong> แตะการ์ดเพื่อพลิกดูคำแปล กดฟังเสียงอ่าน และทำเครื่องหมายจำได้แล้ว/ยังจำไม่ได้<br>
+          • <strong>แบบทดสอบ:</strong> ปรนัย 4 ตัวเลือก สุ่ม 5 ข้อ จับเวลาข้อละ 15 วินาที<br>
+          • <strong>รีเซ็ต:</strong> สามารถกดปุ่มรีเซ็ตด้านบนเพื่อคืนค่าคำศัพท์ตัวอย่างได้ตลอดเวลา
+        </p>
+        <button class="btn btn-primary btn-block" onclick="closeHelpModal()">เข้าใจแล้ว</button>
+      </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div id="delete-confirm-modal" class="app-modal-overlay">
+      <div class="app-modal">
+        <h3>ลบคำศัพท์</h3>
+        <p>ต้องการลบ <strong id="delete-word-target"></strong> ใช่หรือไม่? ลบแล้วจะไม่สามารถกู้คืนได้</p>
+        <div class="modal-actions row">
+          <button class="btn btn-danger" onclick="executeDeleteVocab()">ลบคำศัพท์</button>
+          <button class="btn btn-outline" onclick="closeDeleteModal()">ยกเลิก</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

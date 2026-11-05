@@ -4,7 +4,15 @@
 
 ---
 
-### 1. แผนภาพความสัมพันธ์ของเอนทิตี (Mermaid ER Diagram)
+### 1. แผนภาพความสัมพันธ์ของเอนทิตี (ER Diagram - 5 ตาราง)
+
+![12. Database ER Diagram](../assets/screenshots/12_er_diagram.png)
+
+*รูปที่ 12: แผนภาพ ER Diagram สำหรับระบบเว็บแอปพลิเคชันคลังคำศัพท์ Flashcard ช่วยจำสอบภาษาอังกฤษ (Modern EdTech Pro v3)*
+
+---
+
+### 2. แผนภาพเชิงโค้ด (Mermaid ER Diagram)
 
 ```mermaid
 erDiagram

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หน้า 3 ท่องการ์ด (เฉลย/ด้านหลัง) — Student Vocab prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>if (window !== window.top) document.documentElement.classList.add('in-frame');</script>
+</head>
+<body class="proto">
+  <div class="app-viewport">
+    <div class="app-content">
+
+      <section class="view-screen">
+        <div class="screen-head"><h2 class="title">ท่องการ์ด</h2></div>
+        <div class="tabs">
+          <div class="filter-pill active">ยังจำไม่ได้ (3)</div>
+          <div class="filter-pill">จำได้แล้ว (2)</div>
+          <div class="filter-pill">ทั้งหมด (5)</div>
+        </div>
+        <div class="flashcard-stage">
+          <div class="flashcard-inner flipped">
+            <div class="flashcard-back" style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:20px; border:1.5px solid var(--accent-border); border-radius:var(--r-lg); background:var(--bg); transform:none; backface-visibility:visible;">
+              <div class="card-top">
+                <span class="badge">TOEIC</span>
+                <div class="tools"><span class="label" style="margin-right:6px;">Noun (คำนาม)</span><button class="icon-btn "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button><a href="screen4_add_card.html" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a><button class="icon-btn danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>
+              </div>
+              <div class="card-body" style="text-align:center; padding:12px 0;">
+                <div class="label" style="margin-bottom:6px; color:var(--ink-3);">Requirement</div>
+                <h2 class="card-meaning" style="font-size:20px; font-weight:700; color:var(--accent); margin-bottom:8px;">ความต้องการ, เงื่อนไขที่จำเป็น</h2>
+                <p class="card-example" style="font-size:12.5px; color:var(--ink-2); font-style:italic;">"The client outlined clear software requirements."</p>
+              </div>
+              <div class="card-foot" style="text-align:center; font-size:11px; color:var(--ink-3);">แตะเพื่อพลิกกลับ · 2 / 3</div>
+            </div>
+          </div>
+        </div>
+        <div class="actions-2">
+          <button class="btn btn-danger">✕ ยังจำไม่ได้</button>
+          <button class="btn btn-success">✓ จำได้แล้ว</button>
+        </div>
+        <div class="pager"><span>ก่อนหน้า</span><span>ถัดไป</span></div>
+      </section>
+    </div>
+    <nav class="app-navbar">
+      <a href="screen2_dashboard.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>หน้าหลัก</span></a>
+      <a href="screen3_flashcards.html" class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>ท่องการ์ด</span></a>
+      <a href="screen6_quiz.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>ทดสอบ</span></a>
+      <a href="screen5_profile.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>โปรไฟล์</span></a>
+    </nav>
+  </div>
+  <p class="proto-caption"><b>หน้า 3: ท่องการ์ด (ด้านหลัง / เฉลย)</b> — แตะการ์ดเพื่อพลิกดูคำแปลและความหมาย</p>
+</body>
+</html>

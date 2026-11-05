@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe 6 หน้าจอ — Student Vocab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f8fafc; color: #0f172a; font-family: 'IBM Plex Sans Thai', -apple-system, "Segoe UI", sans-serif; padding: 32px 24px; line-height: 1.5; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; } .sub { font-size: 14px; color: #475569; margin-bottom: 16px; }
+    .links a { font-size: 13.5px; color: #2563eb; margin-right: 20px; text-decoration: none; font-weight: 600; padding: 4px 10px; background: #eff6ff; border-radius: 6px; border: 1px solid #bfdbfe; }
+    .links a:hover { background: #dbeafe; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 32px 24px; margin-top: 24px; justify-items: center; }
+    figure { margin: 0; width: 100%; max-width: 420px; } figcaption { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 10px; }
+    iframe { width: 100%; height: 780px; border: 1px solid #cbd5e1; border-radius: 16px; background: #fff; box-shadow: 0 10px 25px -4px rgba(15,23,42,0.08); }
+  </style></head>
+<body>
+  <h1>Student Vocab — 6 หน้าจอต้นแบบ (Interactive Prototype)</h1>
+  <p class="sub">แถบนำทาง 4 เมนู: หน้าหลัก, ท่องการ์ด, ทดสอบ, โปรไฟล์ — เข้าสู่ระบบเพื่อเริ่มใช้งาน</p>
+  <div class="links"><a href="../index.html">หน้าหลักโปรเจกต์</a><a href="wireframe_flow.html">แผนผังเส้นทางหน้าจอ</a><a href="../app/index.html">แอปที่ใช้งานได้จริง</a></div>
+  <div class="grid">
+    <figure><figcaption>1 เข้าสู่ระบบ</figcaption><iframe src="screen1_login.html" title="1 เข้าสู่ระบบ"></iframe></figure>
+    <figure><figcaption>2 หน้าหลัก</figcaption><iframe src="screen2_dashboard.html" title="2 หน้าหลัก"></iframe></figure>
+    <figure><figcaption>3 ท่องการ์ด</figcaption><iframe src="screen3_flashcards.html" title="3 ท่องการ์ด"></iframe></figure>
+    <figure><figcaption>4 ทดสอบ</figcaption><iframe src="screen6_quiz.html" title="4 ทดสอบ"></iframe></figure>
+    <figure><figcaption>5 เพิ่มศัพท์</figcaption><iframe src="screen4_add_card.html" title="5 เพิ่มศัพท์"></iframe></figure>
+    <figure><figcaption>6 โปรไฟล์</figcaption><iframe src="screen5_profile.html" title="6 โปรไฟล์"></iframe></figure>
+  </div>
+</body></html>

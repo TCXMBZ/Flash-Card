@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe 5 หน้าจอหลัก — Student Vocab (ตรงตามแบบต้นฉบับ 100%)</title>
+  <style>
+/* ==========================================================================
+   Student Vocab - Prototype Stylesheet (Strict Wireframe Reference)
+   Aligned with template_obj46.bmp & Style Guide
+   ========================================================================== */
+
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #eff6ff;
+  --primary-border: #bfdbfe;
+  --secondary: #64748b;
+  --success: #16a34a;
+  --success-light: #f0fdf4;
+  --danger: #dc2626;
+  --danger-light: #fef2f2;
+  --warning: #d97706;
+  --warning-light: #fffbeb;
+  --bg-page: #f1f5f9;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f8fafc;
+  --border: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.04);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Thai", Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text-main);
+  line-height: 1.4;
+  font-size: 13px;
+}
+
+/* Phone Mockup Frame */
+.phone-mockup {
+  width: 100%;
+  max-width: 360px;
+  height: 680px;
+  background: var(--bg-surface);
+  border: 1px solid #cbd5e1;
+  border-radius: 28px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+}
+
+/* Status Bar */
+.status-bar {
+  height: 38px;
+  background: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  flex-shrink: 0;
+}
+
+.status-bar-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+}
+
+.battery-icon {
+  width: 18px;
+  height: 9px;
+  border: 1px solid var(--text-main);
+  border-radius: 2px;
+  padding: 1px;
+  position: relative;
+}
+
+.battery-icon::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 2px;
+  width: 2px;
+  height: 3px;
+  background: var(--text-main);
+  border-radius: 0 1px 1px 0;
+}
+
+.battery-fill {
+  width: 100%;
+  height: 100%;
+  background: var(--text-main);
+}
+
+/* Screen Body */
+.screen-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  height: 58px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+.nav-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: #94a3b8;
+  font-size: 10px;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.nav-tab.active {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.nav-tab svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Typography Helpers */
+.font-word {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.font-meaning {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.font-caption {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Components */
+.card-surface {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.badge-primary { background: #dbeafe; color: #1e40af; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-success { background: #dcfce7; color: #166534; }
+.badge-danger  { background: #fee2e2; color: #991b1b; }
+.badge-gray    { background: #f1f5f9; color: #475569; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-outline {
+  background: var(--bg-surface);
+  border-color: #cbd5e1;
+  color: var(--text-main);
+}
+.btn-outline:hover {
+  background: var(--bg-subtle);
+}
+
+.btn-danger {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+.btn-success {
+  background: #dcfce7;
+  color: #16a34a;
+  border-color: #86efac;
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.form-control {
+  width: 100%;
+  height: 38px;
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--text-main);
+  background: var(--bg-surface);
+  outline: none;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 64px;
+  resize: vertical;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: var(--radius-full);
+}
+
+</style>
+  <style>
+    body {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: auto;
+    }
+    .header-banner {
+      text-align: center;
+      margin-bottom: 28px;
+      max-width: 900px;
+    }
+    .header-banner h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+    .header-banner p {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .nav-links-bar {
+      margin-top: 14px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .nav-link-btn {
+      padding: 6px 14px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #38bdf8;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .nav-link-btn:hover {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+
+    .screens-container {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      overflow-x: auto;
+      max-width: 100%;
+      padding-bottom: 24px;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .screen-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 270px;
+      flex-shrink: 0;
+    }
+
+    /* Scaled Mockup for 5-column side-by-side view */
+    .screen-col .phone-mockup {
+      width: 270px;
+      height: 560px;
+      border-radius: 20px;
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .screen-col .status-bar {
+      height: 30px;
+      padding: 0 12px;
+      font-size: 10px;
+    }
+    .screen-col .screen-body {
+      padding: 12px;
+      font-size: 11px;
+    }
+    .screen-col .bottom-nav {
+      height: 48px;
+    }
+    .screen-col .nav-tab {
+      font-size: 9px;
+    }
+    .screen-col .nav-tab svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .caption-box {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 12px;
+      color: #cbd5e1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px 12px;
+      width: 100%;
+      line-height: 1.4;
+    }
+    .caption-box strong {
+      color: #60a5fa;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-banner">
+    <h1>Student Vocab — Wireframe 5 หน้าจอหลัก</h1>
+    <p>ถอดแบบจำลองโครงร่างหน้าจอสมบูรณ์แบบ 100% จากเอกสารใบงานการวางแผน (ภาพ template_obj46.bmp)</p>
+    <div class="nav-links-bar">
+      <a href="../index.html" class="nav-link-btn">← หน้าหลักโปรเจกต์</a>
+      <a href="../app/index.html" class="nav-link-btn" style="background: #2563eb; color: #ffffff;">🚀 เปิดใช้งาน Interactive App</a>
+      <a href="screen1_login.html" class="nav-link-btn">หน้า 1 เดี่ยว</a>
+      <a href="screen2_dashboard.html" class="nav-link-btn">หน้า 2 เดี่ยว</a>
+      <a href="screen3_flashcards.html" class="nav-link-btn">หน้า 3 เดี่ยว</a>
+      <a href="screen4_add_card.html" class="nav-link-btn">หน้า 4 เดี่ยว</a>
+      <a href="screen5_profile.html" class="nav-link-btn">หน้า 5 เดี่ยว</a>
+    </div>
+  </div>
+
+  <div class="screens-container">
+
+    <!-- ==========================================
+         SCREEN 1: LOGIN
+         ========================================== -->
+    <div class="screen-col">
+      <div class="phone-mockup">
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-bar-icons"><span>5G</span><span>100%</span><div class="battery-icon"><div class="battery-fill"></div></div></div>
+        </div>
+        
+        <!-- Screen Body -->
+        <div class="screen-body" style="justify-content: center; align-items: center; text-align: center; padding: 14px;">
+          <!-- Logo -->
+          <div style="width: 44px; height: 44px; border-radius: 10px; background: #2563eb; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2">
+              <rect x="3" y="4" width="18" height="16" rx="2"/>
+              <line x1="7" y1="8" x2="17" y2="8"/>
+              <line x1="7" y1="12" x2="17" y2="12"/>
+              <line x1="7" y1="16" x2="13" y2="16"/>
+            </svg>
+          </div>
+          <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 2px;">Student Vocab</h2>
+          <p style="font-size: 10px; color: #64748b; margin-bottom: 16px;">เข้าสู่ระบบเพื่อทบทวนคลังคำศัพท์เตรียมสอบ</p>
+
+          <div style="width: 100%; text-align: left;">
+            <div class="form-group" style="margin-bottom: 8px;">
+              <label class="form-label" style="font-size: 10px;">อีเมลหรือชื่อผู้ใช้ (email / username) *</label>
+              <input type="text" class="form-control" style="height: 32px; font-size: 11px;" value="theeradech_019@vec.go.th" readonly>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label class="form-label" style="font-size: 10px;">รหัสผ่าน (password_hash) *</label>
+              <input type="password" class="form-control" style="height: 32px; font-size: 11px;" value="••••••••" readonly>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; height: 34px; font-size: 12px; border-radius: 6px;">เข้าสู่ระบบ</button>
+            <div style="text-align: center; margin-top: 10px; font-size: 10px; color: #2563eb;">ยังไม่มีบัญชี? สมัครใช้งาน</div>
+          </div>
+        </div>
+
+        <!-- Bottom Nav: STRICTLY 2 ITEMS PER TEMPLATE -->
+        <div class="bottom-nav">
+          <div class="nav-tab active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/></svg>
+            <span>เข้าสู่ระบบ</span>
+          </div>
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>ความช่วยเหลือ</span>
+          </div>
+        </div>
+      </div>
+      <div class="caption-box">
+        <strong>หน้า 1: Login</strong><br>
+        การตรวจสอบสิทธิ์ผู้ใช้<br>
+        <span style="font-size: 10px; color: #94a3b8;">(Bottom Nav มี 2 เมนู)</span>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 2: DASHBOARD
+         ========================================== -->
+    <div class="screen-col">
+      <div class="phone-mockup">
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-bar-icons"><span>5G</span><span>100%</span><div class="battery-icon"><div class="battery-fill"></div></div></div>
+        </div>
+
+        <!-- Screen Body -->
+        <div class="screen-body">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div>
+              <h2 style="font-size: 13px; font-weight: 700;">สวัสดี คุณธีรเดช</h2>
+              <p style="font-size: 10px; color: #64748b;">เป้าหมายสอบ: TOEIC & IT</p>
+            </div>
+            <span class="badge badge-primary" style="font-size: 9px; padding: 3px 6px;">+ เพิ่มศัพท์</span>
+          </div>
+
+          <!-- 3 Stat Boxes -->
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px;">
+            <div class="card-surface" style="text-align: center; padding: 6px 2px; border-color: #bfdbfe;">
+              <div style="font-size: 16px; font-weight: 700; color: #2563eb;">5</div>
+              <div style="font-size: 8px; color: #64748b;">คำศัพท์ทั้งหมด</div>
+            </div>
+            <div class="card-surface" style="text-align: center; padding: 6px 2px; border-color: #bbf7d0;">
+              <div style="font-size: 16px; font-weight: 700; color: #16a34a;">2</div>
+              <div style="font-size: 8px; color: #64748b;">จำได้แล้ว</div>
+            </div>
+            <div class="card-surface" style="text-align: center; padding: 6px 2px; border-color: #fecaca;">
+              <div style="font-size: 16px; font-weight: 700; color: #dc2626;">3</div>
+              <div style="font-size: 8px; color: #64748b;">ยังจำไม่ได้</div>
+            </div>
+          </div>
+
+          <!-- Progress -->
+          <div class="card-surface" style="padding: 8px; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; font-size: 9px; margin-bottom: 4px;">
+              <span style="color: #475569;">ความคืบหน้าการจำคำศัพท์</span>
+              <span style="color: #2563eb; font-weight: 700;">40%</span>
+            </div>
+            <div class="progress-bar-container" style="height: 6px;">
+              <div class="progress-bar-fill" style="width: 40%;"></div>
+            </div>
+          </div>
+
+          <!-- Urgent Review List -->
+          <div>
+            <div style="font-size: 10px; font-weight: 700; color: #334155; margin-bottom: 6px;">คำศัพท์ที่ต้องรีบทบทวน (ยังจำไม่ได้)</div>
+            
+            <div class="card-surface" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; margin-bottom: 6px;">
+              <div>
+                <div style="font-size: 11px; font-weight: 700;">Implement</div>
+                <div style="font-size: 9px; color: #64748b;">นำไปปฏิบัติ, พัฒนาระบบ</div>
+              </div>
+              <span class="badge badge-warning" style="font-size: 8px;">TOEIC</span>
+            </div>
+
+            <div class="card-surface" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; margin-bottom: 6px;">
+              <div>
+                <div style="font-size: 11px; font-weight: 700;">Requirement</div>
+                <div style="font-size: 9px; color: #64748b;">ความต้องการ, เงื่อนไข</div>
+              </div>
+              <span class="badge badge-warning" style="font-size: 8px;">TOEIC</span>
+            </div>
+
+            <div class="card-surface" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px;">
+              <div>
+                <div style="font-size: 11px; font-weight: 700;">Deploy</div>
+                <div style="font-size: 9px; color: #64748b;">นำระบบไปใช้งานจริง</div>
+              </div>
+              <span class="badge badge-primary" style="font-size: 8px;">IT Vocab</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Nav: STRICTLY 4 ITEMS PER TEMPLATE (NO หมวดหมู่) -->
+        <div class="bottom-nav">
+          <div class="nav-tab active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            <span>หน้าหลัก</span>
+          </div>
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <span>ท่องการ์ด</span>
+          </div>
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>เพิ่มศัพท์</span>
+          </div>
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>โปรไฟล์</span>
+          </div>
+        </div>
+      </div>
+      <div class="caption-box">
+        <strong>หน้า 2: Dashboard</strong><br>
+        สรุปสถิติจำนวนคำศัพท์<br>
+        <span style="font-size: 10px; color: #94a3b8;">(Bottom Nav มี 4 เมนู)</span>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 3: FLASHCARDS
+         ========================================== -->
+    <div class="screen-col">
+      <div class="phone-mockup">
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-bar-icons"><span>5G</span><span>100%</span><div class="battery-icon"><div class="battery-fill"></div></div></div>
+        </div>
+
+        <!-- Screen Body -->
+        <div class="screen-body">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h2 style="font-size: 13px; font-weight: 700;">โหมดท่องการ์ด</h2>
+            <span class="btn btn-outline" style="padding: 2px 6px; font-size: 9px;">+ เพิ่มศัพท์</span>
+          </div>
+
+          <!-- Pills -->
+          <div style="display: flex; gap: 4px; margin-bottom: 8px;">
+            <span class="badge" style="background: #2563eb; color: #fff; font-size: 9px; padding: 3px 6px;">ยังจำไม่ได้ (3)</span>
+            <span class="badge" style="background: #f1f5f9; color: #64748b; font-size: 9px; padding: 3px 6px;">จำได้แล้ว (2)</span>
+            <span class="badge" style="background: #f1f5f9; color: #64748b; font-size: 9px; padding: 3px 6px;">ทั้งหมด (5)</span>
+          </div>
+
+          <!-- Flashcard -->
+          <div class="card-surface" style="border-color: #bfdbfe; text-align: center; padding: 12px 8px; margin-bottom: 10px; display: flex; flex-direction: column; justify-content: space-between; min-height: 180px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="badge badge-warning" style="font-size: 8px;">TOEIC</span>
+              <span class="badge badge-primary" style="font-size: 8px;">Noun (คำนาม)</span>
+            </div>
+
+            <div style="padding: 8px 0;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">Requirement</div>
+              <div style="font-size: 12px; font-weight: 600; color: #2563eb; margin: 3px 0;">ความต้องการ, เงื่อนไขที่จำเป็น</div>
+              <div style="font-size: 9.5px; color: #64748b; font-style: italic;">"The client outlined clear software requirements."</div>
+            </div>
+
+            <div>
+              <div style="font-size: 8.5px; color: #94a3b8; margin-bottom: 2px;">แตะการ์ดเพื่อพลิกดูคำแปล / เฉลย</div>
+              <div style="font-size: 9px; font-weight: 600; color: #64748b;">ใบที่ 2 / 3</div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+            <button class="btn btn-danger" style="height: 32px; font-size: 10px; border-radius: 6px;">✕ ยังจำไม่ได้</button>
+            <button class="btn btn-success" style="height: 32px; font-size: 10px; border-radius: 6px;">✓ จำได้แล้ว</button>
+          </div>
+
+          <!-- Nav text -->
+          <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: 600; color: #2563eb;">
+            <span>&lt; คำก่อนหน้า</span>
+            <span>คำถัดไป &gt;</span>
+          </div>
+        </div>
+
+        <!-- Bottom Nav: STRICTLY 4 ITEMS PER TEMPLATE (NO หมวดหมู่) -->
+        <div class="bottom-nav">
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            <span>หน้าหลัก</span>
+          </div>
+          <div class="nav-tab active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <span>ท่องการ์ด</span>
+          </div>
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>เพิ่มศัพท์</span>
+          </div>
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>โปรไฟล์</span>
+          </div>
+        </div>
+      </div>
+      <div class="caption-box">
+        <strong>หน้า 3: ท่องการ์ด</strong><br>
+        สลับการ์ด ท่องจำคำศัพท์<br>
+        <span style="font-size: 10px; color: #94a3b8;">(Bottom Nav มี 4 เมนู)</span>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 4: ADD CARD
+         ========================================== -->
+    <div class="screen-col">
+      <div class="phone-mockup">
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-bar-icons"><span>5G</span><span>100%</span><div class="battery-icon"><div class="battery-fill"></div></div></div>
+        </div>
+
+        <!-- Screen Body -->
+        <div class="screen-body">
+          <h2 style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">เพิ่มการ์ดคำศัพท์ใหม่</h2>
+
+          <div class="form-group" style="margin-bottom: 6px;">
+            <label class="form-label" style="font-size: 9.5px;">คำศัพท์ภาษาอังกฤษ (vocab_word) *</label>
+            <input type="text" class="form-control" style="height: 28px; font-size: 11px;" value="Requirement" readonly>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 6px;">
+            <label class="form-label" style="font-size: 9.5px;">ชนิดของคำ (part_of_speech)</label>
+            <input type="text" class="form-control" style="height: 28px; font-size: 11px;" value="Noun (คำนาม)" readonly>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 6px;">
+            <label class="form-label" style="font-size: 9.5px;">หมวดหมู่คำศัพท์ (category_id) *</label>
+            <input type="text" class="form-control" style="height: 28px; font-size: 11px;" value="TOEIC" readonly>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 6px;">
+            <label class="form-label" style="font-size: 9.5px;">คำแปลภาษาไทย (meaning_th) *</label>
+            <input type="text" class="form-control" style="height: 28px; font-size: 11px;" value="ความต้องการ, เงื่อนไขที่จำเป็น" readonly>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="form-label" style="font-size: 9.5px;">ตัวอย่างประโยค (example_sentence)</label>
+            <textarea class="form-control" style="font-size: 10px; height: 38px; min-height: 38px;" readonly>The user outlined system requirements.</textarea>
+          </div>
+
+          <button class="btn btn-primary" style="width: 100%; height: 32px; font-size: 11px; border-radius: 6px; margin-bottom: 6px;">บันทึกคำศัพท์</button>
+          <button class="btn btn-outline" style="width: 100%; height: 30px; font-size: 11px; border-radius: 6px;">ยกเลิก</button>
+        </div>
+
+        <!-- Bottom Nav: STRICTLY 4 ITEMS PER TEMPLATE (NO หมวดหมู่) -->
+        <div class="bottom-nav">
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            <span>หน้าหลัก</span>
+          </div>
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <span>ท่องการ์ด</span>
+          </div>
+          <div class="nav-tab active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>เพิ่มศัพท์</span>
+          </div>
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>โปรไฟล์</span>
+          </div>
+        </div>
+      </div>
+      <div class="caption-box">
+        <strong>หน้า 4: เพิ่มการ์ด</strong><br>
+        ฟอร์มเพิ่มคำศัพท์ใหม่<br>
+        <span style="font-size: 10px; color: #94a3b8;">(Bottom Nav มี 4 เมนู)</span>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 5: PROFILE
+         ========================================== -->
+    <div class="screen-col">
+      <div class="phone-mockup">
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-bar-icons"><span>5G</span><span>100%</span><div class="battery-icon"><div class="battery-fill"></div></div></div>
+        </div>
+
+        <!-- Screen Body -->
+        <div class="screen-body">
+          <h2 style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">ข้อมูลโปรไฟล์ผู้ใช้งาน</h2>
+
+          <!-- Avatar -->
+          <div style="text-align: center; margin-bottom: 8px;">
+            <div style="width: 38px; height: 38px; border-radius: 50%; background: #2563eb; color: #fff; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 4px;">TP</div>
+            <div style="font-size: 12px; font-weight: 700;">นายธีรเดช ผกามาด</div>
+            <div style="font-size: 9.5px; color: #64748b;">@theeradech_019</div>
+            <span class="badge badge-gray" style="font-size: 8.5px; margin-top: 2px;">นักศึกษา (ID: 019)</span>
+          </div>
+
+          <!-- Account Box -->
+          <div class="card-surface" style="padding: 6px 8px; margin-bottom: 6px; font-size: 9.5px;">
+            <div style="font-weight: 700; color: #334155; margin-bottom: 2px;">ข้อมูลบัญชี (ตาราง users)</div>
+            <div style="display: flex; justify-content: space-between; padding: 2px 0;">
+              <span style="color: #64748b;">รหัสผู้ใช้:</span><span style="font-weight: 600;">1</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 2px 0;">
+              <span style="color: #64748b;">ชื่อผู้ใช้:</span><span style="font-weight: 600;">theeradech_019</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 2px 0;">
+              <span style="color: #64748b;">อีเมล:</span><span style="font-weight: 600;">theeradech_019@vec.go.th</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 2px 0;">
+              <span style="color: #64748b;">สร้างเมื่อ:</span><span style="font-weight: 600;">29 ต.ค. 2026</span>
+            </div>
+          </div>
+
+          <!-- Learning Summary -->
+          <div class="card-surface" style="padding: 6px 8px; margin-bottom: 8px; font-size: 9.5px;">
+            <div style="font-weight: 700; color: #334155; margin-bottom: 2px;">สรุปผลการเรียนรู้</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 2px 0;">
+              <span style="color: #64748b;">คำศัพท์ทั้งหมด:</span><span class="badge badge-primary" style="font-size: 8px;">5 ใบ</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 2px 0;">
+              <span style="color: #64748b;">จดจำสำเร็จ:</span><span class="badge badge-success" style="font-size: 8px;">2 ใบ (40%)</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 2px 0;">
+              <span style="color: #64748b;">เป้าหมาย:</span><span class="badge badge-warning" style="font-size: 8px;">TOEIC & IT</span>
+            </div>
+          </div>
+
+          <button class="btn btn-outline" style="width: 100%; height: 28px; font-size: 10px; border-radius: 6px;">แก้ไขข้อมูลส่วนตัว</button>
+        </div>
+
+        <!-- Bottom Nav: STRICTLY 4 ITEMS PER TEMPLATE (NO หมวดหมู่) -->
+        <div class="bottom-nav">
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            <span>หน้าหลัก</span>
+          </div>
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <span>ท่องการ์ด</span>
+          </div>
+          <div class="nav-tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>เพิ่มศัพท์</span>
+          </div>
+          <div class="nav-tab active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>โปรไฟล์</span>
+          </div>
+        </div>
+      </div>
+      <div class="caption-box">
+        <strong>หน้า 5: โปรไฟล์</strong><br>
+        ข้อมูลผู้ใช้และสถิติ<br>
+        <span style="font-size: 10px; color: #94a3b8;">(Bottom Nav มี 4 เมนู)</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -11,16 +11,16 @@
     .links a { font-size: 13.5px; color: #2563eb; margin-right: 20px; text-decoration: none; font-weight: 600; padding: 4px 10px; background: #eff6ff; border-radius: 6px; border: 1px solid #bfdbfe; }
     .links a:hover { background: #dbeafe; }
 
-    .stage { position: relative; width: 1160px; height: 1120px; margin-top: 20px; background: #fff; border: 1px solid #cbd5e1; border-radius: 16px; box-shadow: 0 4px 20px -2px rgba(15,23,42,0.06); overflow: hidden; }
+    .stage { position: relative; width: 1100px; height: 1170px; margin-top: 20px; background: #fff; border: 1px solid #cbd5e1; border-radius: 16px; box-shadow: 0 4px 20px -2px rgba(15,23,42,0.06); overflow: hidden; }
     svg { position: absolute; inset: 0; width: 100%; height: 100%; }
     path { fill: none; stroke: #2563eb; stroke-width: 2; }
     path.dash { stroke: #64748b; stroke-dasharray: 6 5; }
     .lbl { position: absolute; transform: translate(-50%, -50%); background: #fff; font-size: 11.5px; font-weight: 600; color: #334155; padding: 2px 8px; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .node { position: absolute; width: 200px; border: 1.5px solid #cbd5e1; border-radius: 12px; overflow: hidden; background: #fff; color: inherit; text-decoration: none; box-shadow: 0 4px 12px rgba(15,23,42,0.06); transition: all 0.15s ease; }
+    .node { position: absolute; width: 184px; border: 1.5px solid #cbd5e1; border-radius: 12px; overflow: hidden; background: #fff; color: inherit; text-decoration: none; box-shadow: 0 4px 12px rgba(15,23,42,0.06); transition: all 0.15s ease; }
     .node:hover { border-color: #2563eb; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.15); }
     .nh { font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #0f172a; }
-    .node iframe { width: 400px; height: 680px; border: 0; transform: scale(0.5); transform-origin: 0 0; pointer-events: none; }
-    .node { height: 372px; }
+    .node iframe { width: 400px; height: 820px; border: 0; transform: scale(0.46); transform-origin: 0 0; pointer-events: none; }
+    .node { height: 410px; }
   </style></head>
 <body>
   <h1>Student Vocab — เส้นทางระหว่างหน้าจอ (Screen Flow)</h1>
@@ -28,22 +28,22 @@
   <div class="links"><a href="../index.html">หน้าหลักโปรเจกต์</a><a href="overview_6screens.html">ดู 6 หน้าจอเรียงกัน</a><a href="../app/index.html">แอปที่ใช้งานได้จริง</a></div>
   <div class="stage">
     <svg><defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 1L10 5L0 9z" fill="#2563eb" stroke="none"/></marker></defs>
-      <path d="M 220 436 C 270 436, 270 436, 320 436" marker-end="url(#a)"/>
-      <path d="M 520 436 C 570 436, 570 216, 620 216" marker-end="url(#a)"/>
-      <path d="M 520 436 C 570 436, 570 646, 620 646" marker-end="url(#a)"/>
-      <path d="M 420 622 C 420 622, 420 700, 420 700" marker-end="url(#a)"/>
-      <path class="dash" d="M 820 216 C 880 216, 880 436, 940 436" marker-end="url(#a)"/>
+      <path d="M 209 455 C 257 455, 257 455, 305 455" marker-end="url(#a)"/>
+      <path d="M 489 455 C 542 455, 542 235, 595 235" marker-end="url(#a)"/>
+      <path d="M 489 455 C 542 455, 542 695, 595 695" marker-end="url(#a)"/>
+      <path d="M 397 660 C 397 660, 397 720, 397 720" marker-end="url(#a)"/>
+      <path class="dash" d="M 779 235 C 832 235, 832 455, 885 455" marker-end="url(#a)"/>
     </svg>
-    <span class="lbl" style="left:270px; top:436px;">เข้าสู่ระบบ</span>
-    <span class="lbl" style="left:570px; top:326px;">ท่องการ์ด</span>
-    <span class="lbl" style="left:570px; top:541px;">ทำแบบทดสอบ</span>
-    <span class="lbl" style="left:420px; top:661px;">เพิ่มศัพท์ / แก้ไข</span>
-    <span class="lbl" style="left:880px; top:326px;">โปรไฟล์</span>
-    <a class="node" style="left:20px; top:250px;" href="screen1_login.html"><div class="nh">1 เข้าสู่ระบบ</div><iframe src="screen1_login.html" tabindex="-1" scrolling="no"></iframe></a>
-    <a class="node" style="left:320px; top:250px;" href="screen2_dashboard.html"><div class="nh">2 หน้าหลัก</div><iframe src="screen2_dashboard.html" tabindex="-1" scrolling="no"></iframe></a>
-    <a class="node" style="left:620px; top:30px;" href="screen3_flashcards.html"><div class="nh">3 ท่องการ์ด</div><iframe src="screen3_flashcards.html" tabindex="-1" scrolling="no"></iframe></a>
-    <a class="node" style="left:620px; top:460px;" href="screen6_quiz.html"><div class="nh">4 ทดสอบ</div><iframe src="screen6_quiz.html" tabindex="-1" scrolling="no"></iframe></a>
-    <a class="node" style="left:320px; top:700px;" href="screen4_add_card.html"><div class="nh">5 เพิ่ม/แก้ไขคำศัพท์</div><iframe src="screen4_add_card.html" tabindex="-1" scrolling="no"></iframe></a>
-    <a class="node" style="left:940px; top:250px;" href="screen5_profile.html"><div class="nh">6 โปรไฟล์</div><iframe src="screen5_profile.html" tabindex="-1" scrolling="no"></iframe></a>
+    <span class="lbl" style="left:257px; top:455px;">เข้าสู่ระบบ</span>
+    <span class="lbl" style="left:542px; top:345px;">ท่องการ์ด</span>
+    <span class="lbl" style="left:542px; top:575px;">ทำแบบทดสอบ</span>
+    <span class="lbl" style="left:397px; top:690px;">เพิ่มศัพท์ / แก้ไข</span>
+    <span class="lbl" style="left:832px; top:345px;">โปรไฟล์</span>
+    <a class="node" style="left:25px; top:250px;" href="screen1_login.html"><div class="nh">1 เข้าสู่ระบบ</div><iframe src="screen1_login.html" tabindex="-1" scrolling="no"></iframe></a>
+    <a class="node" style="left:305px; top:250px;" href="screen2_dashboard.html"><div class="nh">2 หน้าหลัก</div><iframe src="screen2_dashboard.html" tabindex="-1" scrolling="no"></iframe></a>
+    <a class="node" style="left:595px; top:30px;" href="screen3_flashcards.html"><div class="nh">3 ท่องการ์ด</div><iframe src="screen3_flashcards.html" tabindex="-1" scrolling="no"></iframe></a>
+    <a class="node" style="left:595px; top:490px;" href="screen6_quiz.html"><div class="nh">4 ทดสอบ</div><iframe src="screen6_quiz.html" tabindex="-1" scrolling="no"></iframe></a>
+    <a class="node" style="left:305px; top:720px;" href="screen4_add_card.html"><div class="nh">5 เพิ่ม/แก้ไขคำศัพท์</div><iframe src="screen4_add_card.html" tabindex="-1" scrolling="no"></iframe></a>
+    <a class="node" style="left:885px; top:250px;" href="screen5_profile.html"><div class="nh">6 โปรไฟล์</div><iframe src="screen5_profile.html" tabindex="-1" scrolling="no"></iframe></a>
   </div>
 </body></html>

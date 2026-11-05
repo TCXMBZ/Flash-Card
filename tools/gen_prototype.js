@@ -12,10 +12,28 @@ css += `
 /* ---------- Prototype-only ---------- */
 a { color: inherit; text-decoration: none; }
 a.nav-item, a.row-cta, a.btn { text-decoration: none; }
-.view-screen { display: flex; }
-.proto-caption { max-width: 400px; margin: 14px auto 0; font-size: 13px; color: var(--ink-2); text-align: center; }
+body.proto .view-screen { display: flex; }
+.proto-caption { max-width: 400px; margin: 14px auto 0; font-size: 13px; color: var(--ink-2); text-align: center; line-height: 1.5; }
 .proto-caption b { color: var(--ink); }
-body.proto { flex-direction: column; justify-content: flex-start; padding: 24px 12px; }
+body.proto { flex-direction: column; justify-content: flex-start; padding: 24px 20px; }
+
+/* When embedded inside iframe (overview or flow diagram) */
+html.in-frame, html.in-frame body.proto {
+  padding: 0 !important;
+  background: #ffffff !important;
+  min-height: 100% !important;
+}
+html.in-frame .app-viewport {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 820px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html.in-frame .proto-caption {
+  display: none !important;
+}
 `;
 fs.writeFileSync(path.join(root, 'prototype', 'styles.css'), css, 'utf8');
 
@@ -55,6 +73,7 @@ function page(title, body, active, caption) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>if (window !== window.top) document.documentElement.classList.add('in-frame');</script>
 </head>
 <body class="proto">
   <div class="app-viewport">
@@ -89,8 +108,39 @@ out('screen1_login.html', page('หน้า 1 เข้าสู่ระบบ
           <input class="form-input" type="password" value="12345678">
         </div>
         <a href="screen2_dashboard.html" class="btn btn-primary btn-block">เข้าสู่ระบบ</a>
-        <p style="text-align: center; margin-top: 20px;"><span class="link">ยังไม่มีบัญชี? สมัครใช้งาน</span></p>
+        <p style="text-align: center; margin-top: 20px;"><a href="screen1_register.html" class="link">ยังไม่มีบัญชี? สมัครใช้งาน</a></p>
       </section>`, null, '<b>หน้า 1: เข้าสู่ระบบ</b> — ไม่มีแถบนำทางด้านล่าง กดเข้าสู่ระบบเพื่อไปหน้า 2'));
+
+// ---- screen 1: register ----
+out('screen1_register.html', page('หน้า 1 สมัครสมาชิก', `
+      <section class="view-screen auth">
+        <h1 class="title">Student Vocab</h1>
+        <p class="subtitle" style="margin-bottom: 24px;">สร้างบัญชีใหม่เพื่อเริ่มทบทวนคำศัพท์</p>
+        <div class="form-group">
+          <label class="form-label">ชื่อ-นามสกุล</label>
+          <input class="form-input" value="นายธีรเดช ผกามาด">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">รหัสนักศึกษา</label>
+            <input class="form-input" value="019">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ชื่อผู้ใช้</label>
+            <input class="form-input" value="theeradech_019">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">อีเมล</label>
+          <input class="form-input" value="theeradech_019@vec.go.th">
+        </div>
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label class="form-label">รหัสผ่าน</label>
+          <input class="form-input" type="password" value="12345678">
+        </div>
+        <a href="screen2_dashboard.html" class="btn btn-primary btn-block">สมัครสมาชิก</a>
+        <p style="text-align: center; margin-top: 18px;"><a href="screen1_login.html" class="link">มีบัญชีอยู่แล้ว? เข้าสู่ระบบ</a></p>
+      </section>`, null, '<b>หน้า 1 (ต่อ): สมัครสมาชิก</b> — ฟอร์มลงทะเบียนผู้ใช้ใหม่ตามตาราง users'));
 
 // ---- screen 2: dashboard ----
 out('screen2_dashboard.html', page('หน้า 2 หน้าหลัก', `
@@ -157,6 +207,38 @@ out('screen3_flashcards.html', page('หน้า 3 ท่องการ์ด'
         </div>
         <div class="pager"><span>ก่อนหน้า</span><span>ถัดไป</span></div>
       </section>`, 3, '<b>หน้า 3: ท่องการ์ด</b> — ด้านหน้าแสดงคำศัพท์ ด้านหลังแสดงคำแปล (ไม่เฉลยก่อนพลิก)'));
+
+// ---- screen 3 back: flashcards flipped ----
+out('screen3_flashcards_back.html', page('หน้า 3 ท่องการ์ด (เฉลย/ด้านหลัง)', `
+      <section class="view-screen">
+        <div class="screen-head"><h2 class="title">ท่องการ์ด</h2></div>
+        <div class="tabs">
+          <div class="filter-pill active">ยังจำไม่ได้ (3)</div>
+          <div class="filter-pill">จำได้แล้ว (2)</div>
+          <div class="filter-pill">ทั้งหมด (5)</div>
+        </div>
+        <div class="flashcard-stage">
+          <div class="flashcard-inner flipped">
+            <div class="flashcard-back" style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:20px; border:1.5px solid var(--accent-border); border-radius:var(--r-lg); background:var(--bg); transform:none; backface-visibility:visible;">
+              <div class="card-top">
+                <span class="badge">TOEIC</span>
+                <div class="tools"><span class="label" style="margin-right:6px;">Noun (คำนาม)</span>${iconBtn('spk')}<a href="screen4_add_card.html" class="icon-btn">${svg('edit')}</a>${iconBtn('del', 'danger')}</div>
+              </div>
+              <div class="card-body" style="text-align:center; padding:12px 0;">
+                <div class="label" style="margin-bottom:6px; color:var(--ink-3);">Requirement</div>
+                <h2 class="card-meaning" style="font-size:20px; font-weight:700; color:var(--accent); margin-bottom:8px;">ความต้องการ, เงื่อนไขที่จำเป็น</h2>
+                <p class="card-example" style="font-size:12.5px; color:var(--ink-2); font-style:italic;">"The client outlined clear software requirements."</p>
+              </div>
+              <div class="card-foot" style="text-align:center; font-size:11px; color:var(--ink-3);">แตะเพื่อพลิกกลับ · 2 / 3</div>
+            </div>
+          </div>
+        </div>
+        <div class="actions-2">
+          <button class="btn btn-danger">✕ ยังจำไม่ได้</button>
+          <button class="btn btn-success">✓ จำได้แล้ว</button>
+        </div>
+        <div class="pager"><span>ก่อนหน้า</span><span>ถัดไป</span></div>
+      </section>`, 3, '<b>หน้า 3: ท่องการ์ด (ด้านหลัง / เฉลย)</b> — แตะการ์ดเพื่อพลิกดูคำแปลและความหมาย'));
 
 // ---- screen 4: add card (no tab active, reached from dashboard) ----
 out('screen4_add_card.html', page('หน้า 4 เพิ่มคำศัพท์', `
@@ -246,8 +328,8 @@ out('overview_6screens.html', `<!DOCTYPE html>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>${frameCss}
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 32px 24px; margin-top: 24px; justify-items: center; }
-    figure { margin: 0; width: 100%; max-width: 420px; } figcaption { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 10px; }
-    iframe { width: 100%; height: 780px; border: 1px solid #cbd5e1; border-radius: 16px; background: #fff; box-shadow: 0 10px 25px -4px rgba(15,23,42,0.08); }
+    figure { margin: 0; width: 400px; } figcaption { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 10px; }
+    iframe { width: 400px; height: 820px; border: 1.5px solid #cbd5e1; border-radius: 20px; background: #fff; box-shadow: 0 10px 25px -4px rgba(15,23,42,0.08); display: block; }
   </style></head>
 <body>
   <h1>Student Vocab — 6 หน้าจอต้นแบบ (Interactive Prototype)</h1>
@@ -260,16 +342,15 @@ ${screens.map(([f, t]) => `    <figure><figcaption>${t}</figcaption><iframe src=
 `);
 
 // ---- flow diagram ----
-const W = 220, H = 400, S = 0.5; // thumbnail
 const nodes = {
-  s1: { f: 'screen1_login.html', t: '1 เข้าสู่ระบบ', x: 20, y: 250 },
-  s2: { f: 'screen2_dashboard.html', t: '2 หน้าหลัก', x: 320, y: 250 },
-  s3: { f: 'screen3_flashcards.html', t: '3 ท่องการ์ด', x: 620, y: 30 },
-  s6: { f: 'screen6_quiz.html', t: '4 ทดสอบ', x: 620, y: 460 },
-  s4: { f: 'screen4_add_card.html', t: '5 เพิ่ม/แก้ไขคำศัพท์', x: 320, y: 700 },
-  s5: { f: 'screen5_profile.html', t: '6 โปรไฟล์', x: 940, y: 250 },
+  s1: { f: 'screen1_login.html', t: '1 เข้าสู่ระบบ', x: 25, y: 250 },
+  s2: { f: 'screen2_dashboard.html', t: '2 หน้าหลัก', x: 305, y: 250 },
+  s3: { f: 'screen3_flashcards.html', t: '3 ท่องการ์ด', x: 595, y: 30 },
+  s6: { f: 'screen6_quiz.html', t: '4 ทดสอบ', x: 595, y: 490 },
+  s4: { f: 'screen4_add_card.html', t: '5 เพิ่ม/แก้ไขคำศัพท์', x: 305, y: 720 },
+  s5: { f: 'screen5_profile.html', t: '6 โปรไฟล์', x: 885, y: 250 },
 };
-const nodeW = 200, nodeH = 372;
+const nodeW = 184, nodeH = 410;
 const node = (id) => {
   const n = nodes[id];
   return `    <a class="node" style="left:${n.x}px; top:${n.y}px;" href="${n.f}"><div class="nh">${n.t}</div><iframe src="${n.f}" tabindex="-1" scrolling="no"></iframe></a>`;
@@ -297,7 +378,7 @@ out('wireframe_flow.html', `<!DOCTYPE html>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>${frameCss}
-    .stage { position: relative; width: 1160px; height: 1120px; margin-top: 20px; background: #fff; border: 1px solid #cbd5e1; border-radius: 16px; box-shadow: 0 4px 20px -2px rgba(15,23,42,0.06); overflow: hidden; }
+    .stage { position: relative; width: 1100px; height: 1170px; margin-top: 20px; background: #fff; border: 1px solid #cbd5e1; border-radius: 16px; box-shadow: 0 4px 20px -2px rgba(15,23,42,0.06); overflow: hidden; }
     svg { position: absolute; inset: 0; width: 100%; height: 100%; }
     path { fill: none; stroke: #2563eb; stroke-width: 2; }
     path.dash { stroke: #64748b; stroke-dasharray: 6 5; }
@@ -305,7 +386,7 @@ out('wireframe_flow.html', `<!DOCTYPE html>
     .node { position: absolute; width: ${nodeW}px; border: 1.5px solid #cbd5e1; border-radius: 12px; overflow: hidden; background: #fff; color: inherit; text-decoration: none; box-shadow: 0 4px 12px rgba(15,23,42,0.06); transition: all 0.15s ease; }
     .node:hover { border-color: #2563eb; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.15); }
     .nh { font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #0f172a; }
-    .node iframe { width: 400px; height: 680px; border: 0; transform: scale(0.5); transform-origin: 0 0; pointer-events: none; }
+    .node iframe { width: 400px; height: 820px; border: 0; transform: scale(0.46); transform-origin: 0 0; pointer-events: none; }
     .node { height: ${nodeH}px; }
   </style></head>
 <body>

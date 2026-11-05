@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>12. Database ER Diagram - Flashcard Web Application (v3)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #f8fafc;
+      font-family: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .diagram-container {
+      position: relative;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+      width: 1140px;
+      padding: 24px 28px 20px 28px;
+      overflow: hidden;
+    }
+    .header-bar {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .title-group h1 {
+      font-size: 19px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+    .title-group p {
+      font-size: 12.5px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-pill {
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 8px;
+      border-radius: 999px;
+      border: 1px solid #bfdbfe;
+    }
+    .meta-tags {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-size: 11.5px;
+      color: #475569;
+      background: #f8fafc;
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .meta-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+    .canvas-area {
+      position: relative;
+      width: 1084px;
+      height: 610px;
+    }
+    svg#connections {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .table-card {
+      position: absolute;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      z-index: 20;
+      overflow: hidden;
+      font-size: 12px;
+    }
+    .table-header {
+      color: #ffffff;
+      padding: 7px 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 12.5px;
+      letter-spacing: 0.2px;
+    }
+    .table-header.users { background: #1e40af; }
+    .table-header.categories { background: #0284c7; }
+    .table-header.flashcards { background: #2563eb; }
+    .table-header.quizzes { background: #7c3aed; }
+    .table-header.quiz_answers { background: #4f46e5; }
+
+    .table-header-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+    .table-header-title svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      opacity: 0.95;
+    }
+    .table-header .table-tag {
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.22);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+    }
+    .table-body {
+      background: #ffffff;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      position: relative;
+    }
+    .row:last-child {
+      border-bottom: none;
+    }
+    .row.pk {
+      background: #fffdf5;
+      font-weight: 600;
+    }
+    .col-name {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #1e293b;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+    }
+    .key-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 3.5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+    }
+    .key-badge.pk {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+    .key-badge.fk {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+    .col-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nn-badge {
+      font-size: 9px;
+      background: #f1f5f9;
+      color: #475569;
+      padding: 1px 3px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+      font-weight: 600;
+    }
+
+    /* Footer / Legend */
+    .footer-legend {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: #64748b;
+      white-space: nowrap;
+    }
+    .legend-items {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .line-indicator {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #2563eb;
+    }
+    .line-indicator span.bar {
+      display: inline-block;
+      width: 16px;
+      height: 2px;
+      background: #2563eb;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="diagram-container">
+    <div class="header-bar">
+      <div class="title-group">
+        <h1>12. ออกแบบฐานข้อมูล (ER Diagram) — กำหนดตารางและความสัมพันธ์</h1>
+        <p>
+          เว็บแอปพลิเคชันคลังคำศัพท์ Flashcard ช่วยจำสอบภาษาอังกฤษ (Modern EdTech Pro v3)
+          <span class="badge-pill">Relational Schema (5 Tables)</span>
+        </p>
+      </div>
+      <div class="meta-tags">
+        <div class="meta-item">
+          <span class="meta-dot" style="background: #2563eb;"></span>
+          <strong>DBMS:</strong> MySQL / PostgreSQL
+        </div>
+        <div class="meta-item">
+          <span class="meta-dot" style="background: #16a34a;"></span>
+          <strong>ความสัมพันธ์:</strong> 1 : N
+        </div>
+        <div class="meta-item">
+          <span class="meta-dot" style="background: #7c3aed;"></span>
+          <strong>Normal Form:</strong> 3NF
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-area" id="canvas">
+      <!-- SVG Connectors Layer -->
+      <svg id="connections"></svg>
+
+      <!-- 1. Table users (Left Top) -->
+      <div class="table-card" id="tbl-users" style="left: 15px; top: 12px; width: 275px;">
+        <div class="table-header users">
+          <div class="table-header-title">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            users
+          </div>
+          <span class="table-tag">ผู้ใช้งาน</span>
+        </div>
+        <div class="table-body">
+          <div class="row pk" id="users-user_id">
+            <div class="col-name">
+              <span class="key-badge pk">PK</span>
+              user_id
+            </div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">username</div>
+            <div class="col-type">varchar(50) <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">email</div>
+            <div class="col-type">varchar(100) <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">password_hash</div>
+            <div class="col-type">varchar(255) <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">student_id</div>
+            <div class="col-type">varchar(20)</div>
+          </div>
+          <div class="row">
+            <div class="col-name">full_name</div>
+            <div class="col-type">varchar(100)</div>
+          </div>
+          <div class="row">
+            <div class="col-name">created_at</div>
+            <div class="col-type">timestamp</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Table categories (Left Bottom) -->
+      <div class="table-card" id="tbl-categories" style="left: 15px; top: 410px; width: 275px;">
+        <div class="table-header categories">
+          <div class="table-header-title">
+            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            categories
+          </div>
+          <span class="table-tag">หมวดหมู่</span>
+        </div>
+        <div class="table-body">
+          <div class="row pk" id="categories-category_id">
+            <div class="col-name">
+              <span class="key-badge pk">PK</span>
+              category_id
+            </div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">category_name</div>
+            <div class="col-type">varchar(50) <span class="nn-badge">NN</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Table flashcards (Center Top) -->
+      <div class="table-card" id="tbl-flashcards" style="left: 395px; top: 12px; width: 325px;">
+        <div class="table-header flashcards">
+          <div class="table-header-title">
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M7 15h10M7 9h6"></path></svg>
+            flashcards
+          </div>
+          <span class="table-tag">การ์ดคำศัพท์</span>
+        </div>
+        <div class="table-body">
+          <div class="row pk" id="flashcards-card_id">
+            <div class="col-name">
+              <span class="key-badge pk">PK</span>
+              card_id
+            </div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row" id="flashcards-user_id">
+            <div class="col-name">
+              <span class="key-badge fk">FK</span>
+              user_id
+            </div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row" id="flashcards-category_id">
+            <div class="col-name">
+              <span class="key-badge fk">FK</span>
+              category_id
+            </div>
+            <div class="col-type">int</div>
+          </div>
+          <div class="row">
+            <div class="col-name">vocab_word</div>
+            <div class="col-type">varchar(100) <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">part_of_speech</div>
+            <div class="col-type">varchar(20)</div>
+          </div>
+          <div class="row">
+            <div class="col-name">meaning_th</div>
+            <div class="col-type">varchar(255) <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">example_sentence</div>
+            <div class="col-type">text</div>
+          </div>
+          <div class="row">
+            <div class="col-name">is_remembered</div>
+            <div class="col-type">boolean</div>
+          </div>
+          <div class="row">
+            <div class="col-name">created_at</div>
+            <div class="col-type">timestamp</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Table quizzes (Center Bottom) -->
+      <div class="table-card" id="tbl-quizzes" style="left: 395px; top: 380px; width: 325px;">
+        <div class="table-header quizzes">
+          <div class="table-header-title">
+            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            quizzes
+          </div>
+          <span class="table-tag">รอบแบบทดสอบ</span>
+        </div>
+        <div class="table-body">
+          <div class="row pk" id="quizzes-quiz_id">
+            <div class="col-name">
+              <span class="key-badge pk">PK</span>
+              quiz_id
+            </div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row" id="quizzes-user_id">
+            <div class="col-name">
+              <span class="key-badge fk">FK</span>
+              user_id
+            </div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row" id="quizzes-category_id">
+            <div class="col-name">
+              <span class="key-badge fk">FK</span>
+              category_id
+            </div>
+            <div class="col-type">int</div>
+          </div>
+          <div class="row">
+            <div class="col-name">score</div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">total_questions</div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">tested_at</div>
+            <div class="col-type">timestamp</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Table quiz_answers (Right Middle) -->
+      <div class="table-card" id="tbl-quiz_answers" style="left: 805px; top: 180px; width: 265px;">
+        <div class="table-header quiz_answers">
+          <div class="table-header-title">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            quiz_answers
+          </div>
+          <span class="table-tag">คำตอบรายข้อ</span>
+        </div>
+        <div class="table-body">
+          <div class="row pk" id="quiz_answers-answer_id">
+            <div class="col-name">
+              <span class="key-badge pk">PK</span>
+              answer_id
+            </div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row" id="quiz_answers-card_id">
+            <div class="col-name">
+              <span class="key-badge fk">FK</span>
+              card_id
+            </div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row" id="quiz_answers-quiz_id">
+            <div class="col-name">
+              <span class="key-badge fk">FK</span>
+              quiz_id
+            </div>
+            <div class="col-type">int <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">selected_choice</div>
+            <div class="col-type">varchar(255) <span class="nn-badge">NN</span></div>
+          </div>
+          <div class="row">
+            <div class="col-name">is_correct</div>
+            <div class="col-type">boolean <span class="nn-badge">NN</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer / Legend -->
+    <div class="footer-legend">
+      <div class="legend-items">
+        <div class="legend-item">
+          <span class="key-badge pk">PK</span> คีย์หลัก (Primary Key)
+        </div>
+        <div class="legend-item">
+          <span class="key-badge fk">FK</span> คีย์นอก (Foreign Key)
+        </div>
+        <div class="legend-item">
+          <span class="nn-badge">NN</span> Not Null
+        </div>
+        <div class="legend-item">
+          <div class="line-indicator">
+            1 <span class="bar"></span> &lt; N
+          </div>
+          <span>ความสัมพันธ์ 1 : N (One-to-Many)</span>
+        </div>
+      </div>
+      <div>
+        <strong>โครงสร้าง:</strong> 5 ตาราง • 29 คอลัมน์ • 6 Foreign Key References
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function drawConnections() {
+      const svg = document.getElementById('connections');
+      const canvas = document.getElementById('canvas');
+      const canvasRect = canvas.getBoundingClientRect();
+
+      svg.innerHTML = '';
+
+      const relationships = [
+        // 1. users.user_id -> flashcards.user_id
+        { from: 'users-user_id', to: 'flashcards-user_id', color: '#2563eb' },
+        // 2. users.user_id -> quizzes.user_id
+        { from: 'users-user_id', to: 'quizzes-user_id', color: '#1d4ed8' },
+        // 3. categories.category_id -> flashcards.category_id
+        { from: 'categories-category_id', to: 'flashcards-category_id', color: '#0284c7' },
+        // 4. categories.category_id -> quizzes.category_id
+        { from: 'categories-category_id', to: 'quizzes-category_id', color: '#0369a1' },
+        // 5. flashcards.card_id -> quiz_answers.card_id
+        { from: 'flashcards-card_id', to: 'quiz_answers-card_id', color: '#2563eb' },
+        // 6. quizzes.quiz_id -> quiz_answers.quiz_id
+        { from: 'quizzes-quiz_id', to: 'quiz_answers-quiz_id', color: '#7c3aed' },
+      ];
+
+      relationships.forEach(rel => {
+        const fromElem = document.getElementById(rel.from);
+        const toElem = document.getElementById(rel.to);
+        if (!fromElem || !toElem) return;
+
+        const fromRect = fromElem.getBoundingClientRect();
+        const toRect = toElem.getBoundingClientRect();
+
+        const x1 = fromRect.right - canvasRect.left;
+        const y1 = fromRect.top + fromRect.height / 2 - canvasRect.top;
+
+        const x2 = toRect.left - canvasRect.left;
+        const y2 = toRect.top + toRect.height / 2 - canvasRect.top;
+
+        // dbdiagram horizontal takeoff + bezier
+        const stub = 18;
+        const pathData = `M ${x1} ${y1} L ${x1 + stub} ${y1} C ${x1 + stub + (x2 - x1 - stub * 2) * 0.5} ${y1}, ${x2 - stub - (x2 - x1 - stub * 2) * 0.5} ${y2}, ${x2 - stub} ${y2} L ${x2} ${y2}`;
+
+        // White halo line for contrast
+        const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        bgPath.setAttribute('d', pathData);
+        bgPath.setAttribute('fill', 'none');
+        bgPath.setAttribute('stroke', '#ffffff');
+        bgPath.setAttribute('stroke-width', '4');
+        bgPath.setAttribute('stroke-linecap', 'round');
+        svg.appendChild(bgPath);
+
+        // Main line
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathData);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', rel.color);
+        path.setAttribute('stroke-width', '1.8');
+        path.setAttribute('stroke-linecap', 'round');
+        svg.appendChild(path);
+
+        // 1 indicator tag
+        const tag1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        tag1.setAttribute('x', x1 + 5);
+        tag1.setAttribute('y', y1 - 4);
+        tag1.setAttribute('fill', rel.color);
+        tag1.setAttribute('font-size', '10px');
+        tag1.setAttribute('font-weight', '700');
+        tag1.setAttribute('font-family', 'IBM Plex Sans Thai');
+        tag1.textContent = '1';
+        svg.appendChild(tag1);
+
+        // N indicator tag
+        const tagN = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        tagN.setAttribute('x', x2 - 14);
+        tagN.setAttribute('y', y2 - 4);
+        tagN.setAttribute('fill', rel.color);
+        tagN.setAttribute('font-size', '10px');
+        tagN.setAttribute('font-weight', '700');
+        tagN.setAttribute('font-family', 'IBM Plex Sans Thai');
+        tagN.textContent = 'N';
+        svg.appendChild(tagN);
+
+        // Crow's foot fork at destination
+        const fork = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        fork.setAttribute('d', `M ${x2 - 7} ${y2 - 5} L ${x2} ${y2} L ${x2 - 7} ${y2 + 5}`);
+        fork.setAttribute('fill', 'none');
+        fork.setAttribute('stroke', rel.color);
+        fork.setAttribute('stroke-width', '1.8');
+        fork.setAttribute('stroke-linecap', 'round');
+        fork.setAttribute('stroke-linejoin', 'round');
+        svg.appendChild(fork);
+      });
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(drawConnections, 80);
+    });
+    window.addEventListener('resize', drawConnections);
+  </script>
+</body>
+</html>

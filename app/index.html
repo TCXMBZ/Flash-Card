@@ -17,7 +17,12 @@
       <!-- SCREEN 1: LOGIN / REGISTER -->
       <section id="screen1" class="view-screen auth">
         <h1 class="title">Student Vocab</h1>
-        <p id="auth-sub-title" class="subtitle" style="margin-bottom: 28px;">เข้าสู่ระบบเพื่อทบทวนคำศัพท์เตรียมสอบ</p>
+        <p id="auth-sub-title" class="subtitle" style="margin-bottom: 20px;">เข้าสู่ระบบเพื่อทบทวนคำศัพท์เตรียมสอบ</p>
+
+        <div style="background: var(--accent-light); border: 1px dashed var(--accent-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 20px; text-align: center; font-size: 12.5px;">
+          <span style="color: var(--accent); font-weight: 600;">ยังไม่ได้ตั้งค่า API หรือต้องการทดสอบแบบออฟไลน์?</span><br>
+          <a href="../prototype/app.html" class="link" style="font-weight: 700; margin-top: 4px; display: inline-block;">👉 เปิดแอปต้นแบบ (Interactive Prototype ไม่ต้องต่อ API)</a>
+        </div>
 
         <div id="auth-login-section">
           <form onsubmit="handleLoginSubmit(event)">
