@@ -3,179 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>หน้า 5: ข้อมูลโปรไฟล์ผู้ใช้งาน — Student Vocab Prototype</title>
+  <title>หน้า 5 โปรไฟล์ — Student Vocab prototype</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .screen-caption {
-      margin-top: 14px;
-      text-align: center;
-      font-size: 13px;
-      color: #334155;
-      line-height: 1.5;
-    }
-    .avatar-circle {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: #2563eb;
-      color: #ffffff;
-      font-size: 18px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 8px auto;
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
-    }
-    .profile-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 7px 0;
-      font-size: 12px;
-      border-bottom: 1px dashed #f1f5f9;
-    }
-    .profile-row:last-child {
-      border-bottom: none;
-    }
-    .profile-label {
-      color: #64748b;
-    }
-    .profile-val {
-      font-weight: 600;
-      color: #0f172a;
-    }
-  </style>
 </head>
-<body>
+<body class="proto">
+  <div class="app-viewport">
+    <div class="app-content">
 
-  <div class="phone-mockup">
-    <!-- Status Bar -->
-    <div class="status-bar">
-      <span class="status-bar-time">9:41</span>
-      <div class="status-bar-icons">
-        <span>5G</span>
-        <span>100%</span>
-        <div class="battery-icon"><div class="battery-fill"></div></div>
-      </div>
+      <section class="view-screen">
+        <div class="profile-head">
+          <div class="avatar">นธ</div>
+          <div>
+            <div style="font-size: 17px; font-weight: 700;">นายธีรเดช ผกามาด</div>
+            <div class="subtitle">@theeradech_019</div>
+            <div class="label" style="margin-top: 2px;">นักศึกษา (ID: 019)</div>
+          </div>
+        </div>
+        <div class="section-head"><h3>บัญชี</h3></div>
+        <div class="kv">
+          <div class="kv-row"><span class="k">ชื่อผู้ใช้</span><span class="v">theeradech_019</span></div>
+          <div class="kv-row"><span class="k">อีเมล</span><span class="v">theeradech_019@vec.go.th</span></div>
+          <div class="kv-row"><span class="k">สร้างเมื่อ</span><span class="v">29 ต.ค. 2026</span></div>
+        </div>
+        <div class="section-head"><h3>ผลการเรียน</h3></div>
+        <div class="kv">
+          <div class="kv-row"><span class="k">คำศัพท์ทั้งหมด</span><span class="v">5 ใบ</span></div>
+          <div class="kv-row"><span class="k">จำได้แล้ว</span><span class="v">2 ใบ (40%)</span></div>
+          <div class="kv-row"><span class="k">คะแนนทดสอบล่าสุด</span><span class="v">4 / 5 (80%)</span></div>
+        </div>
+        <div style="margin-top: 24px;">
+          <button class="btn btn-outline btn-block">แก้ไขข้อมูลส่วนตัว</button>
+          <div class="actions-2" style="margin-top: 8px;">
+            <button class="btn btn-outline btn-sm">รีเซ็ตข้อมูล</button>
+            <a href="screen1_login.html" class="btn btn-outline btn-sm btn-text-danger">ออกจากระบบ</a>
+          </div>
+        </div>
+      </section>
     </div>
-
-    <!-- Screen Body: Profile View -->
-    <div class="screen-body" style="padding: 16px;">
-      <h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px; text-align: left;">
-        ข้อมูลโปรไฟล์ผู้ใช้งาน
-      </h2>
-
-      <!-- Avatar & Name Header -->
-      <div style="text-align: center; margin-bottom: 14px;">
-        <div class="avatar-circle">TP</div>
-        <div style="font-size: 15px; font-weight: 700; color: #0f172a;">นายธีรเดช ผกามาด</div>
-        <div style="font-size: 11px; color: #64748b; margin-top: 1px;">@theeradech_019</div>
-        <span class="badge badge-gray" style="margin-top: 5px; font-size: 10px;">นักศึกษา (ID: 019)</span>
-      </div>
-
-      <!-- Card 1: Account Info -->
-      <div class="card-surface" style="padding: 10px 12px; margin-bottom: 10px;">
-        <div style="font-size: 11px; font-weight: 700; color: #334155; margin-bottom: 4px;">
-          ข้อมูลบัญชี (ตาราง users)
-        </div>
-        <div class="profile-row">
-          <span class="profile-label">รหัสผู้ใช้ (user_id):</span>
-          <span class="profile-val">1</span>
-        </div>
-        <div class="profile-row">
-          <span class="profile-label">ชื่อผู้ใช้ (username):</span>
-          <span class="profile-val">theeradech_019</span>
-        </div>
-        <div class="profile-row">
-          <span class="profile-label">อีเมล (email):</span>
-          <span class="profile-val">theeradech_019@vec.go.th</span>
-        </div>
-        <div class="profile-row">
-          <span class="profile-label">สร้างเมื่อ (created_at):</span>
-          <span class="profile-val">29 ต.ค. 2026</span>
-        </div>
-      </div>
-
-      <!-- Card 2: Learning Summary -->
-      <div class="card-surface" style="padding: 10px 12px; margin-bottom: 14px;">
-        <div style="font-size: 11px; font-weight: 700; color: #334155; margin-bottom: 4px;">
-          สรุปผลการเรียนรู้
-        </div>
-        <div class="profile-row">
-          <span class="profile-label">การ์ดคำศัพท์ทั้งหมด:</span>
-          <span class="badge badge-primary">5 ใบ</span>
-        </div>
-        <div class="profile-row">
-          <span class="profile-label">จดจำสำเร็จ (is_remembered):</span>
-          <span class="badge badge-success">2 ใบ (40%)</span>
-        </div>
-        <div class="profile-row">
-          <span class="profile-label">เป้าหมายการสอบ:</span>
-          <span class="badge badge-warning">TOEIC & IT Vocab</span>
-        </div>
-      </div>
-
-      <!-- Action Button -->
-      <button class="btn btn-outline" style="width: 100%; height: 38px; font-size: 13px; border-radius: 8px;" onclick="alert('เปิดหน้าต่างแก้ไขข้อมูลส่วนตัว')">
-        แก้ไขข้อมูลส่วนตัว
-      </button>
-
-    </div>
-
-    <!-- Bottom Navigation: 5 Tabs (หน้าหลัก, ท่องการ์ด, ทดสอบ, เพิ่มศัพท์, โปรไฟล์) -->
-    <div class="bottom-nav">
-      <a href="screen2_dashboard.html" class="nav-tab">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-        <span>หน้าหลัก</span>
-      </a>
-      <a href="screen3_flashcards.html" class="nav-tab">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="4" width="20" height="16" rx="2"/>
-          <line x1="2" y1="10" x2="22" y2="10"/>
-        </svg>
-        <span>ท่องการ์ด</span>
-      </a>
-      <a href="screen6_quiz.html" class="nav-tab">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 11l3 3L22 4"/>
-          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-        </svg>
-        <span>ทดสอบ</span>
-      </a>
-      <a href="screen4_add_card.html" class="nav-tab">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="16"/>
-          <line x1="8" y1="12" x2="16" y2="12"/>
-        </svg>
-        <span>เพิ่มศัพท์</span>
-      </a>
-      <a href="screen5_profile.html" class="nav-tab active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
-        <span>โปรไฟล์</span>
-      </a>
-    </div>
+    <nav class="app-navbar">
+      <a href="screen2_dashboard.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>หน้าหลัก</span></a>
+      <a href="screen3_flashcards.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>ท่องการ์ด</span></a>
+      <a href="screen6_quiz.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>ทดสอบ</span></a>
+      <a href="screen5_profile.html" class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>โปรไฟล์</span></a>
+    </nav>
   </div>
-
-  <div class="screen-caption">
-    <strong>หน้า 5: ข้อมูลโปรไฟล์ผู้ใช้งาน</strong><br>
-    Bottom Nav มี 4 เมนู: [หน้าหลัก, ท่องการ์ด, เพิ่มศัพท์, โปรไฟล์] (ไม่มีหมวดหมู่)
-  </div>
-
+  <p class="proto-caption"><b>หน้า 5: โปรไฟล์</b> — ข้อมูลบัญชี ผลการเรียน และออกจากระบบ</p>
 </body>
 </html>

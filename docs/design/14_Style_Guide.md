@@ -18,7 +18,7 @@
 | **การ์ดและกล่อง (Surface White)** | `#FFFFFF` | `rgb(255, 255, 255)` | สีพื้นหลังของการ์ดคำศัพท์และกล่องฟอร์ม | <span style="background-color:#FFFFFF;color:#000;border:1px solid #ccc;padding:2px 8px;border-radius:4px;">#FFFFFF</span> |
 | **เส้นขอบ (Border Gray)** | `#E2E8F0` | `rgb(226, 232, 240)` | เส้นขอบบางของการ์ด ช่องฟอร์ม และตัวแบ่งส่วน | <span style="background-color:#E2E8F0;color:#000;padding:2px 8px;border-radius:4px;">#E2E8F0</span> |
 
-* **ข้อกำหนดการ์ด (Cards Spec):** มุมโค้งมน `8px - 12px`, เส้นขอบบาง `1px solid #E2E8F0`, เงาบาง (Subtle Shadow: `0 2px 4px rgba(0,0,0,0.05)`)
+* **ข้อกำหนดการ์ด (Cards Spec):** มุมโค้งมน `8px - 12px`, เส้นขอบบาง `1px solid #E2E8F0`, ไม่ใช้เงา (flat) ไม่ใช้ gradient และไม่ใช้ emoji ประดับ (v2: สีเน้นสีเดียวคือน้ำเงิน)
 
 ---
 
