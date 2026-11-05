@@ -1,128 +1,138 @@
 /**
- * Student Vocab - Hybrid App Engine (with Live Quiz Mode)
- * Complete interactive logic with LocalStorage persistence & Speech Synthesis
+ * Student Vocab - Hybrid App Engine (Supabase Integrated)
+ * Connects with Supabase Auth, PostgreSQL Tables & RLS Policies
  */
 
-// Initial Seed Data (Matches template_obj46.bmp exactly: 5 words, 2 remembered (40%), 3 unremembered)
-const DEFAULT_VOCABS = [
+// ==========================================
+// SUPABASE CLIENT INITIALIZATION
+// ==========================================
+let supabaseClient = null;
+
+function getSupabase() {
+  if (supabaseClient) return supabaseClient;
+  const config = window.SUPABASE_CONFIG;
+  if (!config || !config.url || !config.publishableKey || config.publishableKey.includes("YOUR_SUPABASE")) {
+    return null;
+  }
+  if (!window.supabase) {
+    console.error("Supabase JS Library ยังโหลดไม่เสร็จหรือถูกบล็อก");
+    return null;
+  }
+  try {
+    supabaseClient = window.supabase.createClient(config.url, config.publishableKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+    return supabaseClient;
+  } catch (err) {
+    console.error("Failed to initialize Supabase client:", err);
+    return null;
+  }
+}
+
+// Helper: แปลข้อความ Error จาก Supabase Auth ให้เป็นภาษาไทยที่เข้าใจง่าย
+function translateAuthError(message) {
+  if (!message) return 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
+  if (message.includes('Invalid login credentials')) return 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
+  if (message.includes('Email not confirmed')) return 'กรุณายืนยันอีเมลในกล่องข้อความก่อนเข้าสู่ระบบ';
+  if (message.includes('User already registered')) return 'อีเมลนี้ได้ลงทะเบียนไว้แล้ว';
+  if (message.includes('Password should be at least')) return 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
+  if (message.includes('rate limit')) return 'มีการส่งคำขอถี่เกินไป กรุณารอสักครู่แล้วลองใหม่';
+  return message;
+}
+
+// Helper: เดือนภาษาไทยแบบย่อ
+function thaiMonthShort(m) {
+  const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+  return months[m] || '';
+}
+
+// Sample Vocabs for optional Demo loading
+const SAMPLE_MOCK_VOCABS = [
   {
-    vocab_id: 1,
     vocab_word: "Requirement",
     meaning_th: "ความต้องการ, เงื่อนไขที่จำเป็น",
     part_of_speech: "Noun (คำนาม)",
-    category_id: "TOEIC",
-    example_sentence: "The client outlined clear software requirements.",
-    is_remembered: false
+    category_name: "TOEIC",
+    example_sentence: "The client outlined clear software requirements."
   },
   {
-    vocab_id: 2,
     vocab_word: "Implement",
     meaning_th: "นำไปปฏิบัติ, พัฒนาระบบ",
     part_of_speech: "Verb (คำกริยา)",
-    category_id: "TOEIC",
-    example_sentence: "We need to implement the new security policy.",
-    is_remembered: false
+    category_name: "TOEIC",
+    example_sentence: "We need to implement the new security policy."
   },
   {
-    vocab_id: 3,
     vocab_word: "Deploy",
     meaning_th: "นำระบบไปใช้งานจริง",
     part_of_speech: "Verb (คำกริยา)",
-    category_id: "IT Vocab",
-    example_sentence: "The DevOps engineer will deploy the build to production.",
-    is_remembered: false
+    category_name: "IT Vocab",
+    example_sentence: "The DevOps engineer will deploy the build to production."
   },
   {
-    vocab_id: 4,
     vocab_word: "Agile",
     meaning_th: "ความคล่องตัว, การทำงานแบบปรับตัวเร็ว",
     part_of_speech: "Adjective (คำคุณศัพท์)",
-    category_id: "IT Vocab",
-    example_sentence: "Our development team follows Agile methodology.",
-    is_remembered: true
+    category_name: "IT Vocab",
+    example_sentence: "Our development team follows Agile methodology."
   },
   {
-    vocab_id: 5,
     vocab_word: "Framework",
     meaning_th: "กรอบการทำงาน, โครงสร้างโปรแกรม",
     part_of_speech: "Noun (คำนาม)",
-    category_id: "TOEIC",
-    example_sentence: "Bootstrap is a popular frontend framework.",
-    is_remembered: true
+    category_name: "TOEIC",
+    example_sentence: "Bootstrap is a popular frontend framework."
   }
 ];
 
-const DEFAULT_USER = {
-  user_id: 1,
-  username: "theeradech_019",
-  full_name: "นายธีรเดช ผกามาด",
-  student_id: "019",
-  email: "theeradech_019@vec.go.th",
-  target_exam: "TOEIC & IT Vocab",
-  created_at: "29 ต.ค. 2026",
-  is_logged_in: true
-};
+// ==========================================
+// CATEGORY MAPPING & CACHING
+// ==========================================
+let categoryNameToId = { 'TOEIC': 1, 'IT Vocab': 2, 'General English': 3 };
+let categoryIdToName = { 1: 'TOEIC', 2: 'IT Vocab', 3: 'General English' };
 
-const DEFAULT_QUIZ_RESULT = {
-  score: 4,
-  total_questions: 5,
-  percentage: 80,
-  tested_at: "1 พ.ย. 2026 14:30"
-};
+async function loadCategories() {
+  const sb = getSupabase();
+  if (!sb) return;
+
+  try {
+    const { data, error } = await sb.from('categories').select('*').order('category_id');
+    if (!error && data && data.length > 0) {
+      categoryNameToId = {};
+      categoryIdToName = {};
+      data.forEach(c => {
+        categoryNameToId[c.category_name] = c.category_id;
+        categoryIdToName[c.category_id] = c.category_name;
+      });
+
+      // Update dropdown option in screen4
+      const catSelect = document.getElementById('add-category');
+      if (catSelect) {
+        catSelect.innerHTML = data.map(c => `<option value="${c.category_name}">${c.category_name}</option>`).join('');
+      }
+    }
+  } catch (err) {
+    console.warn('Error loading categories from Supabase, using defaults:', err);
+  }
+}
 
 // ==========================================
 // STATE MANAGEMENT
 // ==========================================
 class AppState {
   constructor() {
-    this.init();
-  }
-
-  init() {
-    if (!localStorage.getItem('student_vocabs')) {
-      localStorage.setItem('student_vocabs', JSON.stringify(DEFAULT_VOCABS));
-    }
-    if (!localStorage.getItem('student_user')) {
-      localStorage.setItem('student_user', JSON.stringify(DEFAULT_USER));
-    }
-    if (!localStorage.getItem('student_latest_quiz')) {
-      localStorage.setItem('student_latest_quiz', JSON.stringify(DEFAULT_QUIZ_RESULT));
-    }
-    this.currentView = 'screen2'; // Default to dashboard if logged in
+    this.currentView = 'screen1';
     this.flashcardFilter = 'unremembered'; // 'unremembered' | 'remembered' | 'all'
     this.currentCardIndex = 0;
-  }
-
-  get vocabs() {
-    return JSON.parse(localStorage.getItem('student_vocabs')) || [];
-  }
-
-  saveVocabs(items) {
-    localStorage.setItem('student_vocabs', JSON.stringify(items));
-  }
-
-  get user() {
-    return JSON.parse(localStorage.getItem('student_user')) || DEFAULT_USER;
-  }
-
-  saveUser(userData) {
-    localStorage.setItem('student_user', JSON.stringify(userData));
-  }
-
-  get latestQuiz() {
-    return JSON.parse(localStorage.getItem('student_latest_quiz')) || DEFAULT_QUIZ_RESULT;
-  }
-
-  saveLatestQuiz(quizData) {
-    localStorage.setItem('student_latest_quiz', JSON.stringify(quizData));
-  }
-
-  resetDefaultData() {
-    localStorage.setItem('student_vocabs', JSON.stringify(DEFAULT_VOCABS));
-    localStorage.setItem('student_user', JSON.stringify(DEFAULT_USER));
-    localStorage.setItem('student_latest_quiz', JSON.stringify(DEFAULT_QUIZ_RESULT));
-    this.flashcardFilter = 'unremembered';
-    this.currentCardIndex = 0;
+    this.currentUserId = null;
+    this.user = null;
+    this.vocabs = [];
+    this.latestQuiz = null;
+    this.isLoading = false;
   }
 }
 
@@ -138,7 +148,7 @@ function showToast(message) {
   toast.classList.add('visible');
   setTimeout(() => {
     toast.classList.remove('visible');
-  }, 2200);
+  }, 2500);
 }
 
 function speakWord(text) {
@@ -201,7 +211,7 @@ function renderNavbar(screenId) {
       </div>
     `;
   } else {
-    // Screens 2 to 6: 4 Items (หน้าหลัก, ท่องการ์ด, ทดสอบ, โปรไฟล์). Adding words lives on the dashboard.
+    // Screens 2 to 6: 4 Items (หน้าหลัก, ท่องการ์ด, ทดสอบ, โปรไฟล์)
     navContainer.innerHTML = `
       <div class="nav-item ${screenId === 'screen2' ? 'active' : ''}" onclick="navigateTo('screen2')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -254,38 +264,259 @@ function switchAuthTab(showRegister) {
   }
 }
 
-function handleLoginSubmit(e) {
+async function handleLoginSubmit(e) {
   e.preventDefault();
-  const user = state.user;
-  user.is_logged_in = true;
-  state.saveUser(user);
-  showToast('เข้าสู่ระบบสำเร็จ ยินดีต้อนรับ!');
-  navigateTo('screen2');
+  const identifier = document.getElementById('login-identifier').value.trim();
+  const password = document.getElementById('login-password').value;
+
+  const sb = getSupabase();
+  if (!sb) {
+    showToast('กรุณาระบุ Publishable Key ใน app/supabase-config.js');
+    return;
+  }
+
+  showToast('กำลังเข้าสู่ระบบ...');
+  try {
+    let emailToUse = identifier;
+
+    // ถ้าผู้ใช้กรอกเป็นชื่อผู้ใช้ (ไม่มี @) ให้ตรวจสอบ email จาก profile
+    if (!identifier.includes('@')) {
+      const { data: prof, error: pErr } = await sb
+        .from('profiles')
+        .select('id, username')
+        .eq('username', identifier)
+        .maybeSingle();
+
+      if (pErr || !prof) {
+        showToast('ไม่พบบัญชีนี้ กรุณาใช้อีเมลในการเข้าสู่ระบบ');
+        return;
+      }
+      showToast('กรุณาใช้อีเมลที่ใช้สมัครในการเข้าสู่ระบบ');
+      return;
+    }
+
+    const { data, error } = await sb.auth.signInWithPassword({
+      email: emailToUse,
+      password: password
+    });
+
+    if (error) {
+      showToast(`เข้าสู่ระบบไม่สำเร็จ: ${translateAuthError(error.message)}`);
+      return;
+    }
+
+    showToast('เข้าสู่ระบบสำเร็จ ยินดีต้อนรับ!');
+    await handleAuthSuccess(data.session);
+  } catch (err) {
+    showToast(`เกิดข้อผิดพลาด: ${err.message}`);
+  }
 }
 
-function handleRegisterSubmit(e) {
+async function handleRegisterSubmit(e) {
   e.preventDefault();
-  const fullName = document.getElementById('reg-fullname').value;
-  const studentId = document.getElementById('reg-studentid').value;
-  const email = document.getElementById('reg-email').value;
-  const username = document.getElementById('reg-username').value;
+  const fullName = document.getElementById('reg-fullname').value.trim();
+  const studentId = document.getElementById('reg-studentid').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const username = document.getElementById('reg-username').value.trim();
+  const password = document.getElementById('reg-password').value;
 
-  const newUser = {
-    user_id: 1,
-    username: username,
-    full_name: fullName,
-    student_id: studentId,
-    email: email,
-    target_exam: "TOEIC & IT Vocab",
-    created_at: "29 ต.ค. 2026",
+  if (password.length < 6) {
+    showToast('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
+    return;
+  }
+
+  const sb = getSupabase();
+  if (!sb) {
+    showToast('กรุณาระบุ Publishable Key ใน app/supabase-config.js');
+    return;
+  }
+
+  showToast('กำลังสร้างบัญชี...');
+  try {
+    const { data, error } = await sb.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          full_name: fullName,
+          student_id: studentId,
+          username: username,
+          target_exam: 'TOEIC & IT Vocab'
+        }
+      }
+    });
+
+    if (error) {
+      showToast(`สมัครไม่สำเร็จ: ${translateAuthError(error.message)}`);
+      return;
+    }
+
+    const authUser = data.user;
+    if (authUser) {
+      // บันทึกลงตาราง profiles
+      try {
+        await sb.from('profiles').upsert({
+          id: authUser.id,
+          username: username,
+          full_name: fullName,
+          student_id: studentId,
+          target_exam: 'TOEIC & IT Vocab'
+        });
+      } catch (profErr) {
+        console.warn('Could not upsert to profiles table:', profErr);
+      }
+
+      if (data.session) {
+        showToast('สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!');
+        await handleAuthSuccess(data.session);
+      } else {
+        showToast('สมัครสำเร็จ! หากระบบต้องการยืนยัน โปรดตรวจสอบอีเมลของคุณ');
+        switchAuthTab(false);
+        document.getElementById('login-identifier').value = email;
+      }
+    }
+  } catch (err) {
+    showToast(`เกิดข้อผิดพลาด: ${err.message}`);
+  }
+}
+
+// ==========================================
+// AUTH SESSION HANDLER & DATA SYNC
+// ==========================================
+async function handleAuthSuccess(session) {
+  if (!session || !session.user) return;
+  const user = session.user;
+  state.currentUserId = user.id;
+
+  // โหลด Profile จากตาราง profiles หรือ fallback จาก user_metadata
+  const meta = user.user_metadata || {};
+  let userProfile = {
+    user_id: user.id.slice(0, 8),
+    full_user_id: user.id,
+    email: user.email,
+    username: meta.username || user.email.split('@')[0],
+    full_name: meta.full_name || 'ผู้ใช้งาน',
+    student_id: meta.student_id || '-',
+    target_exam: meta.target_exam || 'TOEIC & IT Vocab',
+    created_at: new Date(user.created_at).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }),
     is_logged_in: true
   };
 
-  state.saveUser(newUser);
-  showToast('สมัครสมาชิกสำเร็จ! กำลังเข้าสู่ระบบ...');
-  setTimeout(() => {
-    navigateTo('screen2');
-  }, 400);
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      const { data: prof, error: profErr } = await sb
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!profErr && prof) {
+        if (prof.username) userProfile.username = prof.username;
+        if (prof.full_name) userProfile.full_name = prof.full_name;
+        if (prof.student_id) userProfile.student_id = prof.student_id;
+        if (prof.target_exam) userProfile.target_exam = prof.target_exam;
+        if (prof.created_at) {
+          const cd = new Date(prof.created_at);
+          userProfile.created_at = cd.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+      } else if (!prof) {
+        // ถ้ายังไม่มีแถวในตาราง profiles ให้สร้างอัตโนมัติ
+        await sb.from('profiles').upsert({
+          id: user.id,
+          username: userProfile.username,
+          full_name: userProfile.full_name,
+          student_id: userProfile.student_id,
+          target_exam: userProfile.target_exam
+        });
+      }
+    } catch (e) {
+      console.warn('Profiles sync error:', e);
+    }
+  }
+
+  state.user = userProfile;
+
+  // โหลด Categories, Flashcards และ ผลสอบล่าสุด
+  await loadCategories();
+  await loadFlashcards();
+  await loadLatestQuiz();
+
+  navigateTo('screen2');
+}
+
+// ==========================================
+// DATA FETCHERS (SUPABASE)
+// ==========================================
+async function loadFlashcards() {
+  const sb = getSupabase();
+  if (!sb || !state.currentUserId) {
+    state.vocabs = [];
+    return;
+  }
+
+  try {
+    const { data, error } = await sb
+      .from('flashcards')
+      .select('*')
+      .eq('user_id', state.currentUserId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error loading flashcards:', error);
+      showToast('ไม่สามารถดึงข้อมูลคำศัพท์ได้');
+      return;
+    }
+
+    state.vocabs = (data || []).map(item => ({
+      vocab_id: item.card_id,
+      vocab_word: item.vocab_word,
+      meaning_th: item.meaning_th,
+      part_of_speech: item.part_of_speech || 'Noun (คำนาม)',
+      category_id: categoryIdToName[item.category_id] || 'TOEIC',
+      raw_category_id: item.category_id,
+      example_sentence: item.example_sentence || '',
+      is_remembered: !!item.is_remembered
+    }));
+  } catch (err) {
+    console.error('Flashcard fetch error:', err);
+  }
+}
+
+async function loadLatestQuiz() {
+  const sb = getSupabase();
+  if (!sb || !state.currentUserId) {
+    state.latestQuiz = null;
+    return;
+  }
+
+  try {
+    const { data, error } = await sb
+      .from('quizzes')
+      .select('*')
+      .eq('user_id', state.currentUserId)
+      .order('tested_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (!error && data) {
+      const d = new Date(data.tested_at);
+      const min = d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes();
+      const dateStr = `${d.getDate()} ${thaiMonthShort(d.getMonth())} ${d.getFullYear() + 543} ${d.getHours()}:${min}`;
+      const pct = data.total_questions > 0 ? Math.round((data.score / data.total_questions) * 100) : 0;
+      state.latestQuiz = {
+        score: data.score,
+        total_questions: data.total_questions,
+        percentage: pct,
+        tested_at: dateStr
+      };
+    } else {
+      state.latestQuiz = null;
+    }
+  } catch (err) {
+    console.warn('Latest quiz fetch error:', err);
+    state.latestQuiz = null;
+  }
 }
 
 // ==========================================
@@ -293,7 +524,7 @@ function handleRegisterSubmit(e) {
 // ==========================================
 function renderDashboard() {
   const vocabs = state.vocabs;
-  const user = state.user;
+  const user = state.user || { full_name: 'ผู้ใช้งาน', target_exam: 'TOEIC & IT Vocab' };
 
   // Update Greeting
   document.getElementById('dash-user-name').innerText = `สวัสดี ${user.full_name}`;
@@ -315,8 +546,10 @@ function renderDashboard() {
   const urgentContainer = document.getElementById('dash-urgent-list');
   const unrememberedList = vocabs.filter(v => !v.is_remembered);
 
-  if (unrememberedList.length === 0) {
-    urgentContainer.innerHTML = `<div class="empty">จำคำศัพท์ได้ครบทุกคำแล้ว</div>`;
+  if (total === 0) {
+    urgentContainer.innerHTML = `<div class="empty">ยังไม่มีคำศัพท์ในคลัง กดปุ่ม "เพิ่มศัพท์" ด้านบนเพื่อเริ่มเรียนรู้</div>`;
+  } else if (unrememberedList.length === 0) {
+    urgentContainer.innerHTML = `<div class="empty">จำคำศัพท์ได้ครบทุกคำแล้ว 🎉</div>`;
   } else {
     urgentContainer.innerHTML = unrememberedList.map(item => `
       <div class="word-row">
@@ -324,7 +557,7 @@ function renderDashboard() {
           <div class="w">${item.vocab_word}</div>
           <div class="m">${item.meaning_th}</div>
         </div>
-        <span class="badge">${item.category_id}</span>
+        <span class="badge ${item.category_id === 'TOEIC' ? 'badge-warning' : 'badge-primary'}">${item.category_id}</span>
         <button class="icon-btn" title="แก้ไข" onclick="event.stopPropagation(); openEditForm(${item.vocab_id});">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
@@ -391,7 +624,7 @@ function renderFlashcards() {
     document.getElementById('card-front-word').innerText = "ไม่มีคำศัพท์ในหมวดนี้";
     document.getElementById('card-front-pos').innerText = "-";
     document.getElementById('card-front-cat').innerText = "-";
-    document.getElementById('card-back-meaning').innerText = "กรุณาเลือกหมวดหมู่อื่น หรือเพิ่มคำศัพท์ใหม่";
+    document.getElementById('card-back-meaning').innerText = total === 0 ? "เพิ่มคำศัพท์ใหม่จากหน้าหลักได้เลย" : "กรุณาเลือกหมวดหมู่อื่น หรือเพิ่มคำศัพท์ใหม่";
     document.getElementById('card-back-example').innerText = "";
     document.getElementById('card-indicator').innerText = "0 / 0";
     return;
@@ -409,7 +642,7 @@ function renderFlashcards() {
   document.getElementById('card-front-pos').innerText = card.part_of_speech;
   document.getElementById('card-front-word').innerText = card.vocab_word;
   document.getElementById('card-front-meaning-preview').innerText = card.meaning_th;
-  document.getElementById('card-front-example').innerText = `"${card.example_sentence}"`;
+  document.getElementById('card-front-example').innerText = card.example_sentence ? `"${card.example_sentence}"` : '';
 
   // Back Face
   document.getElementById('card-back-cat').innerText = card.category_id;
@@ -417,9 +650,9 @@ function renderFlashcards() {
   document.getElementById('card-back-pos').innerText = card.part_of_speech;
   document.getElementById('card-back-word').innerText = card.vocab_word;
   document.getElementById('card-back-meaning').innerText = card.meaning_th;
-  document.getElementById('card-back-example').innerText = `"${card.example_sentence}"`;
+  document.getElementById('card-back-example').innerText = card.example_sentence ? `"${card.example_sentence}"` : '';
 
-  // Indicator (e.g. ใบที่ 2 / 3)
+  // Indicator
   document.getElementById('card-indicator').innerText = `ใบที่ ${state.currentCardIndex + 1} / ${currentList.length}`;
 }
 
@@ -442,25 +675,39 @@ function prevCard() {
   renderFlashcards();
 }
 
-function markCardRemembered(status) {
+async function markCardRemembered(status) {
   const currentList = getFilteredVocabs();
   if (currentList.length === 0) return;
 
   const currentCard = currentList[state.currentCardIndex];
-  const allVocabs = state.vocabs;
-  const target = allVocabs.find(v => v.vocab_id === currentCard.vocab_id);
+  const sb = getSupabase();
+  if (!sb || !state.currentUserId) return;
 
-  if (target) {
-    target.is_remembered = status;
-    state.saveVocabs(allVocabs);
-    
+  try {
+    const { error } = await sb
+      .from('flashcards')
+      .update({ is_remembered: status })
+      .eq('card_id', currentCard.vocab_id)
+      .eq('user_id', state.currentUserId);
+
+    if (error) {
+      showToast(`อัปเดตไม่สำเร็จ: ${error.message}`);
+      return;
+    }
+
+    currentCard.is_remembered = status;
+    const inAll = state.vocabs.find(v => v.vocab_id === currentCard.vocab_id);
+    if (inAll) inAll.is_remembered = status;
+
     if (status) {
-      showToast(`✓ จำได้แล้ว: ${target.vocab_word}`);
+      showToast(`✓ จำได้แล้ว: ${currentCard.vocab_word}`);
     } else {
-      showToast(`✕ ยังจำไม่ได้: ${target.vocab_word}`);
+      showToast(`✕ ยังจำไม่ได้: ${currentCard.vocab_word}`);
     }
 
     renderFlashcards();
+  } catch (err) {
+    showToast(`เกิดข้อผิดพลาด: ${err.message}`);
   }
 }
 
@@ -483,7 +730,7 @@ function handleDeleteCurrentCard() {
 }
 
 // ==========================================
-// SCREEN 6: QUIZ ENGINE CONTROLLER (NEW)
+// SCREEN 6: QUIZ ENGINE CONTROLLER
 // ==========================================
 let quizSession = {
   questions: [],
@@ -508,12 +755,10 @@ function startQuiz() {
   const selectedVocabs = shuffled.slice(0, 5);
 
   quizSession.questions = selectedVocabs.map(card => {
-    // Generate 1 correct + 3 distractor choices
     const correctMeaning = card.meaning_th;
     const otherMeanings = vocabs.filter(v => v.vocab_id !== card.vocab_id).map(v => v.meaning_th);
     const shuffledOthers = otherMeanings.sort(() => 0.5 - Math.random()).slice(0, 3);
     
-    // Fallback if less than 4 words total
     while (shuffledOthers.length < 3) {
       shuffledOthers.push("ความหมายเพิ่มเติมสำหรับการทดสอบ " + (shuffledOthers.length + 1));
     }
@@ -558,7 +803,7 @@ function renderQuizQuestion() {
   document.getElementById('quiz-word').innerText = currentQ.card.vocab_word;
   
   // Blank out word in sentence
-  const sentence = currentQ.card.example_sentence;
+  const sentence = currentQ.card.example_sentence || currentQ.card.vocab_word;
   const blanked = sentence.replace(new RegExp(currentQ.card.vocab_word, 'gi'), '_______');
   document.getElementById('quiz-sentence').innerText = `"${blanked}"`;
 
@@ -605,7 +850,6 @@ function selectQuizChoice(btn, isCorrect, choiceText) {
     showToast('ถูกต้อง +1 คะแนน');
   } else {
     btn.classList.add('wrong');
-    // Highlight correct choice
     const allBtns = document.querySelectorAll('.quiz-choice-btn');
     allBtns.forEach(b => {
       if (b.innerText.includes(currentQ.card.meaning_th)) {
@@ -615,7 +859,6 @@ function selectQuizChoice(btn, isCorrect, choiceText) {
     showToast('ยังไม่ถูกต้อง');
   }
 
-  // Advance to next question after 900ms
   setTimeout(() => {
     quizSession.currentIndex++;
     if (quizSession.currentIndex < quizSession.questions.length) {
@@ -646,14 +889,15 @@ function handleQuizTimeout() {
   }, 900);
 }
 
-function finishQuiz() {
+async function finishQuiz() {
   clearInterval(quizSession.timerInterval);
   const total = quizSession.questions.length;
   const score = quizSession.score;
   const pct = Math.round((score / total) * 100);
 
   const now = new Date();
-  const dateStr = `${now.getDate()} พ.ย. 2026 ${now.getHours()}:${now.getMinutes() < 10 ? '0' : ''}${now.getMinutes()}`;
+  const min = now.getMinutes() < 10 ? `0${now.getMinutes()}` : now.getMinutes();
+  const dateStr = `${now.getDate()} ${thaiMonthShort(now.getMonth())} ${now.getFullYear() + 543} ${now.getHours()}:${min}`;
 
   const quizResult = {
     score: score,
@@ -663,7 +907,39 @@ function finishQuiz() {
     answers: quizSession.answersLog
   };
 
-  state.saveLatestQuiz(quizResult);
+  state.latestQuiz = quizResult;
+
+  // บันทึกผลสอบลง Supabase quizzes & quiz_answers
+  const sb = getSupabase();
+  if (sb && state.currentUserId) {
+    try {
+      const { data: quizRow, error: qErr } = await sb
+        .from('quizzes')
+        .insert([{
+          user_id: state.currentUserId,
+          score: score,
+          total_questions: total
+        }])
+        .select()
+        .single();
+
+      if (!qErr && quizRow && quizSession.answersLog.length > 0) {
+        const answersToInsert = quizSession.answersLog.map(a => ({
+          quiz_id: quizRow.quiz_id,
+          card_id: a.card_id,
+          selected_choice: a.selected_choice,
+          is_correct: a.is_correct
+        }));
+
+        const { error: aErr } = await sb.from('quiz_answers').insert(answersToInsert);
+        if (aErr) {
+          console.warn('Could not insert quiz_answers to Supabase:', aErr);
+        }
+      }
+    } catch (err) {
+      console.warn('Error saving quiz result to Supabase:', err);
+    }
+  }
 
   // Update result modal
   document.getElementById('quiz-result-score').innerText = `${score} / ${total}`;
@@ -744,7 +1020,7 @@ function cancelCardForm() {
   }
 }
 
-function handleCardFormSubmit(e) {
+async function handleCardFormSubmit(e) {
   e.preventDefault();
   const editId = document.getElementById('edit-vocab-id').value;
   const word = document.getElementById('add-word').value.trim();
@@ -753,37 +1029,70 @@ function handleCardFormSubmit(e) {
   const meaning = document.getElementById('add-meaning').value.trim();
   const example = document.getElementById('add-example').value.trim();
 
-  const vocabs = state.vocabs;
+  const sb = getSupabase();
+  if (!sb || !state.currentUserId) {
+    showToast('กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูล');
+    return;
+  }
+
+  const categoryIdNum = categoryNameToId[category] || 1;
+  const exampleSentence = example || `Example sentence for ${word}.`;
 
   if (editId) {
     // UPDATE MODE
-    const target = vocabs.find(v => v.vocab_id === parseInt(editId));
-    if (target) {
-      target.vocab_word = word;
-      target.part_of_speech = pos;
-      target.category_id = category;
-      target.meaning_th = meaning;
-      target.example_sentence = example || `Example sentence for ${word}.`;
-      state.saveVocabs(vocabs);
+    const cardId = parseInt(editId);
+    showToast('กำลังบันทึกการแก้ไข...');
+    try {
+      const { error } = await sb
+        .from('flashcards')
+        .update({
+          vocab_word: word,
+          part_of_speech: pos,
+          category_id: categoryIdNum,
+          meaning_th: meaning,
+          example_sentence: exampleSentence
+        })
+        .eq('card_id', cardId)
+        .eq('user_id', state.currentUserId);
+
+      if (error) {
+        showToast(`แก้ไขไม่สำเร็จ: ${error.message}`);
+        return;
+      }
+
       showToast(`แก้ไขคำศัพท์ "${word}" สำเร็จ!`);
-      openSpecificFlashcard(target.vocab_id);
+      await loadFlashcards();
+      openSpecificFlashcard(cardId);
+    } catch (err) {
+      showToast(`เกิดข้อผิดพลาด: ${err.message}`);
     }
   } else {
     // ADD MODE
-    const newId = vocabs.length > 0 ? Math.max(...vocabs.map(v => v.vocab_id)) + 1 : 1;
-    const newCard = {
-      vocab_id: newId,
-      vocab_word: word,
-      meaning_th: meaning,
-      part_of_speech: pos,
-      category_id: category,
-      example_sentence: example || `Example sentence for ${word}.`,
-      is_remembered: false
-    };
-    vocabs.push(newCard);
-    state.saveVocabs(vocabs);
-    showToast(`บันทึกคำศัพท์ "${word}" สำเร็จ!`);
-    navigateTo('screen2');
+    showToast('กำลังบันทึกคำศัพท์...');
+    try {
+      const { error } = await sb
+        .from('flashcards')
+        .insert([{
+          user_id: state.currentUserId,
+          category_id: categoryIdNum,
+          vocab_word: word,
+          part_of_speech: pos,
+          meaning_th: meaning,
+          example_sentence: exampleSentence,
+          is_remembered: false
+        }]);
+
+      if (error) {
+        showToast(`บันทึกไม่สำเร็จ: ${error.message}`);
+        return;
+      }
+
+      showToast(`บันทึกคำศัพท์ "${word}" สำเร็จ!`);
+      await loadFlashcards();
+      navigateTo('screen2');
+    } catch (err) {
+      showToast(`เกิดข้อผิดพลาด: ${err.message}`);
+    }
   }
 }
 
@@ -806,30 +1115,58 @@ function closeDeleteModal() {
   pendingDeleteVocabId = null;
 }
 
-function executeDeleteVocab() {
+async function executeDeleteVocab() {
   if (!pendingDeleteVocabId) return;
-  let vocabs = state.vocabs;
-  const deletedWord = vocabs.find(v => v.vocab_id === pendingDeleteVocabId)?.vocab_word || '';
-  vocabs = vocabs.filter(v => v.vocab_id !== pendingDeleteVocabId);
-  state.saveVocabs(vocabs);
-  closeDeleteModal();
-  showToast(`ลบคำศัพท์ "${deletedWord}" เรียบร้อยแล้ว`);
-  
-  // Refresh current view
-  if (state.currentView === 'screen3') {
-    state.currentCardIndex = 0;
-    renderFlashcards();
-  } else {
-    renderDashboard();
+  const sb = getSupabase();
+  if (!sb || !state.currentUserId) return;
+
+  const card = state.vocabs.find(v => v.vocab_id === pendingDeleteVocabId);
+  const deletedWord = card ? card.vocab_word : '';
+
+  showToast('กำลังลบคำศัพท์...');
+  try {
+    const { error } = await sb
+      .from('flashcards')
+      .delete()
+      .eq('card_id', pendingDeleteVocabId)
+      .eq('user_id', state.currentUserId);
+
+    closeDeleteModal();
+
+    if (error) {
+      showToast(`ลบไม่สำเร็จ: ${error.message}`);
+      return;
+    }
+
+    showToast(`ลบคำศัพท์ "${deletedWord}" เรียบร้อยแล้ว`);
+    await loadFlashcards();
+    
+    if (state.currentView === 'screen3') {
+      state.currentCardIndex = 0;
+      renderFlashcards();
+    } else {
+      renderDashboard();
+    }
+    renderProfile();
+  } catch (err) {
+    showToast(`เกิดข้อผิดพลาด: ${err.message}`);
   }
-  renderProfile();
 }
 
 // ==========================================
 // SCREEN 5: PROFILE CONTROLLER
 // ==========================================
 function renderProfile() {
-  const user = state.user;
+  const user = state.user || {
+    user_id: '-',
+    username: '-',
+    full_name: 'ผู้ใช้งาน',
+    student_id: '-',
+    email: '-',
+    target_exam: 'TOEIC & IT Vocab',
+    created_at: '-'
+  };
+
   const vocabs = state.vocabs;
   const total = vocabs.length;
   const remembered = vocabs.filter(v => v.is_remembered).length;
@@ -856,16 +1193,20 @@ function renderProfile() {
 
   // Latest Quiz Result
   const quizBadge = document.getElementById('prof-latest-quiz');
-  if (quizBadge && latestQuiz) {
-    quizBadge.innerText = `${latestQuiz.score} / ${latestQuiz.total_questions} (${latestQuiz.percentage}%)`;
+  if (quizBadge) {
+    if (latestQuiz) {
+      quizBadge.innerText = `${latestQuiz.score} / ${latestQuiz.total_questions} (${latestQuiz.percentage}%)`;
+    } else {
+      quizBadge.innerText = 'ยังไม่มีประวัติการสอบ';
+    }
   }
 }
 
 function openEditProfileModal() {
-  const user = state.user;
-  document.getElementById('edit-fullname').value = user.full_name;
-  document.getElementById('edit-studentid').value = user.student_id;
-  document.getElementById('edit-targetexam').value = user.target_exam;
+  const user = state.user || {};
+  document.getElementById('edit-fullname').value = user.full_name || '';
+  document.getElementById('edit-studentid').value = user.student_id || '';
+  document.getElementById('edit-targetexam').value = user.target_exam || 'TOEIC & IT Vocab';
   document.getElementById('profile-edit-modal').classList.add('open');
 }
 
@@ -873,30 +1214,96 @@ function closeEditProfileModal() {
   document.getElementById('profile-edit-modal').classList.remove('open');
 }
 
-function handleProfileEditSubmit(e) {
+async function handleProfileEditSubmit(e) {
   e.preventDefault();
-  const user = state.user;
-  user.full_name = document.getElementById('edit-fullname').value;
-  user.student_id = document.getElementById('edit-studentid').value;
-  user.target_exam = document.getElementById('edit-targetexam').value;
-  state.saveUser(user);
+  const fullName = document.getElementById('edit-fullname').value.trim();
+  const studentId = document.getElementById('edit-studentid').value.trim();
+  const targetExam = document.getElementById('edit-targetexam').value.trim();
+
+  state.user.full_name = fullName;
+  state.user.student_id = studentId;
+  state.user.target_exam = targetExam;
+
+  const sb = getSupabase();
+  if (sb && state.currentUserId) {
+    showToast('กำลังบันทึกข้อมูลส่วนตัว...');
+    try {
+      await sb.from('profiles').upsert({
+        id: state.currentUserId,
+        full_name: fullName,
+        student_id: studentId,
+        target_exam: targetExam
+      });
+
+      await sb.auth.updateUser({
+        data: {
+          full_name: fullName,
+          student_id: studentId,
+          target_exam: targetExam
+        }
+      });
+    } catch (err) {
+      console.warn('Update profile error:', err);
+    }
+  }
+
   closeEditProfileModal();
   showToast('อัปเดตข้อมูลส่วนตัวสำเร็จ!');
   renderProfile();
+  renderDashboard();
 }
 
-function resetMockData() {
-  if (confirm('ต้องการรีเซ็ตข้อมูลทั้งหมดกลับเป็นค่าเริ่มต้น 5 คำศัพท์ตามแบบ Wireframe หรือไม่?')) {
-    state.resetDefaultData();
-    showToast('รีเซ็ตข้อมูลเริ่มต้น 5 คำสำเร็จ!');
-    renderProfile();
+async function resetMockData() {
+  if (confirm('คุณต้องการนำเข้า "คำศัพท์ตัวอย่าง 5 คำ (Demo)" เข้าสู่บัญชีของคุณหรือไม่?')) {
+    const sb = getSupabase();
+    if (!sb || !state.currentUserId) {
+      showToast('กรุณาเข้าสู่ระบบก่อน');
+      return;
+    }
+
+    showToast('กำลังนำเข้าคำศัพท์ตัวอย่าง...');
+    try {
+      const itemsToInsert = SAMPLE_MOCK_VOCABS.map(v => ({
+        user_id: state.currentUserId,
+        category_id: categoryNameToId[v.category_name] || 1,
+        vocab_word: v.vocab_word,
+        meaning_th: v.meaning_th,
+        part_of_speech: v.part_of_speech,
+        example_sentence: v.example_sentence,
+        is_remembered: false
+      }));
+
+      const { error } = await sb.from('flashcards').insert(itemsToInsert);
+      if (error) {
+        showToast(`นำเข้าไม่สำเร็จ: ${error.message}`);
+        return;
+      }
+
+      showToast('เพิ่มคำศัพท์ตัวอย่าง 5 คำสำเร็จ!');
+      await loadFlashcards();
+      renderProfile();
+      renderDashboard();
+    } catch (err) {
+      showToast(`เกิดข้อผิดพลาด: ${err.message}`);
+    }
   }
 }
 
-function logout() {
-  const user = state.user;
-  user.is_logged_in = false;
-  state.saveUser(user);
+async function logout() {
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      await sb.auth.signOut();
+    } catch (e) {
+      console.warn('Supabase sign out error:', e);
+    }
+  }
+
+  state.currentUserId = null;
+  state.user = null;
+  state.vocabs = [];
+  state.latestQuiz = null;
+
   showToast('ออกจากระบบแล้ว');
   navigateTo('screen1');
 }
@@ -909,7 +1316,45 @@ function closeHelpModal() {
   document.getElementById('help-modal').classList.remove('open');
 }
 
-// Initial Boot
-document.addEventListener('DOMContentLoaded', () => {
-  navigateTo('screen2'); // Boot directly into Dashboard
+// ==========================================
+// INITIAL BOOT & SESSION CHECK
+// ==========================================
+document.addEventListener('DOMContentLoaded', async () => {
+  await initApp();
 });
+
+async function initApp() {
+  const sb = getSupabase();
+  if (!sb) {
+    console.info('Supabase config ยังไม่ระบุ Publishable key');
+    navigateTo('screen1');
+    return;
+  }
+
+  try {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (!error && session && session.user) {
+      await handleAuthSuccess(session);
+    } else {
+      navigateTo('screen1');
+    }
+  } catch (err) {
+    console.error('Initial session check error:', err);
+    navigateTo('screen1');
+  }
+
+  // Listener เมื่อมีการเปลี่ยนแปลง Session / Auth state
+  try {
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT') {
+        state.currentUserId = null;
+        state.user = null;
+        state.vocabs = [];
+        state.latestQuiz = null;
+        navigateTo('screen1');
+      }
+    });
+  } catch (err) {
+    console.warn('Auth state change listener error:', err);
+  }
+}

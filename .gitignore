@@ -1,0 +1,13 @@
+# Supabase configuration with keys (DO NOT COMMIT)
+app/supabase-config.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
