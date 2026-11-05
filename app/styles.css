@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    Student Vocab - Modern EdTech Pro Stylesheet (v3)
    Clean, balanced, accessible with subtle elevation & modern Thai typography.
    Backup of previous version saved at: backup/app_v2/
@@ -748,4 +748,15 @@ body {
   font-variant-numeric: tabular-nums;
   margin: 10px 0 4px;
   color: var(--accent);
+}
+
+/* ---------- Quiz Count Selector ---------- */
+.quiz-count-btn {
+  transition: all 0.15s ease;
+}
+.quiz-count-btn.active {
+  border-color: var(--accent) !important;
+  background: var(--accent-light) !important;
+  color: var(--accent) !important;
+  box-shadow: 0 0 0 1px var(--accent);
 }

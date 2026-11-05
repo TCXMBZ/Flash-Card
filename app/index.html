@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -101,9 +101,17 @@
         <button class="row-cta" onclick="navigateTo('screen6')">
           <div>
             <div class="t">ทำแบบทดสอบ</div>
-            <div class="d">5 ข้อ จับเวลาข้อละ 15 วินาที</div>
+            <div class="d">เลือก 5, 10, 15, 20 ข้อ · จับเวลา 15 วิ</div>
           </div>
           <span class="go">เริ่ม</span>
+        </button>
+
+        <button class="row-cta" style="margin-top: 10px; border-color: rgba(37, 99, 235, 0.35); background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);" onclick="navigateTo('screen7')">
+          <div>
+            <div class="t" style="color: var(--accent);">🌐 คลังคำศัพท์รวม</div>
+            <div class="d">คลังกลางส่วนรวม สุ่มท่องคำศัพท์เตรียมสอบ</div>
+          </div>
+          <span class="go" style="background: var(--accent); color: white;">เปิด</span>
         </button>
 
         <div class="section-head">
@@ -146,7 +154,6 @@
               <div class="card-body">
                 <h1 id="card-front-word" class="card-word">Requirement</h1>
                 <div id="card-front-pos" class="label" style="margin-top: 4px;">Noun</div>
-                <!-- Kept for app.js; hidden so the answer is not shown on the front -->
                 <div id="card-front-meaning-preview" hidden></div>
                 <p id="card-front-example" class="card-example"></p>
               </div>
@@ -192,23 +199,60 @@
 
       <!-- SCREEN 6: QUIZ -->
       <section id="screen6" class="view-screen">
-        <div class="screen-head">
-          <h2 class="title">แบบทดสอบ</h2>
-          <span id="quiz-timer" class="title" style="font-variant-numeric: tabular-nums;">00:15</span>
+        <!-- 1. หน้าจอเลือกจำนวนข้อสอบก่อนเริ่มสอบ -->
+        <div id="quiz-setup-view" style="display: flex; flex-direction: column; flex: 1;">
+          <div class="screen-head">
+            <div>
+              <h2 class="title">แบบทดสอบ</h2>
+              <p class="subtitle" style="margin-top: 2px;">ทบทวนและวัดระดับความแม่นยำ</p>
+            </div>
+            <span class="badge badge-primary">จับเวลา 15 วิ/ข้อ</span>
+          </div>
+
+          <div style="background: var(--bg-alt); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 16px; margin: 16px 0 20px;">
+            <div style="font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 8px;">แหล่งที่มาของข้อสอบ:</div>
+            <div style="font-size: 13px; color: var(--ink-2); line-height: 1.6;">
+              • ดึงคำศัพท์ส่วนตัวของคุณก่อนเสมอ (<span id="quiz-setup-personal-count" style="font-weight: 600; color: var(--accent);">0 คำ</span>)<br>
+              • หากไม่พอ จะสุ่มคำศัพท์จากคลังรวมมาเติมให้ครบ (<span id="quiz-setup-global-count" style="font-weight: 600; color: var(--accent);">70 คำ</span>)
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label class="form-label" style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">เลือกจำนวนข้อสอบ:</label>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+              <button type="button" class="btn btn-outline quiz-count-btn active" data-count="5" onclick="selectQuizCount(5)" style="padding: 12px 4px; font-weight: 700; border-width: 2px;">5 ข้อ</button>
+              <button type="button" class="btn btn-outline quiz-count-btn" data-count="10" onclick="selectQuizCount(10)" style="padding: 12px 4px; font-weight: 700; border-width: 2px;">10 ข้อ</button>
+              <button type="button" class="btn btn-outline quiz-count-btn" data-count="15" onclick="selectQuizCount(15)" style="padding: 12px 4px; font-weight: 700; border-width: 2px;">15 ข้อ</button>
+              <button type="button" class="btn btn-outline quiz-count-btn" data-count="20" onclick="selectQuizCount(20)" style="padding: 12px 4px; font-weight: 700; border-width: 2px;">20 ข้อ</button>
+            </div>
+            <p id="quiz-setup-info" style="font-size: 12.5px; color: var(--ink-3); margin-top: 10px; text-align: center; font-weight: 500;">เลือกทำแบบทดสอบ 5 ข้อ</p>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-block" style="padding: 14px; font-size: 15px; font-weight: 700; margin-top: auto;" onclick="startQuizWithSelectedCount()">
+            🚀 เริ่มทำแบบทดสอบ
+          </button>
         </div>
 
-        <div class="quiz-meta">
-          <span id="quiz-question-counter">ข้อที่ 1 / 5</span>
-          <span><span id="quiz-cat-badge" class="badge">TOEIC</span> · <span id="quiz-pos-badge" class="badge">Noun</span></span>
-        </div>
-        <div class="bar"><div id="quiz-progress-fill" class="bar-fill" style="width: 20%;"></div></div>
+        <!-- 2. หน้าจอขณะกำลังทำแบบทดสอบ (แสดงเมื่อกดเริ่ม) -->
+        <div id="quiz-play-view" style="display: none; flex-direction: column; flex: 1;">
+          <div class="screen-head">
+            <h2 class="title">แบบทดสอบ</h2>
+            <span id="quiz-timer" class="title" style="font-variant-numeric: tabular-nums;">00:15</span>
+          </div>
 
-        <div class="quiz-header-card">
-          <h1 id="quiz-word" class="quiz-word">Requirement</h1>
-          <p id="quiz-sentence" class="quiz-sentence"></p>
-        </div>
+          <div class="quiz-meta">
+            <span id="quiz-question-counter">ข้อที่ 1 / 5</span>
+            <span><span id="quiz-cat-badge" class="badge">TOEIC</span> · <span id="quiz-pos-badge" class="badge">Noun</span></span>
+          </div>
+          <div class="bar"><div id="quiz-progress-fill" class="bar-fill" style="width: 20%;"></div></div>
 
-        <div id="quiz-choices-container" style="flex: 1;"></div>
+          <div class="quiz-header-card">
+            <h1 id="quiz-word" class="quiz-word">Requirement</h1>
+            <p id="quiz-sentence" class="quiz-sentence"></p>
+          </div>
+
+          <div id="quiz-choices-container" style="flex: 1;"></div>
+        </div>
       </section>
 
       <!-- SCREEN 4: ADD / EDIT CARD -->
@@ -293,6 +337,96 @@
         </div>
       </section>
 
+      <!-- SCREEN 7: GLOBAL VOCAB POOL -->
+      <section id="screen7" class="view-screen">
+        <div class="screen-head">
+          <div>
+            <h2 class="title">คลังคำศัพท์รวม</h2>
+            <p class="subtitle" style="margin-top: 2px;">คำศัพท์ส่วนกลางสำหรับทุกบัญชี</p>
+          </div>
+          <span id="global-counter-badge" class="badge badge-primary">70 คำ</span>
+        </div>
+
+        <div style="margin-bottom: 14px; display: flex; gap: 8px;">
+          <button class="btn btn-primary btn-block" style="display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="randomGlobalVocab()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+              <circle cx="16" cy="8" r="1.5" fill="currentColor"/>
+              <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+              <circle cx="8" cy="16" r="1.5" fill="currentColor"/>
+              <circle cx="16" cy="16" r="1.5" fill="currentColor"/>
+            </svg>
+            <span>สุ่มคำศัพท์ใหม่</span>
+          </button>
+        </div>
+
+        <!-- กล่องแจ้งเตือนเมื่อคลังไม่มีคำศัพท์ -->
+        <div id="global-empty-state" class="empty" style="display: none; padding: 40px 20px;">
+          <div style="font-size: 32px; margin-bottom: 8px;">📭</div>
+          <div style="font-weight: 600; margin-bottom: 4px;">ไม่พบคำศัพท์ในคลังรวม</div>
+          <div class="subtitle" style="font-size: 13px;">ขณะนี้ไม่มีข้อมูลคำศัพท์ในไฟล์คลังกลาง</div>
+        </div>
+
+        <!-- การ์ดแสดงคำศัพท์รวม -->
+        <div id="global-card-container">
+          <div class="flashcard-stage" onclick="flipGlobalCard()">
+            <div id="global-card-inner" class="flashcard-inner">
+
+              <!-- หน้าการ์ดคำศัพท์รวม (Front) -->
+              <div class="flashcard-front">
+                <div class="card-top">
+                  <span id="global-front-cat" class="badge badge-warning">TOEIC</span>
+                  <div class="tools">
+                    <button class="icon-btn" title="ฟังเสียงคำศัพท์" onclick="event.stopPropagation(); speakWord(document.getElementById('global-front-word').innerText)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <h1 id="global-front-word" class="card-word">Collaborate</h1>
+                  <div id="global-front-pos" class="label" style="margin-top: 4px;">Verb (คำกริยา)</div>
+                  <p id="global-front-example" class="card-example" style="margin-top: 14px;"></p>
+                </div>
+                <div class="card-foot">
+                  แตะเพื่อดูคำแปล · <span id="global-card-indicator">คำที่ 1 / 70</span>
+                </div>
+              </div>
+
+              <!-- หลังการ์ดคำศัพท์รวม (Back) -->
+              <div class="flashcard-back">
+                <div class="card-top">
+                  <span id="global-back-cat" class="badge badge-warning">TOEIC</span>
+                  <div class="tools">
+                    <span id="global-back-pos" class="label" style="margin-right: 6px;">Verb (คำกริยา)</span>
+                    <button class="icon-btn" title="ฟังเสียงคำศัพท์" onclick="event.stopPropagation(); speakWord(document.getElementById('global-front-word').innerText)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div id="global-back-word" class="label" style="margin-bottom: 6px;"></div>
+                  <h2 id="global-back-meaning" class="card-meaning"></h2>
+                  <p id="global-back-example" class="card-example" style="margin-top: 10px;"></p>
+                </div>
+                <div class="card-foot">แตะเพื่อพลิกกลับ</div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="pager" style="margin-top: 10px;">
+            <span onclick="prevGlobalVocab()">← ก่อนหน้า</span>
+            <span onclick="randomGlobalVocab()">🎲 สุ่มคำใหม่</span>
+            <span onclick="nextGlobalVocab()">ถัดไป →</span>
+          </div>
+
+          <p style="text-align: center; font-size: 11.5px; color: var(--ink-3); margin-top: 14px;">
+            🔒 คลังคำศัพท์ส่วนกลางชุดเดียวกันทุกบัญชี (อ่านอย่างเดียว)
+          </p>
+        </div>
+      </section>
+
     </div>
 
     <nav id="app-navbar" class="app-navbar"></nav>
@@ -307,7 +441,7 @@
         <p id="quiz-result-badge" class="badge" style="display: block; margin-bottom: 20px;"></p>
         <span id="quiz-result-emoji" hidden></span>
         <div class="modal-actions">
-          <button class="btn btn-primary" onclick="closeQuizResultModal(); startQuiz();">ทำอีกครั้ง</button>
+          <button class="btn btn-primary" onclick="closeQuizResultModal(); openQuizSetup();">ทำอีกครั้ง</button>
           <button class="btn btn-outline" onclick="closeQuizResultModal(); navigateTo('screen2');">กลับหน้าหลัก</button>
         </div>
       </div>
@@ -372,3 +506,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+
