@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หน้า 1: Login / Register — Student Vocab Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .screen-caption {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.5;
+    }
+    .toggle-link {
+      font-size: 12px;
+      color: #2563eb;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .toggle-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-mockup">
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>5G</span>
+        <span>100%</span>
+        <div class="battery-icon"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Screen Body: Login / Register Container -->
+    <div class="screen-body" style="justify-content: center; align-items: center; text-align: center; padding: 20px 22px;">
+      
+      <!-- Logo Box (Blue rounded square with card/vocab icon) -->
+      <div style="width: 52px; height: 52px; border-radius: 12px; background: #2563eb; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2"/>
+          <line x1="7" y1="8" x2="17" y2="8"/>
+          <line x1="7" y1="12" x2="17" y2="12"/>
+          <line x1="7" y1="16" x2="13" y2="16"/>
+        </svg>
+      </div>
+
+      <h1 class="font-word" style="color: #0f172a; font-size: 20px; margin-bottom: 2px;">Student Vocab</h1>
+      <p id="sub-title" class="font-caption" style="margin-bottom: 20px; font-size: 11px;">เข้าสู่ระบบเพื่อทบทวนคลังคำศัพท์เตรียมสอบ</p>
+
+      <!-- View A: Login Form -->
+      <form id="login-form" style="width: 100%; text-align: left;" onsubmit="event.preventDefault(); window.location.href='screen2_dashboard.html';">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">อีเมลหรือชื่อผู้ใช้ (email / username) *</label>
+          <input type="text" class="form-control" value="theeradech_019@vec.go.th" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label class="form-label">รหัสผ่าน (password_hash) *</label>
+          <input type="password" class="form-control" value="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; height: 42px; font-size: 14px; border-radius: 8px;">
+          เข้าสู่ระบบ
+        </button>
+
+        <div style="text-align: center; margin-top: 14px;">
+          <span class="toggle-link" onclick="toggleAuth(true)">ยังไม่มีบัญชี? สมัครใช้งาน</span>
+        </div>
+      </form>
+
+      <!-- View B: Register Form (Hidden by default, interactive toggle) -->
+      <form id="register-form" style="width: 100%; text-align: left; display: none;" onsubmit="event.preventDefault(); alert('สมัครสมาชิกสำเร็จ! เข้าสู่ระบบอัตโนมัติ'); window.location.href='screen2_dashboard.html';">
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label class="form-label">ชื่อ-นามสกุล *</label>
+          <input type="text" class="form-control" value="นายธีรเดช ผกามาด" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">รหัสนักศึกษา *</label>
+            <input type="text" class="form-control" value="019" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">ชื่อผู้ใช้ (username) *</label>
+            <input type="text" class="form-control" value="theeradech_019" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label class="form-label">อีเมลวิทยาลัย (email) *</label>
+          <input type="email" class="form-control" value="theeradech_019@vec.go.th" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label">รหัสผ่าน (password) *</label>
+          <input type="password" class="form-control" value="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; height: 42px; font-size: 14px; border-radius: 8px; background: #16a34a;">
+          สมัครสมาชิก
+        </button>
+
+        <div style="text-align: center; margin-top: 14px;">
+          <span class="toggle-link" onclick="toggleAuth(false)">มีบัญชีอยู่แล้ว? เข้าสู่ระบบ</span>
+        </div>
+      </form>
+
+    </div>
+
+    <!-- Bottom Navigation: Strictly 2 Items per Template Wireframe -->
+    <div class="bottom-nav">
+      <div class="nav-tab active" onclick="toggleAuth(false)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/>
+        </svg>
+        <span>เข้าสู่ระบบ</span>
+      </div>
+      <div class="nav-tab" onclick="alert('คู่มือการใช้งาน: กรุณากรอกอีเมล/รหัสผ่านเพื่อเข้าสู่ระบบ หรือกด สมัครใช้งาน หากยังไม่มีบัญชี')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <span>ความช่วยเหลือ</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-caption">
+    <strong>หน้า 1: Login / Register (สลับได้)</strong><br>
+    Bottom Nav มี 2 เมนู: [เข้าสู่ระบบ] และ [ความช่วยเหลือ] ตรงตาม Wireframe ต้นฉบับ
+  </div>
+
+  <script>
+    function toggleAuth(showRegister) {
+      const loginForm = document.getElementById('login-form');
+      const regForm = document.getElementById('register-form');
+      const subTitle = document.getElementById('sub-title');
+      
+      if (showRegister) {
+        loginForm.style.display = 'none';
+        regForm.style.display = 'block';
+        subTitle.innerText = 'สร้างบัญชีใหม่เพื่อเริ่มท่องจำคำศัพท์เตรียมสอบ';
+      } else {
+        loginForm.style.display = 'block';
+        regForm.style.display = 'none';
+        subTitle.innerText = 'เข้าสู่ระบบเพื่อทบทวนคลังคำศัพท์เตรียมสอบ';
+      }
+    }
+  </script>
+
+</body>
+</html>

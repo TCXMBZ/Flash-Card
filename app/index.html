@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Student Vocab — Interactive Application</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Audio button style */
+    .btn-speaker {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #2563eb;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-speaker:active {
+      transform: scale(0.9);
+      background: #dbeafe;
+    }
+    .portal-link-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(30, 41, 59, 0.9);
+      color: #38bdf8;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #334155;
+      z-index: 1000;
+      transition: all 0.2s ease;
+    }
+    .portal-link-badge:hover {
+      background: #2563eb;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Quick Link to Project Hub / Prototype -->
+  <a href="../prototype/overview_5screens.html" class="portal-link-badge">
+    ← สลับไปดู Prototype (Wireframe)
+  </a>
+
+  <!-- Mobile Viewport Container -->
+  <div class="app-viewport">
+    
+    <!-- Status Bar -->
+    <div class="app-statusbar">
+      <span id="live-clock">9:41</span>
+      <div class="statusbar-icons">
+        <span>5G</span>
+        <span>100%</span>
+        <div class="battery-pill"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Scrollable Content Area -->
+    <div class="app-content">
+
+      <!-- ====================================================
+           SCREEN 1: LOGIN & REGISTER VIEW
+           ==================================================== -->
+      <section id="screen1" class="view-screen" style="justify-content: center; align-items: center; text-align: center;">
+        
+        <!-- App Logo -->
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: #2563eb; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2">
+            <rect x="3" y="4" width="18" height="16" rx="2"/>
+            <line x1="7" y1="8" x2="17" y2="8"/>
+            <line x1="7" y1="12" x2="17" y2="12"/>
+            <line x1="7" y1="16" x2="13" y2="16"/>
+          </svg>
+        </div>
+
+        <h1 style="font-size: 21px; font-weight: 800; color: #0f172a; margin-bottom: 2px;">Student Vocab</h1>
+        <p id="auth-sub-title" style="font-size: 11.5px; color: #64748b; margin-bottom: 22px;">
+          เข้าสู่ระบบเพื่อทบทวนคลังคำศัพท์เตรียมสอบ
+        </p>
+
+        <!-- Form A: Login -->
+        <div id="auth-login-section" style="width: 100%; text-align: left;">
+          <form onsubmit="handleLoginSubmit(event)">
+            <div class="form-group">
+              <label class="form-label">อีเมลหรือชื่อผู้ใช้ (email / username) *</label>
+              <input type="text" id="login-identifier" class="form-input" value="theeradech_019@vec.go.th" required>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+              <label class="form-label">รหัสผ่าน (password_hash) *</label>
+              <input type="password" id="login-password" class="form-input" value="12345678" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; height: 44px;">
+              เข้าสู่ระบบ
+            </button>
+
+            <div style="text-align: center; margin-top: 16px;">
+              <span style="font-size: 12px; color: #2563eb; cursor: pointer; font-weight: 600;" onclick="switchAuthTab(true)">
+                ยังไม่มีบัญชี? สมัครใช้งาน
+              </span>
+            </div>
+          </form>
+        </div>
+
+        <!-- Form B: Register (Interactive Switch) -->
+        <div id="auth-register-section" style="width: 100%; text-align: left; display: none;">
+          <form onsubmit="handleRegisterSubmit(event)">
+            <div class="form-group">
+              <label class="form-label">ชื่อ-นามสกุล *</label>
+              <input type="text" id="reg-fullname" class="form-input" value="นายธีรเดช ผกามาด" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div class="form-group">
+                <label class="form-label">รหัสนักศึกษา (student_id) *</label>
+                <input type="text" id="reg-studentid" class="form-input" value="019" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">ชื่อผู้ใช้ (username) *</label>
+                <input type="text" id="reg-username" class="form-input" value="theeradech_019" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">อีเมลวิทยาลัย (email) *</label>
+              <input type="email" id="reg-email" class="form-input" value="theeradech_019@vec.go.th" required>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 18px;">
+              <label class="form-label">กำหนดรหัสผ่าน (password) *</label>
+              <input type="password" id="reg-password" class="form-input" value="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-success" style="width: 100%; height: 44px; background: #16a34a; color: #ffffff;">
+              สมัครสมาชิก
+            </button>
+
+            <div style="text-align: center; margin-top: 16px;">
+              <span style="font-size: 12px; color: #2563eb; cursor: pointer; font-weight: 600;" onclick="switchAuthTab(false)">
+                มีบัญชีอยู่แล้ว? เข้าสู่ระบบ
+              </span>
+            </div>
+          </form>
+        </div>
+
+      </section>
+
+      <!-- ====================================================
+           SCREEN 2: DASHBOARD VIEW
+           ==================================================== -->
+      <section id="screen2" class="view-screen active">
+        <!-- User Greeting & Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+          <div>
+            <h2 id="dash-user-name" style="font-size: 16px; font-weight: 700; color: #0f172a;">สวัสดี คุณธีรเดช</h2>
+            <p id="dash-target-exam" style="font-size: 11px; color: #64748b;">เป้าหมายสอบ: TOEIC & IT</p>
+          </div>
+          <button class="badge badge-primary" style="padding: 6px 12px; font-size: 11px; cursor: pointer; border: none;" onclick="navigateTo('screen4')">
+            + เพิ่มศัพท์
+          </button>
+        </div>
+
+        <!-- 3 Stat Boxes -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;">
+          <div class="card-box" style="text-align: center; padding: 10px 4px; border-color: #bfdbfe;">
+            <div id="dash-stat-total" style="font-size: 20px; font-weight: 800; color: #2563eb;">5</div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">คำศัพท์ทั้งหมด</div>
+          </div>
+          <div class="card-box" style="text-align: center; padding: 10px 4px; border-color: #bbf7d0;">
+            <div id="dash-stat-remembered" style="font-size: 20px; font-weight: 800; color: #16a34a;">2</div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">จำได้แล้ว</div>
+          </div>
+          <div class="card-box" style="text-align: center; padding: 10px 4px; border-color: #fecaca;">
+            <div id="dash-stat-unremembered" style="font-size: 20px; font-weight: 800; color: #dc2626;">3</div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">ยังจำไม่ได้</div>
+          </div>
+        </div>
+
+        <!-- Progress Box -->
+        <div class="card-box" style="padding: 12px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 6px;">
+            <span style="color: #475569; font-weight: 600;">ความคืบหน้าการจำคำศัพท์</span>
+            <span id="dash-progress-pct" style="color: #2563eb; font-weight: 800;">40%</span>
+          </div>
+          <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 9999px; overflow: hidden;">
+            <div id="dash-progress-fill" style="height: 100%; width: 40%; background: #2563eb; border-radius: 9999px; transition: width 0.3s ease;"></div>
+          </div>
+        </div>
+
+        <!-- Urgent Review Section -->
+        <div style="flex: 1;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="font-size: 12.5px; font-weight: 700; color: #334155;">
+              คำศัพท์ที่ต้องรีบทบทวน (ยังจำไม่ได้)
+            </h3>
+            <span style="font-size: 11px; color: #2563eb; cursor: pointer; font-weight: 600;" onclick="setFlashcardFilter('unremembered'); navigateTo('screen3');">
+              ท่องทั้งหมด →
+            </span>
+          </div>
+          
+          <div id="dash-urgent-list">
+            <!-- Dynamically populated from state -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCREEN 3: FLASHCARDS VIEW
+           ==================================================== -->
+      <section id="screen3" class="view-screen">
+        <!-- Top Row -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h2 style="font-size: 16px; font-weight: 700; color: #0f172a;">โหมดท่องการ์ด</h2>
+          <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px; border-radius: 6px;" onclick="navigateTo('screen4')">
+            + เพิ่มศัพท์
+          </button>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="filter-pills-bar">
+          <div id="pill-unremembered" class="filter-pill active" onclick="setFlashcardFilter('unremembered')">
+            ยังจำไม่ได้ (3)
+          </div>
+          <div id="pill-remembered" class="filter-pill" onclick="setFlashcardFilter('remembered')">
+            จำได้แล้ว (2)
+          </div>
+          <div id="pill-all" class="filter-pill" onclick="setFlashcardFilter('all')">
+            ทั้งหมด (5)
+          </div>
+        </div>
+
+        <!-- 3D Flip Flashcard -->
+        <div class="flashcard-stage" onclick="flipCard()">
+          <div id="flashcard-inner" class="flashcard-inner">
+            
+            <!-- Front Face: English & Hint -->
+            <div class="flashcard-front">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="card-front-cat" class="badge badge-warning">TOEIC</span>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <button class="btn-speaker" title="ฟังการออกเสียง" onclick="event.stopPropagation(); speakWord(document.getElementById('card-front-word').innerText)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  </button>
+                  <span id="card-front-pos" class="badge badge-primary">Noun (คำนาม)</span>
+                </div>
+              </div>
+
+              <div style="text-align: center; padding: 18px 0;">
+                <h1 id="card-front-word" style="font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 6px; letter-spacing: -0.5px;">
+                  Requirement
+                </h1>
+                <div id="card-front-meaning-preview" style="font-size: 15px; font-weight: 700; color: #2563eb; margin-bottom: 6px;">
+                  ความต้องการ, เงื่อนไขที่จำเป็น
+                </div>
+                <p id="card-front-example" style="font-size: 12px; color: #64748b; font-style: italic;">
+                  "The client outlined clear software requirements."
+                </p>
+              </div>
+
+              <div style="text-align: center;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 11px; color: #94a3b8; margin-bottom: 4px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                  <span>แตะการ์ดเพื่อพลิกดูคำแปล / เฉลย</span>
+                </div>
+                <span id="card-indicator" style="font-size: 11px; font-weight: 600; color: #64748b;">ใบที่ 2 / 3</span>
+              </div>
+            </div>
+
+            <!-- Back Face: Thai Translation & Details -->
+            <div class="flashcard-back">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="card-back-cat" class="badge badge-warning">TOEIC</span>
+                <span id="card-back-pos" class="badge badge-primary">Noun (คำนาม)</span>
+              </div>
+
+              <div style="text-align: center; padding: 14px 0;">
+                <div style="font-size: 13px; color: #64748b; margin-bottom: 2px;">คำแปลภาษาไทย</div>
+                <h2 id="card-back-meaning" style="font-size: 22px; font-weight: 800; color: #2563eb; margin-bottom: 12px;">
+                  ความต้องการ, เงื่อนไขที่จำเป็น
+                </h2>
+                <div style="background: #ffffff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px; text-align: left;">
+                  <span style="font-size: 10px; font-weight: 700; color: #475569; display: block; margin-bottom: 2px;">ตัวอย่างประโยค:</span>
+                  <p id="card-back-example" style="font-size: 12px; color: #1e293b; font-style: italic;">
+                    "The client outlined clear software requirements."
+                  </p>
+                </div>
+              </div>
+
+              <div style="text-align: center;">
+                <div style="font-size: 11px; color: #94a3b8; margin-bottom: 2px;">แตะการ์ดอีกครั้งเพื่อพลิกกลับ</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+          <button class="btn btn-danger" style="height: 44px; border-radius: 8px;" onclick="markCardRemembered(false)">
+            ✕ ยังจำไม่ได้
+          </button>
+          <button class="btn btn-success" style="height: 44px; border-radius: 8px;" onclick="markCardRemembered(true)">
+            ✓ จำได้แล้ว
+          </button>
+        </div>
+
+        <!-- Prev / Next Navigation -->
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #2563eb;">
+          <span style="cursor: pointer; padding: 4px;" onclick="prevCard()">&lt; คำก่อนหน้า</span>
+          <span style="cursor: pointer; padding: 4px;" onclick="nextCard()">คำถัดไป &gt;</span>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCREEN 4: ADD CARD VIEW
+           ==================================================== -->
+      <section id="screen4" class="view-screen">
+        <h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 14px;">
+          เพิ่มการ์ดคำศัพท์ใหม่
+        </h2>
+
+        <form onsubmit="handleAddCardSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">คำศัพท์ภาษาอังกฤษ (vocab_word) *</label>
+            <input type="text" id="add-word" class="form-input" placeholder="เช่น Requirement, Architecture" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ชนิดของคำ (part_of_speech)</label>
+            <select id="add-pos" class="form-select">
+              <option value="Noun (คำนาม)" selected>Noun (คำนาม)</option>
+              <option value="Verb (คำกริยา)">Verb (คำกริยา)</option>
+              <option value="Adjective (คำคุณศัพท์)">Adjective (คำคุณศัพท์)</option>
+              <option value="Adverb (คำกริยาวิเศษณ์)">Adverb (คำกริยาวิเศษณ์)</option>
+              <option value="Phrase (สำนวน/วลี)">Phrase (สำนวน/วลี)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">หมวดหมู่คำศัพท์ (category_id) *</label>
+            <select id="add-category" class="form-select">
+              <option value="TOEIC" selected>TOEIC</option>
+              <option value="IT Vocab">IT Vocab</option>
+              <option value="General English">General English</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">คำแปลภาษาไทย (meaning_th) *</label>
+            <input type="text" id="add-meaning" class="form-input" placeholder="เช่น ความต้องการ, เงื่อนไขที่จำเป็น" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label">ตัวอย่างประโยค (example_sentence)</label>
+            <textarea id="add-example" class="form-textarea" placeholder="The system meets all security requirements."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; height: 44px; margin-bottom: 8px;">
+            บันทึกคำศัพท์
+          </button>
+          <button type="button" class="btn btn-outline" style="width: 100%; height: 40px;" onclick="navigateTo('screen2')">
+            ยกเลิก
+          </button>
+        </form>
+      </section>
+
+      <!-- ====================================================
+           SCREEN 5: PROFILE VIEW
+           ==================================================== -->
+      <section id="screen5" class="view-screen">
+        <h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">
+          ข้อมูลโปรไฟล์ผู้ใช้งาน
+        </h2>
+
+        <!-- Avatar Circle -->
+        <div style="text-align: center; margin-bottom: 14px;">
+          <div id="prof-avatar" style="width: 54px; height: 54px; border-radius: 50%; background: #2563eb; color: #fff; font-size: 20px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);">
+            TP
+          </div>
+          <div id="prof-fullname" style="font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 6px;">
+            นายธีรเดช ผกามาด
+          </div>
+          <div id="prof-username" style="font-size: 11.5px; color: #64748b;">@theeradech_019</div>
+          <span id="prof-student-badge" class="badge badge-gray" style="margin-top: 4px;">นักศึกษา (ID: 019)</span>
+        </div>
+
+        <!-- Card 1: Account Information -->
+        <div class="card-box" style="padding: 10px 14px; margin-bottom: 10px; font-size: 12px;">
+          <div style="font-weight: 700; color: #334155; margin-bottom: 4px;">ข้อมูลบัญชี (ตาราง users)</div>
+          <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #f1f5f9;">
+            <span style="color: #64748b;">รหัสผู้ใช้ (user_id):</span>
+            <span id="prof-user-id" style="font-weight: 600;">1</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #f1f5f9;">
+            <span style="color: #64748b;">ชื่อผู้ใช้ (username):</span>
+            <span id="prof-account-username" style="font-weight: 600;">theeradech_019</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #f1f5f9;">
+            <span style="color: #64748b;">อีเมล (email):</span>
+            <span id="prof-email" style="font-weight: 600;">theeradech_019@vec.go.th</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 4px 0;">
+            <span style="color: #64748b;">สร้างเมื่อ (created_at):</span>
+            <span id="prof-created-at" style="font-weight: 600;">29 ต.ค. 2026</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Learning Stats -->
+        <div class="card-box" style="padding: 10px 14px; margin-bottom: 14px; font-size: 12px;">
+          <div style="font-weight: 700; color: #334155; margin-bottom: 4px;">สรุปผลการเรียนรู้</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px dashed #f1f5f9;">
+            <span style="color: #64748b;">การ์ดคำศัพท์ทั้งหมด:</span>
+            <span id="prof-total-cards" class="badge badge-primary">5 ใบ</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px dashed #f1f5f9;">
+            <span style="color: #64748b;">จดจำสำเร็จ (is_remembered):</span>
+            <span id="prof-remembered-cards" class="badge badge-success">2 ใบ (40%)</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0;">
+            <span style="color: #64748b;">เป้าหมายการสอบ:</span>
+            <span id="prof-target-badge" class="badge badge-warning">TOEIC & IT Vocab</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <button class="btn btn-outline" style="width: 100%; height: 40px; margin-bottom: 8px;" onclick="openEditProfileModal()">
+          แก้ไขข้อมูลส่วนตัว
+        </button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button class="btn btn-outline" style="height: 36px; font-size: 11px; color: #d97706;" onclick="resetMockData()">
+            รีเซ็ตข้อมูล 5 คำ
+          </button>
+          <button class="btn btn-outline" style="height: 36px; font-size: 11px; color: #dc2626;" onclick="logout()">
+            ออกจากระบบ
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Bottom Navigation Bar (Dynamically switches between 2-item on Screen 1 and 4-item on Screens 2-5) -->
+    <nav id="app-navbar" class="app-navbar">
+      <!-- Injected by renderNavbar() in app.js -->
+    </nav>
+
+    <!-- Floating Toast Notification -->
+    <div id="app-toast" class="app-toast"></div>
+
+    <!-- Edit Profile Modal -->
+    <div id="profile-edit-modal" class="app-modal-overlay">
+      <div class="app-modal">
+        <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">แก้ไขข้อมูลส่วนตัว</h3>
+        <form onsubmit="handleProfileEditSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">ชื่อ-นามสกุล</label>
+            <input type="text" id="edit-fullname" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">รหัสนักศึกษา</label>
+            <input type="text" id="edit-studentid" class="form-input" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">เป้าหมายการสอบ</label>
+            <input type="text" id="edit-targetexam" class="form-input" required>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="submit" class="btn btn-primary" style="flex: 1; height: 38px;">บันทึก</button>
+            <button type="button" class="btn btn-outline" style="flex: 1; height: 38px;" onclick="closeEditProfileModal()">ยกเลิก</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="app-modal-overlay">
+      <div class="app-modal">
+        <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">คำแนะนำการใช้งาน</h3>
+        <p style="font-size: 12px; color: #475569; line-height: 1.5; margin-bottom: 14px;">
+          • เข้าสู่ระบบโดยใช้อีเมลหรือชื่อผู้ใช้ที่ลงทะเบียนไว้<br>
+          • หากยังไม่มีบัญชี สามารถกด <strong>"สมัครใช้งาน"</strong> เพื่อสร้างบัญชีใหม่ได้ทันที<br>
+          • ข้อมูลคำศัพท์ การท่องจำ และโปรไฟล์ทั้งหมดจะถูกบันทึกลงในหน่วยความจำของเบราว์เซอร์อัตโนมัติ
+        </p>
+        <button class="btn btn-primary" style="width: 100%; height: 38px;" onclick="closeHelpModal()">เข้าใจแล้ว</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

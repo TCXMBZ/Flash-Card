@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หน้า 4: เพิ่มการ์ดคำศัพท์ใหม่ — Student Vocab Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .screen-caption {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.5;
+    }
+    .select-control {
+      width: 100%;
+      height: 38px;
+      padding: 6px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--text-main);
+      background: var(--bg-surface);
+      outline: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-mockup">
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>5G</span>
+        <span>100%</span>
+        <div class="battery-icon"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Screen Body: Add Card Form -->
+    <div class="screen-body" style="padding: 16px;">
+      <h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 14px;">
+        เพิ่มการ์ดคำศัพท์ใหม่
+      </h2>
+
+      <form onsubmit="event.preventDefault(); alert('บันทึกคำศัพท์ Requirement สำเร็จ!'); window.location.href='screen2_dashboard.html';">
+        
+        <div class="form-group">
+          <label class="form-label">คำศัพท์ภาษาอังกฤษ (vocab_word) *</label>
+          <input type="text" class="form-control" value="Requirement" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">ชนิดของคำ (part_of_speech)</label>
+          <select class="select-control">
+            <option selected>Noun (คำนาม)</option>
+            <option>Verb (คำกริยา)</option>
+            <option>Adjective (คำคุณศัพท์)</option>
+            <option>Adverb (คำกริยาวิเศษณ์)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">หมวดหมู่คำศัพท์ (category_id) *</label>
+          <select class="select-control">
+            <option selected>TOEIC</option>
+            <option>IT Vocab</option>
+            <option>General English</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">คำแปลภาษาไทย (meaning_th) *</label>
+          <input type="text" class="form-control" value="ความต้องการ, เงื่อนไขที่จำเป็น" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label class="form-label">ตัวอย่างประโยค (example_sentence)</label>
+          <textarea class="form-control" rows="2">The user outlined system requirements.</textarea>
+        </div>
+
+        <!-- Buttons -->
+        <button type="submit" class="btn btn-primary" style="width: 100%; height: 42px; font-size: 14px; border-radius: 8px; margin-bottom: 8px;">
+          บันทึกคำศัพท์
+        </button>
+
+        <a href="screen2_dashboard.html" class="btn btn-outline" style="width: 100%; height: 40px; font-size: 13px; border-radius: 8px; text-decoration: none;">
+          ยกเลิก
+        </a>
+
+      </form>
+    </div>
+
+    <!-- Bottom Navigation: Exactly 4 Tabs (NO หมวดหมู่) -->
+    <div class="bottom-nav">
+      <a href="screen2_dashboard.html" class="nav-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>หน้าหลัก</span>
+      </a>
+      <a href="screen3_flashcards.html" class="nav-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <span>ท่องการ์ด</span>
+      </a>
+      <a href="screen4_add_card.html" class="nav-tab active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        <span>เพิ่มศัพท์</span>
+      </a>
+      <a href="screen5_profile.html" class="nav-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>โปรไฟล์</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="screen-caption">
+    <strong>หน้า 4: เพิ่มการ์ดคำศัพท์ใหม่</strong><br>
+    Bottom Nav มี 4 เมนู: [หน้าหลัก, ท่องการ์ด, เพิ่มศัพท์, โปรไฟล์] (ไม่มีหมวดหมู่)
+  </div>
+
+</body>
+</html>

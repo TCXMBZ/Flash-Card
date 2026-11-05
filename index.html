@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Vocab — DevOps Project Hub & Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #0b1120;
+      --surface: #1e293b;
+      --surface-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-green: #4ade80;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    .hero-banner {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .badge-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 9999px;
+      color: var(--accent-blue);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Primary Launch Cards */
+    .launch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+
+    @media (max-width: 768px) {
+      .launch-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .launch-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .launch-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .launch-card.primary {
+      border-color: rgba(37, 99, 235, 0.6);
+      background: linear-gradient(180deg, #1e293b 0%, rgba(37, 99, 235, 0.1) 100%);
+    }
+
+    .launch-card.secondary {
+      border-color: rgba(74, 222, 128, 0.4);
+      background: linear-gradient(180deg, #1e293b 0%, rgba(22, 163, 74, 0.1) 100%);
+    }
+
+    .card-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .btn-launch {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-launch-blue {
+      background: var(--primary);
+      color: #ffffff;
+    }
+    .btn-launch-blue:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-launch-green {
+      background: #16a34a;
+      color: #ffffff;
+    }
+    .btn-launch-green:hover {
+      background: #15803d;
+    }
+
+    /* Sub-links inside cards */
+    .sub-links-group {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--surface-border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .sub-link-pill {
+      font-size: 11px;
+      color: var(--accent-blue);
+      text-decoration: none;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.15s ease;
+    }
+    .sub-link-pill:hover {
+      background: rgba(37, 99, 235, 0.3);
+      color: #ffffff;
+    }
+
+    /* Documentation Section */
+    .docs-section {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 30px;
+    }
+
+    .docs-section h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .doc-item {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--surface-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-decoration: none;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s ease;
+    }
+
+    .doc-item:hover {
+      border-color: var(--accent-blue);
+      background: rgba(37, 99, 235, 0.1);
+    }
+
+    .doc-icon {
+      color: var(--accent-blue);
+      font-size: 16px;
+    }
+
+    .doc-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .doc-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Hero Header -->
+    <header class="hero-banner">
+      <div class="badge-header">
+        <span>●</span> แผนผังและผลงานระบบ Student Vocab
+      </div>
+      <h1>Student Vocab — DevOps Project Hub</h1>
+      <p class="subtitle">
+        ระบบทบทวนคำศัพท์อัจฉริยะ (Flashcards) สำหรับนักศึกษา ปวส. เตรียมสอบ TOEIC & IT Vocab
+        ตรงตามข้อกำหนดในเอกสารใบงานการวางแผน
+      </p>
+    </header>
+
+    <!-- Two Main Paths (Prototype vs App) -->
+    <div class="launch-grid">
+
+      <!-- Column 1: Prototype (Wireframe View) -->
+      <div class="launch-card primary">
+        <div>
+          <div class="card-icon-box" style="background: rgba(37, 99, 235, 0.2); color: #38bdf8;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18"/>
+              <path d="M9 21V9"/>
+            </svg>
+          </div>
+          <div class="card-title">1. Prototype (Wireframe View)</div>
+          <div class="card-desc">
+            ภาพจำลองโครงร่างหน้าจอ 5 หน้าหลัก ตรงตามภาพแม่แบบ <code>template_obj46.bmp</code> 100%
+            (Bottom Nav หน้าแรกมี 2 เมนู, หน้า 2-5 มี 4 เมนู ไม่มีหมวดหมู่)
+          </div>
+        </div>
+
+        <div>
+          <a href="prototype/overview_5screens.html" class="btn-launch btn-launch-blue" style="width: 100%;">
+            <span>ดู Wireframe 5 หน้าจอเรียงกัน →</span>
+          </a>
+
+          <div class="sub-links-group">
+            <span style="font-size: 11px; color: var(--text-muted); width: 100%; margin-bottom: 2px;">เปิดดูแยกทีละหน้าจอ:</span>
+            <a href="prototype/screen1_login.html" class="sub-link-pill">หน้า 1 (Login/Regis)</a>
+            <a href="prototype/screen2_dashboard.html" class="sub-link-pill">หน้า 2 (Dashboard)</a>
+            <a href="prototype/screen3_flashcards.html" class="sub-link-pill">หน้า 3 (ท่องการ์ด)</a>
+            <a href="prototype/screen4_add_card.html" class="sub-link-pill">หน้า 4 (เพิ่มศัพท์)</a>
+            <a href="prototype/screen5_profile.html" class="sub-link-pill">หน้า 5 (โปรไฟล์)</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 2: App (Interactive Hybrid App) -->
+      <div class="launch-card secondary">
+        <div>
+          <div class="card-icon-box" style="background: rgba(22, 163, 74, 0.2); color: #4ade80;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+              <line x1="12" y1="18" x2="12.01" y2="18"/>
+            </svg>
+          </div>
+          <div class="card-title">2. Interactive Application (App)</div>
+          <div class="card-desc">
+            แอปพลิเคชันจริงแบบตอบสนอง (Interactive SPA) สลับ Login / Register ได้จริง,
+            พลิกการ์ด 3D พร้อมอ่านออกเสียง (TTS), กดจำได้/ยังจำไม่ได้ บันทึกลง LocalStorage และอัปเดตสถิติ Real-time
+          </div>
+        </div>
+
+        <div>
+          <a href="app/index.html" class="btn-launch btn-launch-green" style="width: 100%;">
+            <span>🚀 เปิดใช้งานแอปพลิเคชัน (Live App) →</span>
+          </a>
+
+          <div class="sub-links-group">
+            <span style="font-size: 11px; color: var(--text-muted); width: 100%; margin-bottom: 2px;">ฟีเจอร์เด่นในแอป:</span>
+            <span class="sub-link-pill" style="color: #4ade80;">✓ สลับหน้า Login/Regis</span>
+            <span class="sub-link-pill" style="color: #4ade80;">✓ พลิกการ์ด 3D + ฟังเสียง</span>
+            <span class="sub-link-pill" style="color: #4ade80;">✓ บันทึก LocalStorage</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Design System & Documentation Links -->
+    <section class="docs-section">
+      <h2>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        เอกสารประกอบการออกแบบระบบ (Design & Engineering Docs)
+      </h2>
+
+      <div class="docs-grid">
+        <a href="14_style_guide_preview.html" class="doc-item">
+          <span class="doc-icon">🎨</span>
+          <div>
+            <div class="doc-name">14_style_guide_preview.html</div>
+            <div class="doc-desc">Style Guide พรีวิวสี ฟอนต์ และคอมโพเนนต์</div>
+          </div>
+        </a>
+
+        <a href="11_Wireframe_and_Prototype.md" class="doc-item">
+          <span class="doc-icon">📐</span>
+          <div>
+            <div class="doc-name">11_Wireframe_and_Prototype.md</div>
+            <div class="doc-desc">เอกสารรายละเอียดโครงร่าง Wireframe 5 หน้า</div>
+          </div>
+        </a>
+
+        <a href="12_Database_ER_Diagram.md" class="doc-item">
+          <span class="doc-icon">🗄️</span>
+          <div>
+            <div class="doc-name">12_Database_ER_Diagram.md</div>
+            <div class="doc-desc">ER Diagram & Data Dictionary</div>
+          </div>
+        </a>
+
+        <a href="13_Main_Screens_Design.md" class="doc-item">
+          <span class="doc-icon">📱</span>
+          <div>
+            <div class="doc-name">13_Main_Screens_Design.md</div>
+            <div class="doc-desc">คำอธิบาย UI Components และ Data Mapping</div>
+          </div>
+        </a>
+
+        <a href="10_UI_UX_Design.md" class="doc-item">
+          <span class="doc-icon">💡</span>
+          <div>
+            <div class="doc-name">10_UI_UX_Design.md</div>
+            <div class="doc-desc">แนวคิดการออกแบบและ User Journey</div>
+          </div>
+        </a>
+
+        <a href="14_Style_Guide.md" class="doc-item">
+          <span class="doc-icon">📖</span>
+          <div>
+            <div class="doc-name">14_Style_Guide.md</div>
+            <div class="doc-desc">Design Tokens & Guidelines (Markdown)</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <footer>
+      Student Vocab Project • แผนกเทคโนโลยีสารสนเทศ วิทยาลัยอาชีวศึกษา (VEC) • พ.ศ. 2569
+    </footer>
+
+  </div>
+
+</body>
+</html>
