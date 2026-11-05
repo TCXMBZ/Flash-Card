@@ -201,7 +201,7 @@ function renderNavbar(screenId) {
       </div>
     `;
   } else {
-    // Screens 2 to 6: 5 Items (หน้าหลัก, ท่องการ์ด, ทดสอบ, เพิ่มศัพท์, โปรไฟล์)
+    // Screens 2 to 6: 4 Items (หน้าหลัก, ท่องการ์ด, ทดสอบ, โปรไฟล์). Adding words lives on the dashboard.
     navContainer.innerHTML = `
       <div class="nav-item ${screenId === 'screen2' ? 'active' : ''}" onclick="navigateTo('screen2')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -223,14 +223,6 @@ function renderNavbar(screenId) {
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
         </svg>
         <span>ทดสอบ</span>
-      </div>
-      <div class="nav-item ${screenId === 'screen4' ? 'active' : ''}" onclick="openAddForm()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="16"/>
-          <line x1="8" y1="12" x2="16" y2="12"/>
-        </svg>
-        <span>เพิ่มศัพท์</span>
       </div>
       <div class="nav-item ${screenId === 'screen5' ? 'active' : ''}" onclick="navigateTo('screen5')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -324,27 +316,21 @@ function renderDashboard() {
   const unrememberedList = vocabs.filter(v => !v.is_remembered);
 
   if (unrememberedList.length === 0) {
-    urgentContainer.innerHTML = `
-      <div style="text-align: center; padding: 24px; color: #16a34a; font-size: 13px;">
-        🎉 ยอดเยี่ยมมาก! คุณจำคำศัพท์ได้ครบทุกคำแล้ว
-      </div>
-    `;
+    urgentContainer.innerHTML = `<div class="empty">จำคำศัพท์ได้ครบทุกคำแล้ว</div>`;
   } else {
     urgentContainer.innerHTML = unrememberedList.map(item => `
-      <div class="card-box" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; margin-bottom: 8px;">
-        <div style="flex: 1; cursor: pointer;" onclick="openSpecificFlashcard(${item.vocab_id})">
-          <div style="font-size: 14px; font-weight: 700; color: #0f172a;">${item.vocab_word}</div>
-          <div style="font-size: 11px; color: #64748b;">${item.meaning_th}</div>
+      <div class="word-row">
+        <div class="main" onclick="openSpecificFlashcard(${item.vocab_id})">
+          <div class="w">${item.vocab_word}</div>
+          <div class="m">${item.meaning_th}</div>
         </div>
-        <div style="display: flex; align-items: center; gap: 6px;">
-          <span class="badge ${item.category_id === 'TOEIC' ? 'badge-warning' : 'badge-primary'}">${item.category_id}</span>
-          <button class="btn-icon-action btn-icon-edit" title="แก้ไขคำศัพท์นี้" onclick="event.stopPropagation(); openEditForm(${item.vocab_id});">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          </button>
-          <button class="btn-icon-action btn-icon-delete" title="ลบคำศัพท์นี้" onclick="event.stopPropagation(); confirmDeleteVocab(${item.vocab_id});">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-          </button>
-        </div>
+        <span class="badge">${item.category_id}</span>
+        <button class="icon-btn" title="แก้ไข" onclick="event.stopPropagation(); openEditForm(${item.vocab_id});">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="icon-btn danger" title="ลบ" onclick="event.stopPropagation(); confirmDeleteVocab(${item.vocab_id});">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
       </div>
     `).join('');
   }
@@ -616,7 +602,7 @@ function selectQuizChoice(btn, isCorrect, choiceText) {
   if (isCorrect) {
     quizSession.score++;
     btn.classList.add('correct');
-    showToast('🎉 ถูกต้อง! +1 คะแนน');
+    showToast('ถูกต้อง +1 คะแนน');
   } else {
     btn.classList.add('wrong');
     // Highlight correct choice
@@ -626,7 +612,7 @@ function selectQuizChoice(btn, isCorrect, choiceText) {
         b.classList.add('correct');
       }
     });
-    showToast('❌ ยังไม่ถูกต้อง');
+    showToast('ยังไม่ถูกต้อง');
   }
 
   // Advance to next question after 900ms
@@ -682,20 +668,16 @@ function finishQuiz() {
   // Update result modal
   document.getElementById('quiz-result-score').innerText = `${score} / ${total}`;
   const badgeEl = document.getElementById('quiz-result-badge');
-  const emojiEl = document.getElementById('quiz-result-emoji');
 
   if (pct >= 80) {
-    emojiEl.innerText = "🏆";
     badgeEl.className = "badge badge-success";
-    badgeEl.innerText = `${pct}% — ยอดเยี่ยมมาก!`;
+    badgeEl.innerText = `${pct}% — ยอดเยี่ยมมาก`;
   } else if (pct >= 50) {
-    emojiEl.innerText = "👍";
-    badgeEl.className = "badge badge-warning";
+    badgeEl.className = "badge";
     badgeEl.innerText = `${pct}% — ผ่านเกณฑ์ ทบทวนอีกนิด`;
   } else {
-    emojiEl.innerText = "📖";
     badgeEl.className = "badge badge-danger";
-    badgeEl.innerText = `${pct}% — ต้องรีบทบทวนคำศัพท์`;
+    badgeEl.innerText = `${pct}% — ต้องทบทวนคำศัพท์`;
   }
 
   document.getElementById('quiz-result-modal').classList.add('open');
