@@ -1,19 +1,19 @@
-// One-off generator: rebuilds prototype/*.html from the new app design.
-// Run: node gen_prototype.js   (from project root)
+// Generator: rebuilds prototype/*.html from the new Modern EdTech Pro app design.
+// Run: node tools/gen_prototype.js   (from project root)
 const fs = require('fs');
 const path = require('path');
-const root = process.cwd();
+const root = path.resolve(__dirname, '..');
 const out = (f, s) => fs.writeFileSync(path.join(root, 'prototype', f), s, 'utf8');
 
 // ---- CSS: app stylesheet + prototype extras ----
 let css = fs.readFileSync(path.join(root, 'app', 'styles.css'), 'utf8');
-css = css.replace(/^\/\*[\s\S]*?\*\//, '/* Student Vocab - prototype stylesheet. Mirrors app/styles.css (v2: flat, one accent). */');
+css = css.replace(/^\/\*[\s\S]*?\*\//, '/* Student Vocab - prototype stylesheet. Mirrors app/styles.css (v3: Modern EdTech Pro). */');
 css += `
 /* ---------- Prototype-only ---------- */
 a { color: inherit; text-decoration: none; }
 a.nav-item, a.row-cta, a.btn { text-decoration: none; }
 .view-screen { display: flex; }
-.proto-caption { max-width: 400px; margin: 12px auto 0; font-size: 13px; color: var(--ink-2); text-align: center; }
+.proto-caption { max-width: 400px; margin: 14px auto 0; font-size: 13px; color: var(--ink-2); text-align: center; }
 .proto-caption b { color: var(--ink); }
 body.proto { flex-direction: column; justify-content: flex-start; padding: 24px 12px; }
 `;
@@ -51,6 +51,9 @@ function page(title, body, active, caption) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title} — Student Vocab prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="proto">
@@ -141,7 +144,7 @@ out('screen3_flashcards.html', page('หน้า 3 ท่องการ์ด'
               </div>
               <div class="card-body">
                 <h1 class="card-word">Requirement</h1>
-                <div class="label" style="margin-top: 4px;">Noun</div>
+                <div class="badge-gray badge" style="margin-top: 6px;">Noun (คำนาม)</div>
                 <p class="card-example">"The client outlined clear software requirements."</p>
               </div>
               <div class="card-foot">แตะเพื่อพลิก · 2 / 3</div>
@@ -149,8 +152,8 @@ out('screen3_flashcards.html', page('หน้า 3 ท่องการ์ด'
           </div>
         </div>
         <div class="actions-2">
-          <button class="btn btn-danger">ยังจำไม่ได้</button>
-          <button class="btn btn-success">จำได้แล้ว</button>
+          <button class="btn btn-danger">✕ ยังจำไม่ได้</button>
+          <button class="btn btn-success">✓ จำได้แล้ว</button>
         </div>
         <div class="pager"><span>ก่อนหน้า</span><span>ถัดไป</span></div>
       </section>`, 3, '<b>หน้า 3: ท่องการ์ด</b> — ด้านหน้าแสดงคำศัพท์ ด้านหลังแสดงคำแปล (ไม่เฉลยก่อนพลิก)'));
@@ -229,22 +232,27 @@ const screens = [
   ['screen5_profile.html', '6 โปรไฟล์'],
 ];
 const frameCss = `
-    body { background: #f6f7f9; color: #111827; font-family: "Noto Sans Thai", -apple-system, "Segoe UI", sans-serif; padding: 24px; }
-    h1 { font-size: 22px; margin-bottom: 4px; } .sub { font-size: 13px; color: #4b5563; margin-bottom: 12px; }
-    .links a { font-size: 13px; color: #2563eb; margin-right: 16px; text-decoration: none; font-weight: 600; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f8fafc; color: #0f172a; font-family: 'IBM Plex Sans Thai', -apple-system, "Segoe UI", sans-serif; padding: 32px 24px; line-height: 1.5; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; } .sub { font-size: 14px; color: #475569; margin-bottom: 16px; }
+    .links a { font-size: 13.5px; color: #2563eb; margin-right: 20px; text-decoration: none; font-weight: 600; padding: 4px 10px; background: #eff6ff; border-radius: 6px; border: 1px solid #bfdbfe; }
+    .links a:hover { background: #dbeafe; }
 `;
 out('overview_6screens.html', `<!DOCTYPE html>
 <html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wireframe 6 หน้าจอ — Student Vocab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>${frameCss}
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 28px 20px; margin-top: 20px; justify-items: center; }
-    figure { margin: 0; } figcaption { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-    iframe { width: 400px; height: 740px; border: 1px solid #cfd3da; border-radius: 12px; background: #fff; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 32px 24px; margin-top: 24px; justify-items: center; }
+    figure { margin: 0; width: 100%; max-width: 420px; } figcaption { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 10px; }
+    iframe { width: 100%; height: 780px; border: 1px solid #cbd5e1; border-radius: 16px; background: #fff; box-shadow: 0 10px 25px -4px rgba(15,23,42,0.08); }
   </style></head>
 <body>
-  <h1>Student Vocab — 6 หน้าจอ</h1>
-  <p class="sub">แถบนำทาง 4 เมนู: หน้าหลัก, ท่องการ์ด, ทดสอบ, โปรไฟล์ — "เพิ่มศัพท์" เข้าจากหน้าหลัก</p>
-  <div class="links"><a href="../index.html">หน้าหลักโปรเจกต์</a><a href="wireframe_flow.html">แผนผังเส้นทางหน้าจอ</a><a href="../app/index.html">แอปที่ใช้งานได้</a></div>
+  <h1>Student Vocab — 6 หน้าจอต้นแบบ (Interactive Prototype)</h1>
+  <p class="sub">แถบนำทาง 4 เมนู: หน้าหลัก, ท่องการ์ด, ทดสอบ, โปรไฟล์ — เข้าสู่ระบบเพื่อเริ่มใช้งาน</p>
+  <div class="links"><a href="../index.html">หน้าหลักโปรเจกต์</a><a href="wireframe_flow.html">แผนผังเส้นทางหน้าจอ</a><a href="../app/index.html">แอปที่ใช้งานได้จริง</a></div>
   <div class="grid">
 ${screens.map(([f, t]) => `    <figure><figcaption>${t}</figcaption><iframe src="${f}" title="${t}"></iframe></figure>`).join('\n')}
   </div>
@@ -285,22 +293,25 @@ const edges = [
 out('wireframe_flow.html', `<!DOCTYPE html>
 <html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>แผนผังเส้นทางหน้าจอ — Student Vocab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>${frameCss}
-    .stage { position: relative; width: 1160px; height: 1120px; margin-top: 16px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+    .stage { position: relative; width: 1160px; height: 1120px; margin-top: 20px; background: #fff; border: 1px solid #cbd5e1; border-radius: 16px; box-shadow: 0 4px 20px -2px rgba(15,23,42,0.06); overflow: hidden; }
     svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-    path { fill: none; stroke: #2563eb; stroke-width: 1.5; }
-    path.dash { stroke: #8a919c; stroke-dasharray: 5 4; }
-    .lbl { position: absolute; transform: translate(-50%, -50%); background: #fff; font-size: 11px; color: #4b5563; padding: 1px 6px; }
-    .node { position: absolute; width: ${nodeW}px; border: 1px solid #cfd3da; border-radius: 8px; overflow: hidden; background: #fff; color: inherit; text-decoration: none; }
-    .node:hover { border-color: #2563eb; }
-    .nh { font-size: 12px; font-weight: 600; padding: 6px 10px; border-bottom: 1px solid #e5e7eb; background: #f6f7f9; }
+    path { fill: none; stroke: #2563eb; stroke-width: 2; }
+    path.dash { stroke: #64748b; stroke-dasharray: 6 5; }
+    .lbl { position: absolute; transform: translate(-50%, -50%); background: #fff; font-size: 11.5px; font-weight: 600; color: #334155; padding: 2px 8px; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .node { position: absolute; width: ${nodeW}px; border: 1.5px solid #cbd5e1; border-radius: 12px; overflow: hidden; background: #fff; color: inherit; text-decoration: none; box-shadow: 0 4px 12px rgba(15,23,42,0.06); transition: all 0.15s ease; }
+    .node:hover { border-color: #2563eb; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.15); }
+    .nh { font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #0f172a; }
     .node iframe { width: 400px; height: 680px; border: 0; transform: scale(0.5); transform-origin: 0 0; pointer-events: none; }
     .node { height: ${nodeH}px; }
   </style></head>
 <body>
-  <h1>Student Vocab — เส้นทางระหว่างหน้าจอ</h1>
-  <p class="sub">เส้นทึบ = ทางหลัก, เส้นประ = ทางรอง · กดที่หน้าจอเพื่อเปิดหน้าจริง</p>
-  <div class="links"><a href="../index.html">หน้าหลักโปรเจกต์</a><a href="overview_6screens.html">ดู 6 หน้าจอเรียงกัน</a><a href="../app/index.html">แอปที่ใช้งานได้</a></div>
+  <h1>Student Vocab — เส้นทางระหว่างหน้าจอ (Screen Flow)</h1>
+  <p class="sub">เส้นทึบ = ทางหลัก, เส้นประ = ทางรอง · กดที่หน้าจอเพื่อเปิดดูต้นแบบหน้าจริง</p>
+  <div class="links"><a href="../index.html">หน้าหลักโปรเจกต์</a><a href="overview_6screens.html">ดู 6 หน้าจอเรียงกัน</a><a href="../app/index.html">แอปที่ใช้งานได้จริง</a></div>
   <div class="stage">
     <svg><defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 1L10 5L0 9z" fill="#2563eb" stroke="none"/></marker></defs>
 ${edges.map((e) => `      <path ${e.dashed ? 'class="dash" ' : ''}d="${e.d}" marker-end="url(#a)"/>`).join('\n')}
@@ -317,4 +328,4 @@ out('index.html', `<!DOCTYPE html>
   <title>Student Vocab — Prototype</title>
 </head><body><p><a href="overview_6screens.html">เปิด Wireframe 6 หน้าจอ</a></p></body></html>
 `);
-console.log('prototype regenerated');
+console.log('prototype successfully regenerated with Modern EdTech Pro styles');

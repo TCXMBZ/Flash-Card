@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Student Vocab</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-viewport">
+    <div class="app-content">
+
+      <!-- SCREEN 1: LOGIN / REGISTER -->
+      <section id="screen1" class="view-screen auth">
+        <h1 class="title">Student Vocab</h1>
+        <p id="auth-sub-title" class="subtitle" style="margin-bottom: 28px;">เข้าสู่ระบบเพื่อทบทวนคำศัพท์เตรียมสอบ</p>
+
+        <div id="auth-login-section">
+          <form onsubmit="handleLoginSubmit(event)">
+            <div class="form-group">
+              <label class="form-label">อีเมลหรือชื่อผู้ใช้</label>
+              <input type="text" id="login-identifier" class="form-input" placeholder="อีเมลของคุณ" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 24px;">
+              <label class="form-label">รหัสผ่าน</label>
+              <input type="password" id="login-password" class="form-input" placeholder="รหัสผ่านอย่างน้อย 6 ตัวอักษร" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">เข้าสู่ระบบ</button>
+            <p style="text-align: center; margin-top: 20px;">
+              <span class="link" onclick="switchAuthTab(true)">ยังไม่มีบัญชี? สมัครใช้งาน</span>
+            </p>
+          </form>
+        </div>
+
+        <div id="auth-register-section" style="display: none;">
+          <form onsubmit="handleRegisterSubmit(event)">
+            <div class="form-group">
+              <label class="form-label">ชื่อ-นามสกุล</label>
+              <input type="text" id="reg-fullname" class="form-input" placeholder="เช่น นายธีรเดช ผกามาด" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">รหัสนักศึกษา</label>
+                <input type="text" id="reg-studentid" class="form-input" placeholder="เช่น 019" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">ชื่อผู้ใช้</label>
+                <input type="text" id="reg-username" class="form-input" placeholder="เช่น theeradech_019" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">อีเมล</label>
+              <input type="email" id="reg-email" class="form-input" placeholder="เช่น yourname@vec.go.th" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 24px;">
+              <label class="form-label">รหัสผ่าน</label>
+              <input type="password" id="reg-password" class="form-input" placeholder="รหัสผ่านอย่างน้อย 6 ตัวอักษร" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">สมัครสมาชิก</button>
+            <p style="text-align: center; margin-top: 20px;">
+              <span class="link" onclick="switchAuthTab(false)">มีบัญชีอยู่แล้ว? เข้าสู่ระบบ</span>
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: DASHBOARD -->
+      <section id="screen2" class="view-screen active">
+        <div class="screen-head">
+          <div>
+            <h2 id="dash-user-name" class="title">สวัสดี</h2>
+            <p id="dash-target-exam" class="subtitle"></p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddForm()">เพิ่มศัพท์</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div id="dash-stat-total" class="stat-num">0</div>
+            <div class="label">ทั้งหมด</div>
+          </div>
+          <div class="stat">
+            <div id="dash-stat-remembered" class="stat-num ok">0</div>
+            <div class="label">จำได้แล้ว</div>
+          </div>
+          <div class="stat">
+            <div id="dash-stat-unremembered" class="stat-num bad">0</div>
+            <div class="label">ยังจำไม่ได้</div>
+          </div>
+        </div>
+
+        <div class="progress">
+          <div class="progress-top"><span>ความคืบหน้า</span><b id="dash-progress-pct">0%</b></div>
+          <div class="bar"><div id="dash-progress-fill" class="bar-fill"></div></div>
+        </div>
+
+        <button class="row-cta" onclick="navigateTo('screen6')">
+          <div>
+            <div class="t">ทำแบบทดสอบ</div>
+            <div class="d">5 ข้อ จับเวลาข้อละ 15 วินาที</div>
+          </div>
+          <span class="go">เริ่ม</span>
+        </button>
+
+        <div class="section-head">
+          <h3>ต้องทบทวน</h3>
+          <span class="link" onclick="setFlashcardFilter('unremembered'); navigateTo('screen3');">ท่องทั้งหมด</span>
+        </div>
+        <div id="dash-urgent-list" class="word-list"></div>
+      </section>
+
+      <!-- SCREEN 3: FLASHCARDS -->
+      <section id="screen3" class="view-screen">
+        <div class="screen-head">
+          <h2 class="title">ท่องการ์ด</h2>
+        </div>
+
+        <div class="tabs">
+          <div id="pill-unremembered" class="filter-pill active" onclick="setFlashcardFilter('unremembered')">ยังจำไม่ได้</div>
+          <div id="pill-remembered" class="filter-pill" onclick="setFlashcardFilter('remembered')">จำได้แล้ว</div>
+          <div id="pill-all" class="filter-pill" onclick="setFlashcardFilter('all')">ทั้งหมด</div>
+        </div>
+
+        <div class="flashcard-stage" onclick="flipCard()">
+          <div id="flashcard-inner" class="flashcard-inner">
+
+            <div class="flashcard-front">
+              <div class="card-top">
+                <span id="card-front-cat" class="badge">TOEIC</span>
+                <div class="tools">
+                  <button class="icon-btn" title="ฟังเสียง" onclick="event.stopPropagation(); speakWord(document.getElementById('card-front-word').innerText)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  </button>
+                  <button class="icon-btn" title="แก้ไข" onclick="event.stopPropagation(); handleEditCurrentCard();">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button class="icon-btn danger" title="ลบ" onclick="event.stopPropagation(); handleDeleteCurrentCard();">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <h1 id="card-front-word" class="card-word">Requirement</h1>
+                <div id="card-front-pos" class="label" style="margin-top: 4px;">Noun</div>
+                <!-- Kept for app.js; hidden so the answer is not shown on the front -->
+                <div id="card-front-meaning-preview" hidden></div>
+                <p id="card-front-example" class="card-example"></p>
+              </div>
+              <div class="card-foot">
+                แตะเพื่อพลิก · <span id="card-indicator">1 / 1</span>
+              </div>
+            </div>
+
+            <div class="flashcard-back">
+              <div class="card-top">
+                <span id="card-back-cat" class="badge">TOEIC</span>
+                <div class="tools">
+                  <span id="card-back-pos" class="label" style="margin-right: 6px;">Noun</span>
+                  <button class="icon-btn" title="แก้ไข" onclick="event.stopPropagation(); handleEditCurrentCard();">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button class="icon-btn danger" title="ลบ" onclick="event.stopPropagation(); handleDeleteCurrentCard();">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="card-back-word" class="label" style="margin-bottom: 6px;"></div>
+                <h2 id="card-back-meaning" class="card-meaning"></h2>
+                <p id="card-back-example" class="card-example"></p>
+              </div>
+              <div class="card-foot">แตะเพื่อพลิกกลับ</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="actions-2">
+          <button class="btn btn-danger" onclick="markCardRemembered(false)">ยังจำไม่ได้</button>
+          <button class="btn btn-success" onclick="markCardRemembered(true)">จำได้แล้ว</button>
+        </div>
+
+        <div class="pager">
+          <span onclick="prevCard()">ก่อนหน้า</span>
+          <span onclick="nextCard()">ถัดไป</span>
+        </div>
+      </section>
+
+      <!-- SCREEN 6: QUIZ -->
+      <section id="screen6" class="view-screen">
+        <div class="screen-head">
+          <h2 class="title">แบบทดสอบ</h2>
+          <span id="quiz-timer" class="title" style="font-variant-numeric: tabular-nums;">00:15</span>
+        </div>
+
+        <div class="quiz-meta">
+          <span id="quiz-question-counter">ข้อที่ 1 / 5</span>
+          <span><span id="quiz-cat-badge" class="badge">TOEIC</span> · <span id="quiz-pos-badge" class="badge">Noun</span></span>
+        </div>
+        <div class="bar"><div id="quiz-progress-fill" class="bar-fill" style="width: 20%;"></div></div>
+
+        <div class="quiz-header-card">
+          <h1 id="quiz-word" class="quiz-word">Requirement</h1>
+          <p id="quiz-sentence" class="quiz-sentence"></p>
+        </div>
+
+        <div id="quiz-choices-container" style="flex: 1;"></div>
+      </section>
+
+      <!-- SCREEN 4: ADD / EDIT CARD -->
+      <section id="screen4" class="view-screen">
+        <h2 id="card-form-title" class="title">เพิ่มคำศัพท์</h2>
+        <p id="card-form-subtitle" class="subtitle" style="margin-bottom: 24px;">กรอกข้อมูลเพื่อบันทึกลงคลังคำศัพท์</p>
+
+        <form onsubmit="handleCardFormSubmit(event)">
+          <input type="hidden" id="edit-vocab-id" value="">
+
+          <div class="form-group">
+            <label class="form-label">คำศัพท์</label>
+            <input type="text" id="add-word" class="form-input" placeholder="เช่น Requirement" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">ชนิดของคำ</label>
+              <select id="add-pos" class="form-select">
+                <option value="Noun (คำนาม)" selected>Noun (คำนาม)</option>
+                <option value="Verb (คำกริยา)">Verb (คำกริยา)</option>
+                <option value="Adjective (คำคุณศัพท์)">Adjective (คำคุณศัพท์)</option>
+                <option value="Adverb (คำกริยาวิเศษณ์)">Adverb (คำกริยาวิเศษณ์)</option>
+                <option value="Phrase (สำนวน/วลี)">Phrase (สำนวน/วลี)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">หมวดหมู่</label>
+              <select id="add-category" class="form-select">
+                <option value="TOEIC" selected>TOEIC</option>
+                <option value="IT Vocab">IT Vocab</option>
+                <option value="General English">General English</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">คำแปล</label>
+            <input type="text" id="add-meaning" class="form-input" placeholder="เช่น ความต้องการ" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label class="form-label">ตัวอย่างประโยค</label>
+            <textarea id="add-example" class="form-textarea" placeholder="The system meets all security requirements."></textarea>
+          </div>
+
+          <button type="submit" id="card-form-submit-btn" class="btn btn-primary btn-block" style="margin-bottom: 8px;">บันทึก</button>
+          <button type="button" class="btn btn-outline btn-block" onclick="cancelCardForm()">ยกเลิก</button>
+        </form>
+      </section>
+
+      <!-- SCREEN 5: PROFILE -->
+      <section id="screen5" class="view-screen">
+        <div class="profile-head">
+          <div id="prof-avatar" class="avatar">TP</div>
+          <div>
+            <div id="prof-fullname" style="font-size: 17px; font-weight: 700;"></div>
+            <div id="prof-username" class="subtitle"></div>
+            <div id="prof-student-badge" class="label" style="margin-top: 2px;"></div>
+          </div>
+        </div>
+
+        <div class="section-head"><h3>บัญชี</h3></div>
+        <div class="kv">
+          <div class="kv-row"><span class="k">รหัสผู้ใช้</span><span id="prof-user-id" class="v"></span></div>
+          <div class="kv-row"><span class="k">ชื่อผู้ใช้</span><span id="prof-account-username" class="v"></span></div>
+          <div class="kv-row"><span class="k">อีเมล</span><span id="prof-email" class="v"></span></div>
+          <div class="kv-row"><span class="k">สร้างเมื่อ</span><span id="prof-created-at" class="v"></span></div>
+        </div>
+
+        <div class="section-head"><h3>ผลการเรียน</h3></div>
+        <div class="kv">
+          <div class="kv-row"><span class="k">คำศัพท์ทั้งหมด</span><span id="prof-total-cards" class="v"></span></div>
+          <div class="kv-row"><span class="k">จำได้แล้ว</span><span id="prof-remembered-cards" class="v"></span></div>
+          <div class="kv-row"><span class="k">คะแนนทดสอบล่าสุด</span><span id="prof-latest-quiz" class="v"></span></div>
+          <div class="kv-row"><span class="k">เป้าหมายสอบ</span><span id="prof-target-badge" class="v"></span></div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn btn-outline btn-block" onclick="openEditProfileModal()">แก้ไขข้อมูลส่วนตัว</button>
+          <div class="actions-2" style="margin-top: 8px;">
+            <button class="btn btn-outline btn-sm" onclick="resetMockData()">ศัพท์ตัวอย่าง (Demo)</button>
+            <button class="btn btn-outline btn-sm btn-text-danger" onclick="logout()">ออกจากระบบ</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <nav id="app-navbar" class="app-navbar"></nav>
+
+    <div id="app-toast" class="app-toast"></div>
+
+    <!-- Quiz result -->
+    <div id="quiz-result-modal" class="app-modal-overlay">
+      <div class="app-modal" style="text-align: center;">
+        <h3>ผลการทดสอบ</h3>
+        <div id="quiz-result-score" class="score-big">0 / 5</div>
+        <p id="quiz-result-badge" class="badge" style="display: block; margin-bottom: 20px;"></p>
+        <span id="quiz-result-emoji" hidden></span>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="closeQuizResultModal(); startQuiz();">ทำอีกครั้ง</button>
+          <button class="btn btn-outline" onclick="closeQuizResultModal(); navigateTo('screen2');">กลับหน้าหลัก</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit profile -->
+    <div id="profile-edit-modal" class="app-modal-overlay">
+      <div class="app-modal">
+        <h3 style="margin-bottom: 16px;">แก้ไขข้อมูลส่วนตัว</h3>
+        <form onsubmit="handleProfileEditSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">ชื่อ-นามสกุล</label>
+            <input type="text" id="edit-fullname" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">รหัสนักศึกษา</label>
+            <input type="text" id="edit-studentid" class="form-input" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label">เป้าหมายการสอบ</label>
+            <input type="text" id="edit-targetexam" class="form-input" required>
+          </div>
+          <div class="modal-actions row">
+            <button type="submit" class="btn btn-primary">บันทึก</button>
+            <button type="button" class="btn btn-outline" onclick="closeEditProfileModal()">ยกเลิก</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Help -->
+    <div id="help-modal" class="app-modal-overlay">
+      <div class="app-modal">
+        <h3>วิธีใช้งาน</h3>
+        <p>
+          เข้าสู่ระบบด้วยอีเมลหรือชื่อผู้ใช้ ถ้ายังไม่มีบัญชีให้กดสมัครใช้งาน<br>
+          แบบทดสอบจะสุ่มคำศัพท์ 5 ข้อ ข้อละ 15 วินาที<br>
+          แก้ไขหรือลบคำศัพท์ได้จากหน้าหลักและหน้าท่องการ์ด<br>
+          ข้อมูลถูกบันทึกในเบราว์เซอร์โดยอัตโนมัติ
+        </p>
+        <button class="btn btn-primary btn-block" onclick="closeHelpModal()">เข้าใจแล้ว</button>
+      </div>
+    </div>
+
+    <!-- Delete confirm -->
+    <div id="delete-confirm-modal" class="app-modal-overlay">
+      <div class="app-modal">
+        <h3>ลบคำศัพท์</h3>
+        <p>ต้องการลบ <strong id="delete-word-target"></strong> ใช่ไหม ลบแล้วกู้คืนไม่ได้</p>
+        <div class="modal-actions row">
+          <button class="btn btn-danger" onclick="executeDeleteVocab()">ลบ</button>
+          <button class="btn btn-outline" onclick="closeDeleteModal()">ยกเลิก</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Supabase Client Library & Config -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

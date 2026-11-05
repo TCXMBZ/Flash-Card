@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>แผนผังเส้นทางหน้าจอ — Student Vocab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { background: #f6f7f9; color: #111827; font-family: "Noto Sans Thai", -apple-system, "Segoe UI", sans-serif; padding: 24px; }
-    h1 { font-size: 22px; margin-bottom: 4px; } .sub { font-size: 13px; color: #4b5563; margin-bottom: 12px; }
-    .links a { font-size: 13px; color: #2563eb; margin-right: 16px; text-decoration: none; font-weight: 600; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f8fafc; color: #0f172a; font-family: 'IBM Plex Sans Thai', -apple-system, "Segoe UI", sans-serif; padding: 32px 24px; line-height: 1.5; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; } .sub { font-size: 14px; color: #475569; margin-bottom: 16px; }
+    .links a { font-size: 13.5px; color: #2563eb; margin-right: 20px; text-decoration: none; font-weight: 600; padding: 4px 10px; background: #eff6ff; border-radius: 6px; border: 1px solid #bfdbfe; }
+    .links a:hover { background: #dbeafe; }
 
-    .stage { position: relative; width: 1160px; height: 1120px; margin-top: 16px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+    .stage { position: relative; width: 1160px; height: 1120px; margin-top: 20px; background: #fff; border: 1px solid #cbd5e1; border-radius: 16px; box-shadow: 0 4px 20px -2px rgba(15,23,42,0.06); overflow: hidden; }
     svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-    path { fill: none; stroke: #2563eb; stroke-width: 1.5; }
-    path.dash { stroke: #8a919c; stroke-dasharray: 5 4; }
-    .lbl { position: absolute; transform: translate(-50%, -50%); background: #fff; font-size: 11px; color: #4b5563; padding: 1px 6px; }
-    .node { position: absolute; width: 200px; border: 1px solid #cfd3da; border-radius: 8px; overflow: hidden; background: #fff; color: inherit; text-decoration: none; }
-    .node:hover { border-color: #2563eb; }
-    .nh { font-size: 12px; font-weight: 600; padding: 6px 10px; border-bottom: 1px solid #e5e7eb; background: #f6f7f9; }
+    path { fill: none; stroke: #2563eb; stroke-width: 2; }
+    path.dash { stroke: #64748b; stroke-dasharray: 6 5; }
+    .lbl { position: absolute; transform: translate(-50%, -50%); background: #fff; font-size: 11.5px; font-weight: 600; color: #334155; padding: 2px 8px; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .node { position: absolute; width: 200px; border: 1.5px solid #cbd5e1; border-radius: 12px; overflow: hidden; background: #fff; color: inherit; text-decoration: none; box-shadow: 0 4px 12px rgba(15,23,42,0.06); transition: all 0.15s ease; }
+    .node:hover { border-color: #2563eb; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.15); }
+    .nh { font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #0f172a; }
     .node iframe { width: 400px; height: 680px; border: 0; transform: scale(0.5); transform-origin: 0 0; pointer-events: none; }
     .node { height: 372px; }
   </style></head>
 <body>
-  <h1>Student Vocab — เส้นทางระหว่างหน้าจอ</h1>
-  <p class="sub">เส้นทึบ = ทางหลัก, เส้นประ = ทางรอง · กดที่หน้าจอเพื่อเปิดหน้าจริง</p>
-  <div class="links"><a href="../index.html">หน้าหลักโปรเจกต์</a><a href="overview_6screens.html">ดู 6 หน้าจอเรียงกัน</a><a href="../app/index.html">แอปที่ใช้งานได้</a></div>
+  <h1>Student Vocab — เส้นทางระหว่างหน้าจอ (Screen Flow)</h1>
+  <p class="sub">เส้นทึบ = ทางหลัก, เส้นประ = ทางรอง · กดที่หน้าจอเพื่อเปิดดูต้นแบบหน้าจริง</p>
+  <div class="links"><a href="../index.html">หน้าหลักโปรเจกต์</a><a href="overview_6screens.html">ดู 6 หน้าจอเรียงกัน</a><a href="../app/index.html">แอปที่ใช้งานได้จริง</a></div>
   <div class="stage">
     <svg><defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 1L10 5L0 9z" fill="#2563eb" stroke="none"/></marker></defs>
       <path d="M 220 436 C 270 436, 270 436, 320 436" marker-end="url(#a)"/>
