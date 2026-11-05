@@ -1,36 +1,55 @@
 # Student Vocab – แอปพลิเคชันท่องศัพท์ Flashcards & แบบทดสอบ Quiz
 
-แอปพลิเคชันคลังคำศัพท์และทบทวนเตรียมสอบภาษาอังกฤษ (TOEIC & IT Vocab) พัฒนาด้วย Static Web (HTML, CSS, Vanilla JavaScript) เชื่อมต่อฐานข้อมูลและระบบสมาชิกด้วย **Supabase (PostgreSQL & Supabase Auth)** พร้อมรองรับการเผยแพร่ผ่าน GitHub Pages และ Localhost
+แอปพลิเคชันคลังคำศัพท์และทบทวนเตรียมสอบภาษาอังกฤษ (TOEIC & IT Vocab) พัฒนาด้วย Static Web (HTML, CSS, Vanilla JavaScript) เชื่อมต่อฐานข้อมูลและระบบสมาชิกด้วย **Supabase (PostgreSQL & Supabase Auth)** รองรับการรันแบบ Localhost, GitHub Pages และ Deploy บน **Vercel**
 
 ---
 
-## 🚀 1. การติดตั้งและการตั้งค่า Supabase Publishable Key
+## ☁️ 1. การตั้งค่า Deploy บน Vercel
 
-ไฟล์คอนฟิกสำหรับเชื่อมต่อ Supabase ถูกแยกไว้ที่:
-`app/supabase-config.js` (ไฟล์นี้ถูกเพิ่มไว้ใน `.gitignore` แล้ว เพื่อป้องกันการเผลออัปโหลดคีย์ขึ้น GitHub)
+โปรเจกต์นี้มีโครงสร้างเป็น Static Web ที่มีหน้า **Project Hub** อยู่ที่ root `index.html` และหน้าแอปพลิเคชันหลักอยู่ที่ `app/index.html` (เข้าถึงได้ที่ path `/app/`)
 
-### ขั้นตอนการตั้งค่า:
-1. เปิดไฟล์ `app/supabase-config.js` (หรือหากยังไม่มี ให้คัดลอกมาจาก `app/supabase-config.example.js`)
-2. เข้าสู่ [Supabase Dashboard](https://supabase.com/dashboard) -> เลือกโปรเจกต์ของคุณ
-3. ไปที่เมนู **Project Settings** (ไอคอนฟันเฟือง) -> **API**
-4. ในส่วน **Project API keys** ให้คัดลอกคีย์ **`anon` `public`** (Publishable Key)
-5. นำมาวางในไฟล์ `app/supabase-config.js`:
+### การทำงานของระบบ Config และความปลอดภัยของ Publishable Key:
+- **Publishable Key (`anon` key) เป็น Public Key:** ในเว็บแบบ Static Web คีย์นี้จำเป็นต้องถูกส่งให้เบราว์เซอร์ของผู้ใช้งาน เพื่อให้ JavaScript ติดต่อกับ Supabase API ได้โดยตรง จึงจะมองเห็นได้ใน Network tab และ JavaScript runtime ของเบราว์เซอร์เป็นเรื่องปกติ
+- **หน้าที่ของ Environment Variables บน Vercel:** มีไว้เพื่อ **แยกการตั้งค่าออกจาก Git repository** ทำให้ไม่มีคีย์จริงถูกบันทึกลงใน GitHub Source Code โดยในขั้นตอน Build บน Vercel สคริปต์ `tools/generate-config.js` จะอ่านค่า Environment Variables มาสร้างไฟล์ `app/supabase-config.js` ให้อัตโนมัติ
+- **การรักษาความปลอดภัยข้อมูล:** พึ่งพาระบบ **Row Level Security (RLS)** ของ Supabase ในการจำกัดสิทธิ์ให้แต่ละบัญชีเข้าถึงเฉพาะข้อมูลของตัวเอง
+- ⚠️ **คำเตือน:** **ห้ามใส่ `secret` key หรือ `service_role` key ลงใน Environment Variables หรือ frontend เด็ดขาด!**
+
+### ค่า Environment Variables ที่ต้องตั้งค่าใน Vercel:
+ไปที่ **Vercel Dashboard** -> เลือกโปรเจกต์ -> **Settings** -> **Environment Variables** และเพิ่มค่าดังนี้:
+
+| Variable Name | Value | คำอธิบาย |
+|---|---|---|
+| `SUPABASE_URL` | `https://movnbdvgcyepkalucbbd.supabase.co` | URL ของโปรเจกต์ Supabase |
+| `SUPABASE_PUBLISHABLE_KEY` | *(Publishable / anon key จาก Supabase)* | คีย์แบบ public สำหรับเชื่อมต่อ client |
+
+*(หมายเหตุ: ระบบรองรับชื่อ `SUPABASE_ANON_KEY` เป็นตัวสำรองได้ด้วยเช่นกัน)*
+
+### การตั้งค่า Vercel Project Settings:
+- **Framework Preset:** `Other`
+- **Root Directory:** `./` (ค่าเริ่มต้น)
+- **Build Command:** ปล่อยตามค่าเริ่มต้น (ใน `vercel.json` กำหนด `node tools/generate-config.js` ไว้อัตโนมัติแล้ว)
+- **Output Directory:** `.` (หรือเว้นว่างตามค่าเริ่มต้นใน `vercel.json`)
+
+---
+
+## 💻 2. การตั้งค่าสำหรับทดสอบบนเครื่อง (Localhost)
+
+ไฟล์คอนฟิกจริง `app/supabase-config.js` ถูกกำหนดไว้ใน `.gitignore` เพื่อไม่ให้อัปโหลดขึ้น GitHub:
+1. หากยังไม่มีไฟล์ `app/supabase-config.js` ให้คัดลอกมาจาก `app/supabase-config.example.js`
+2. ใส่ Publishable Key ที่ได้จาก Supabase ลงใน `app/supabase-config.js`:
    ```javascript
    window.SUPABASE_CONFIG = {
      url: "https://movnbdvgcyepkalucbbd.supabase.co",
-     publishableKey: "ใส่_ANON_PUBLIC_KEY_ตรงนี้"
+     publishableKey: "ใส่_PUBLISHABLE_ANON_KEY_ตรงนี้"
    };
    ```
-> ⚠️ **คำเตือนความปลอดภัยสำคัญมาก:**  
-> - **ห้ามใช้หรือเปิดเผย `secret` / `service_role` key เด็ดขาด!**  
-> - โค้ดฝั่งหน้าเว็บ (Browser Client) จะใช้เฉพาะ Publishable key (`anon`) และพึ่งพาระบบ Row Level Security (RLS) ในการจำกัดสิทธิ์ของข้อมูล
+3. รันผ่าน Local Web Server เช่น VS Code Live Server หรือ `npx serve .`
 
 ---
 
-## 🗄️ 2. SQL Migration ที่ต้องรันเพิ่มเติมใน Supabase SQL Editor
+## 🗄️ 3. SQL Migration ที่ต้องรันใน Supabase SQL Editor
 
-เนื่องจากโครงสร้างเดิมและโจทย์มีความต้องการเฉพาะเกี่ยวกับ **โปรไฟล์ผู้ใช้ (`profiles`)**, **การตรวจสอบสิทธิ์คำตอบข้อสอบ (`quiz_answers` RLS)** และ **ข้อมูลหมวดหมู่ (`categories`)**  
-กรุณาคัดลอก SQL ด้านล่างนี้ไปรันใน **Supabase SQL Editor** (เป็นคำสั่งแบบ Safe Migration ไม่ลบตารางหรือข้อมูลเดิม):
+คัดลอกคำสั่ง SQL ต่อไปนี้ไปรันใน **Supabase SQL Editor** (เป็น Safe Migration ไม่ลบตารางหรือข้อมูลเดิม):
 
 ```sql
 -- =====================================================================
@@ -118,72 +137,44 @@ USING (true);
 
 ---
 
-## 🌐 3. การตั้งค่า Supabase Authentication URL Configuration
+## 🌐 4. การตั้งค่า Supabase Authentication URL Configuration
 
-เพื่อให้ระบบสมัครสมาชิก ยืนยันอีเมล และเข้าสู่ระบบทำงานได้อย่างถูกต้องทั้งบนเครื่องส่วนตัว (Localhost) และบน GitHub Pages:
-
-1. เข้าไปที่ **Supabase Dashboard** -> เลือกโปรเจกต์
-2. ไปที่เมนู **Authentication** -> **URL Configuration**
-3. กำหนดค่าดังนี้:
-   - **Site URL**:
-     - หากเน้น GitHub Pages: `https://<YOUR_GITHUB_USERNAME>.github.io/<YOUR_REPO_NAME>/`
-     - หรือหากทดสอบในเครื่อง: `http://localhost:5500/` หรือ `http://127.0.0.1:5500/`
-   - **Redirect URLs** (กดปุ่ม **Add URL** เพิ่มให้ครบ):
-     - `http://localhost:*`
-     - `http://127.0.0.1:*`
-     - `http://localhost:5500/**`
-     - `http://127.0.0.1:5500/**`
-     - `http://localhost:3000/**`
-     - `https://<YOUR_GITHUB_USERNAME>.github.io/**`
-
-*(หมายเหตุ: หากต้องการทดสอบสมัครแล้วล็อกอินได้ทันทีโดยไม่ต้องกดยืนยันอีเมล สามารถปิด **Confirm email** ชั่วคราวได้ที่ Authentication -> Providers -> Email -> ปิด Confirm email)*
+เพื่อให้ระบบ Redirect หลังยืนยันอีเมลหรือล็อกอินทำงานถูกต้องบน Vercel, Localhost และ GitHub Pages:
+1. เข้าไปที่ **Supabase Dashboard** -> เลือกโปรเจกต์ -> **Authentication** -> **URL Configuration**
+2. **Site URL:**
+   - ใส่ URL ของ Vercel: `https://<YOUR-PROJECT-NAME>.vercel.app/`
+3. **Redirect URLs** (กด **Add URL** เพิ่มให้ครบ):
+   - `https://*.vercel.app/**`
+   - `https://<YOUR-PROJECT-NAME>.vercel.app/**`
+   - `http://localhost:*`
+   - `http://127.0.0.1:*`
+   - `http://localhost:5500/**`
+   - `http://127.0.0.1:5500/**`
+   - `http://localhost:3000/**`
+   - `https://<YOUR_GITHUB_USERNAME>.github.io/**`
 
 ---
 
-## 🧪 4. วิธีทดสอบระบบ
+## 🧪 5. การตรวจสอบความถูกต้องหลัง Deploy บน Vercel
 
-### การทดสอบสมัครสมาชิกและล็อกอิน:
-1. เปิดหน้าเว็บ `app/index.html` (แนะนำให้รันผ่าน Live Server เช่น VS Code Live Server หรือ `npx serve`)
-2. ระบบจะตรวจพบว่ายังไม่มี Session และเปิดหน้า **Screen 1 (เข้าสู่ระบบ)**
-3. คลิก **"ยังไม่มีบัญชี? สมัครใช้งาน"**
-4. กรอกข้อมูล: ชื่อ-นามสกุล, รหัสนักศึกษา, ชื่อผู้ใช้, อีเมล และรหัสผ่าน (อย่างน้อย 6 ตัวอักษร) แล้วกด **"สมัครสมาชิก"**
-5. เมื่อเข้าสู่ระบบสำเร็จ จะถูกนำไปยัง **Screen 2 (หน้าหลัก Dashboard)** สังเกตว่าผู้ใช้ใหม่จะพบจำนวนคำศัพท์ 0 คำ (ไม่มีข้อมูลตัวอย่างปะปน)
-
-### การทดสอบจัดการคำศัพท์ (CRUD):
-1. กดปุ่ม **"เพิ่มศัพท์"** -> กรอกคำศัพท์ ชนิดของคำ หมวดหมู่ คำแปล และตัวอย่างประโยค -> กด **"บันทึก"**
-2. ข้อมูลจะถูกบันทึกลงตาราง `flashcards` ใน Supabase ทันที
-3. ไปที่เมนู **"ท่องการ์ด"**: ลองคลิกพลิกการ์ด 3D, กดปุ่ม **"จำได้แล้ว"** หรือ **"ยังจำไม่ได้"** (สถานะ `is_remembered` จะอัปเดตลง Supabase ทันที)
-4. กดไอคอน **แก้ไข** เพื่อเปลี่ยนคำแปล หรือไอคอน **ถังขยะ** เพื่อลบคำศัพท์
-
-### การทดสอบแบบทดสอบ (Quiz):
-1. ไปที่เมนู **"ทดสอบ"** (หรือกดปุ่มทำแบบทดสอบจาก Dashboard)
-2. ตอบคำถามทั้ง 5 ข้อ (ระบบจับเวลาข้อละ 15 วินาที)
-3. เมื่อทำเสร็จ คะแนนและประวัติคำตอบจะถูกบันทึกลงตาราง `quizzes` และ `quiz_answers` พร้อมแสดงคะแนนบนหน้าต่างสรุปและหน้า **โปรไฟล์**
-
-### การทดสอบแยกข้อมูลระหว่าง 2 บัญชี (RLS Verification):
-1. ไปที่แท็บ **"โปรไฟล์"** -> กดปุ่ม **"ออกจากระบบ"**
-2. สมัครบัญชีที่ 2 ด้วยอีเมลอื่น
-3. ตรวจสอบหน้า Dashboard: จะพบว่าคำศัพท์และประวัติคะแนนของบัญชีที่ 1 จะ**ไม่ปรากฏ**ในบัญชีที่ 2
-4. ลองเพิ่มคำศัพท์ใหม่ในบัญชีที่ 2 แล้วสลับล็อกอินกลับไปบัญชีที่ 1 -> ข้อมูลจะแยกจากกันอย่างเด็ดขาดตามนโยบาย RLS
-
-### การทดสอบโหลดข้อมูลตัวอย่าง (Demo Mode):
-- หากผู้ใช้ใหม่ต้องการลองเล่นระบบทันที สามารถไปที่หน้า **"โปรไฟล์"** -> กดปุ่ม **"ศัพท์ตัวอย่าง (Demo)"** ระบบจะยืนยันและนำเข้าคำศัพท์ตัวอย่าง 5 คำเข้าสู่บัญชีของผู้ใช้นั้นๆ โดยตรง
+1. **ตรวจสอบหน้า Project Hub:**
+   - เข้า URL หลัก เช่น `https://<YOUR-PROJECT-NAME>.vercel.app/`
+   - จะต้องแสดงหน้า DevOps Project Hub พร้อมลิงก์ไปยัง Prototype และ App ได้ถูกต้อง
+2. **ตรวจสอบหน้า Application (`/app/`):**
+   - เข้า URL เช่น `https://<YOUR-PROJECT-NAME>.vercel.app/app` หรือ `https://<YOUR-PROJECT-NAME>.vercel.app/app/`
+   - จะต้องแสดงหน้า **Screen 1 (เข้าสู่ระบบ)** โดยไม่มี Error 404 สำหรับ `supabase-config.js`
+   - เปิด Developer Tools (F12) -> Console: พิมพ์ `window.SUPABASE_CONFIG` จะต้องแสดง Object ที่มี `url` และ `publishableKey` ถูกต้อง
+3. **ทดสอบการทำงาน:**
+   - ทดสอบสมัครสมาชิก ล็อกอิน เพิ่มคำศัพท์ และทำแบบทดสอบตามปกติ ข้อมูลจะซิงค์กับ Supabase เรียลไทม์
 
 ---
 
-## 📁 5. สรุปไฟล์ที่ได้รับการปรับปรุง
+## 📁 6. สรุปไฟล์ที่เกี่ยวข้องกับการ Deploy
 
-| ไฟล์ | การเปลี่ยนแปลง |
+| ไฟล์ | หน้าที่ |
 |---|---|
-| `app/supabase-config.js` | ไฟล์คอนฟิกแยกสำหรับเก็บ Supabase URL และ Publishable Key |
-| `app/supabase-config.example.js` | ไฟล์ต้นแบบสำหรับแนะนำการใส่คีย์ก่อนใช้งาน |
-| `.gitignore` | ระบุไฟล์ `app/supabase-config.js` เพื่อความปลอดภัยไม่ให้หลุดขึ้น Git/GitHub |
-| `app/index.html` | เพิ่มสคริปต์ Supabase JS SDK (v2 CDN) และ `supabase-config.js` พร้อมปรับ Placeholder ให้พร้อมใช้งาน |
-| `app/app.js` | ปรับระบบ Auth, Session detection, Flashcards CRUD, Quiz log, Profile sync และ Category mapping สู่ Supabase แบบสมบูรณ์ |
-| `README.md` | เอกสารคู่มือการใส่คีย์, SQL Migration, การตั้งค่า URL Configuration และขั้นตอนทดสอบ |
-
----
-
-## 📌 6. ข้อจำกัดและข้อควรทราบที่ยังเหลือ
-1. **การเข้าสู่ระบบด้วย Username**: Supabase Auth พื้นฐานจะใช้ Email เป็นหลัก ในแอปนี้หากผู้ใช้กรอก Email จะล็อกอินได้ทันที หากกรอก Username ระบบจะแนะนำให้ใช้อีเมลในการยืนยันตัวตนเพื่อความถูกต้องและปลอดภัยสูงสุด
-2. **Text-to-Speech (TTS)**: ฟังก์ชันอ่านออกเสียงคำศัพท์ใช้งาน Web Speech API ของเบราว์เซอร์ ซึ่งขึ้นอยู่กับเสียงที่ติดตั้งในระบบปฏิบัติการของอุปกรณ์แต่ละเครื่อง
+| `vercel.json` | ตั้งค่า Vercel Build Command, Output Directory และ URL Rewrites สำหรับ `/app/` |
+| `tools/generate-config.js` | สคริปต์ Node.js สร้าง `app/supabase-config.js` จาก Environment Variables ตอน build |
+| `app/supabase-config.example.js` | ไฟล์ตัวอย่างคอนฟิก (ใช้ placeholder ปราศจากคีย์จริง) |
+| `app/supabase-config.js` | ไฟล์คอนฟิกจริงสำหรับเครื่อง Local (ไม่ถูก push ขึ้น Git เนื่องจากอยู่ใน `.gitignore`) |
+| `.gitignore` | ป้องกันการ commit `app/supabase-config.js` ขึ้น Git repository |

@@ -11,6 +11,6 @@
  */
 window.SUPABASE_CONFIG = {
   url: "https://movnbdvgcyepkalucbbd.supabase.co",
-  publishableKey: "sb_publishable_PbzYpsZSEb5CmYIc2xOSJw_EMlx9B5_"
+  publishableKey: "YOUR_SUPABASE_PUBLISHABLE_KEY"
 };
 
