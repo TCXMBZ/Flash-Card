@@ -39,19 +39,19 @@
 
     .container {
       width: 100%;
-      max-width: 960px;
+      max-width: 980px;
     }
 
     .hero-banner {
       text-align: center;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
     }
 
     .badge-header {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 12px;
+      padding: 4px 14px;
       background: rgba(37, 99, 235, 0.2);
       border: 1px solid rgba(56, 189, 248, 0.4);
       border-radius: 9999px;
@@ -62,19 +62,49 @@
     }
 
     h1 {
-      font-size: 32px;
+      font-size: 30px;
       font-weight: 800;
       color: #ffffff;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       letter-spacing: -0.5px;
     }
 
     .subtitle {
-      font-size: 15px;
+      font-size: 14px;
       color: var(--text-muted);
-      max-width: 650px;
+      max-width: 700px;
       margin: 0 auto;
       line-height: 1.6;
+    }
+
+    /* Highlight Banner for Wireframe Flow */
+    .highlight-flow-banner {
+      background: linear-gradient(135deg, rgba(30, 58, 138, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border: 1.5px solid #0284c7;
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.2);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .highlight-flow-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .highlight-flow-desc {
+      font-size: 12.5px;
+      color: #94a3b8;
+      margin-top: 4px;
     }
 
     /* Primary Launch Cards */
@@ -82,7 +112,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
     }
 
     @media (max-width: 768px) {
@@ -95,13 +125,12 @@
       background: var(--surface);
       border: 1px solid var(--surface-border);
       border-radius: 16px;
-      padding: 24px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       transition: all 0.2s ease;
       position: relative;
-      overflow: hidden;
     }
 
     .launch-card:hover {
@@ -120,27 +149,27 @@
     }
 
     .card-icon-box {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .card-title {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .card-desc {
-      font-size: 13px;
+      font-size: 12.5px;
       color: var(--text-muted);
       line-height: 1.5;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .btn-launch {
@@ -148,9 +177,9 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 12px 20px;
+      padding: 11px 18px;
       border-radius: 10px;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
       text-decoration: none;
       transition: all 0.15s ease;
@@ -172,22 +201,29 @@
       background: #15803d;
     }
 
-    /* Sub-links inside cards */
+    .btn-launch-cyan {
+      background: #0284c7;
+      color: #ffffff;
+    }
+    .btn-launch-cyan:hover {
+      background: #0369a1;
+    }
+
     .sub-links-group {
       margin-top: 14px;
-      padding-top: 14px;
+      padding-top: 12px;
       border-top: 1px solid var(--surface-border);
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
     }
 
     .sub-link-pill {
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--accent-blue);
       text-decoration: none;
       background: rgba(15, 23, 42, 0.6);
-      padding: 4px 10px;
+      padding: 4px 8px;
       border-radius: 6px;
       border: 1px solid rgba(255, 255, 255, 0.05);
       transition: all 0.15s ease;
@@ -202,14 +238,14 @@
       background: var(--surface);
       border: 1px solid var(--surface-border);
       border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 30px;
+      padding: 22px;
+      margin-bottom: 24px;
     }
 
     .docs-section h2 {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       color: #ffffff;
       display: flex;
       align-items: center;
@@ -246,7 +282,7 @@
     }
 
     .doc-name {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
     }
 
@@ -260,7 +296,7 @@
       text-align: center;
       font-size: 12px;
       color: var(--text-muted);
-      margin-top: 20px;
+      margin-top: 16px;
     }
   </style>
 </head>
@@ -271,14 +307,29 @@
     <!-- Hero Header -->
     <header class="hero-banner">
       <div class="badge-header">
-        <span>●</span> แผนผังและผลงานระบบ Student Vocab
+        <span>●</span> แผนผังและผลงานระบบ Student Vocab (DevOps Project)
       </div>
       <h1>Student Vocab — DevOps Project Hub</h1>
       <p class="subtitle">
-        ระบบทบทวนคำศัพท์อัจฉริยะ (Flashcards) สำหรับนักศึกษา ปวส. เตรียมสอบ TOEIC & IT Vocab
-        ตรงตามข้อกำหนดในเอกสารใบงานการวางแผน
+        ระบบทบทวนคำศัพท์อัจฉริยะ (Flashcards & Quiz Challenge) พร้อมแผนผัง Wireframe โยงเส้นความสัมพันธ์ (Screen Flow)
+        และ ER Diagram ครบวงจรสำหรับนักศึกษา ปวส.
       </p>
     </header>
+
+    <!-- NEW Highlight Banner: Wireframe Flowchart with Connector Lines -->
+    <div class="highlight-flow-banner">
+      <div>
+        <div class="highlight-flow-title">
+          <span>🔀</span> แผนผัง Wireframe โยงเส้นความสัมพันธ์ (Screen Flow Diagram)
+        </div>
+        <div class="highlight-flow-desc">
+          แสดงความสัมพันธ์และการเปลี่ยนผ่านระหว่าง 6 หน้าจอหลัก พร้อมเส้นลูกศร SVG โยงชัดเจน (Login ➔ Dashboard ➔ ท่องการ์ด / Quiz / เพิ่มการ์ด / โปรไฟล์)
+        </div>
+      </div>
+      <a href="prototype/wireframe_flow.html" class="btn-launch btn-launch-cyan">
+        <span>เปิดดูแผนผังโยงเส้น (Interactive SVG) →</span>
+      </a>
+    </div>
 
     <!-- Two Main Paths (Prototype vs App) -->
     <div class="launch-grid">
@@ -293,30 +344,31 @@
               <path d="M9 21V9"/>
             </svg>
           </div>
-          <div class="card-title">1. Prototype (Wireframe View)</div>
+          <div class="card-title">1. Prototype (Wireframe 6 หน้าจอ)</div>
           <div class="card-desc">
-            ภาพจำลองโครงร่างหน้าจอ 5 หน้าหลัก ตรงตามภาพแม่แบบ <code>template_obj46.bmp</code> 100%
-            (Bottom Nav หน้าแรกมี 2 เมนู, หน้า 2-5 มี 4 เมนู ไม่มีหมวดหมู่)
+            ภาพจำลองโครงร่างหน้าจอสมบูรณ์ 6 หน้า (เพิ่มหน้า 6: แบบทดสอบ Quiz ปรนัย 4 ข้อ)
+            แถบเมนูด้านล่าง 5 แท็บเชื่อมโยงถึงกันได้อย่างถูกต้อง
           </div>
         </div>
 
         <div>
-          <a href="prototype/overview_5screens.html" class="btn-launch btn-launch-blue" style="width: 100%;">
-            <span>ดู Wireframe 5 หน้าจอเรียงกัน →</span>
+          <a href="prototype/overview_6screens.html" class="btn-launch btn-launch-blue" style="width: 100%;">
+            <span>ดู Wireframe 6 หน้าจอเรียงกัน →</span>
           </a>
 
           <div class="sub-links-group">
-            <span style="font-size: 11px; color: var(--text-muted); width: 100%; margin-bottom: 2px;">เปิดดูแยกทีละหน้าจอ:</span>
-            <a href="prototype/screen1_login.html" class="sub-link-pill">หน้า 1 (Login/Regis)</a>
-            <a href="prototype/screen2_dashboard.html" class="sub-link-pill">หน้า 2 (Dashboard)</a>
-            <a href="prototype/screen3_flashcards.html" class="sub-link-pill">หน้า 3 (ท่องการ์ด)</a>
-            <a href="prototype/screen4_add_card.html" class="sub-link-pill">หน้า 4 (เพิ่มศัพท์)</a>
-            <a href="prototype/screen5_profile.html" class="sub-link-pill">หน้า 5 (โปรไฟล์)</a>
+            <span style="font-size: 10.5px; color: var(--text-muted); width: 100%; margin-bottom: 2px;">เปิดดูแยกทีละหน้า:</span>
+            <a href="prototype/screen1_login.html" class="sub-link-pill">1. Login</a>
+            <a href="prototype/screen2_dashboard.html" class="sub-link-pill">2. Dashboard</a>
+            <a href="prototype/screen3_flashcards.html" class="sub-link-pill">3. ท่องการ์ด</a>
+            <a href="prototype/screen6_quiz.html" class="sub-link-pill" style="color: #4ade80;">6. ทดสอบ (ใหม่)</a>
+            <a href="prototype/screen4_add_card.html" class="sub-link-pill">4. เพิ่มศัพท์</a>
+            <a href="prototype/screen5_profile.html" class="sub-link-pill">5. โปรไฟล์</a>
           </div>
         </div>
       </div>
 
-      <!-- Column 2: App (Interactive Hybrid App) -->
+      <!-- Column 2: App (Interactive Hybrid App with Quiz) -->
       <div class="launch-card secondary">
         <div>
           <div class="card-icon-box" style="background: rgba(22, 163, 74, 0.2); color: #4ade80;">
@@ -327,8 +379,9 @@
           </div>
           <div class="card-title">2. Interactive Application (App)</div>
           <div class="card-desc">
-            แอปพลิเคชันจริงแบบตอบสนอง (Interactive SPA) สลับ Login / Register ได้จริง,
-            พลิกการ์ด 3D พร้อมอ่านออกเสียง (TTS), กดจำได้/ยังจำไม่ได้ บันทึกลง LocalStorage และอัปเดตสถิติ Real-time
+            แอปจริงแบบตอบสนอง (Interactive SPA) มีโหมด <strong>ทำแบบทดสอบ Quiz (ปรนัย 4 ข้อ) จับเวลา 15 วิ</strong>,
+            <strong>แก้ไขและลบคำศัพท์ได้ (Edit & Safe Delete Modal)</strong>,
+            สลับหน้า Login/Register, พลิกการ์ด 3D พร้อมอ่านออกเสียง และบันทึกลง LocalStorage แบบเรียลไทม์
           </div>
         </div>
 
@@ -338,10 +391,12 @@
           </a>
 
           <div class="sub-links-group">
-            <span style="font-size: 11px; color: var(--text-muted); width: 100%; margin-bottom: 2px;">ฟีเจอร์เด่นในแอป:</span>
+            <span style="font-size: 10.5px; color: var(--text-muted); width: 100%; margin-bottom: 2px;">ฟีเจอร์เด่นในระบบ:</span>
+            <span class="sub-link-pill" style="color: #4ade80;">✓ แก้ไข & ลบคำศัพท์ (CRUD)</span>
+            <span class="sub-link-pill" style="color: #4ade80;">✓ โหมดทดสอบ Quiz ปรนัย</span>
             <span class="sub-link-pill" style="color: #4ade80;">✓ สลับหน้า Login/Regis</span>
             <span class="sub-link-pill" style="color: #4ade80;">✓ พลิกการ์ด 3D + ฟังเสียง</span>
-            <span class="sub-link-pill" style="color: #4ade80;">✓ บันทึก LocalStorage</span>
+            <span class="sub-link-pill" style="color: #4ade80;">✓ LocalStorage Persistence</span>
           </div>
         </div>
       </div>
@@ -351,7 +406,7 @@
     <!-- Design System & Documentation Links -->
     <section class="docs-section">
       <h2>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
           <polyline points="14 2 14 8 20 8"/>
           <line x1="16" y1="13" x2="8" y2="13"/>
@@ -361,6 +416,30 @@
       </h2>
 
       <div class="docs-grid">
+        <a href="12_Database_ER_Diagram.md" class="doc-item">
+          <span class="doc-icon">🗄️</span>
+          <div>
+            <div class="doc-name">12_Database_ER_Diagram.md (อัปเดต)</div>
+            <div class="doc-desc">ER Diagram เพิ่มตาราง quizzes & quiz_answers</div>
+          </div>
+        </a>
+
+        <a href="11_Wireframe_and_Prototype.md" class="doc-item">
+          <span class="doc-icon">📐</span>
+          <div>
+            <div class="doc-name">11_Wireframe_and_Prototype.md</div>
+            <div class="doc-desc">โครงร่าง Wireframe 6 หน้า & Mermaid Flowchart โยงเส้น</div>
+          </div>
+        </a>
+
+        <a href="13_Main_Screens_Design.md" class="doc-item">
+          <span class="doc-icon">📱</span>
+          <div>
+            <div class="doc-name">13_Main_Screens_Design.md</div>
+            <div class="doc-desc">การออกแบบหน้าจอที่ 1-6 และ Data Mapping</div>
+          </div>
+        </a>
+
         <a href="14_style_guide_preview.html" class="doc-item">
           <span class="doc-icon">🎨</span>
           <div>
@@ -369,27 +448,11 @@
           </div>
         </a>
 
-        <a href="11_Wireframe_and_Prototype.md" class="doc-item">
-          <span class="doc-icon">📐</span>
+        <a href="12_schema.sql" class="doc-item">
+          <span class="doc-icon">⚡</span>
           <div>
-            <div class="doc-name">11_Wireframe_and_Prototype.md</div>
-            <div class="doc-desc">เอกสารรายละเอียดโครงร่าง Wireframe 5 หน้า</div>
-          </div>
-        </a>
-
-        <a href="12_Database_ER_Diagram.md" class="doc-item">
-          <span class="doc-icon">🗄️</span>
-          <div>
-            <div class="doc-name">12_Database_ER_Diagram.md</div>
-            <div class="doc-desc">ER Diagram & Data Dictionary</div>
-          </div>
-        </a>
-
-        <a href="13_Main_Screens_Design.md" class="doc-item">
-          <span class="doc-icon">📱</span>
-          <div>
-            <div class="doc-name">13_Main_Screens_Design.md</div>
-            <div class="doc-desc">คำอธิบาย UI Components และ Data Mapping</div>
+            <div class="doc-name">12_schema.sql (SQL Script)</div>
+            <div class="doc-desc">คำสั่งสร้างตาราง DDL และ Mock Data ระบบสอบ</div>
           </div>
         </a>
 
@@ -398,14 +461,6 @@
           <div>
             <div class="doc-name">10_UI_UX_Design.md</div>
             <div class="doc-desc">แนวคิดการออกแบบและ User Journey</div>
-          </div>
-        </a>
-
-        <a href="14_Style_Guide.md" class="doc-item">
-          <span class="doc-icon">📖</span>
-          <div>
-            <div class="doc-name">14_Style_Guide.md</div>
-            <div class="doc-desc">Design Tokens & Guidelines (Markdown)</div>
           </div>
         </a>
       </div>

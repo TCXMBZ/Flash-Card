@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หน้า 6: แบบทดสอบคำศัพท์ (Quiz) — Student Vocab Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .screen-caption {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.5;
+    }
+    .quiz-question-box {
+      background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+      margin-bottom: 16px;
+    }
+    .choice-btn {
+      width: 100%;
+      min-height: 44px;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f172a;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      transition: all 0.15s ease;
+    }
+    .choice-btn:hover {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+    .choice-btn.correct {
+      background: #dcfce7;
+      border-color: #16a34a;
+      color: #166534;
+    }
+    .choice-btn.wrong {
+      background: #fee2e2;
+      border-color: #dc2626;
+      color: #991b1b;
+    }
+    .choice-letter {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: #475569;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #16a34a;
+      color: #ffffff;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #dc2626;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-mockup">
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>5G</span>
+        <span>100%</span>
+        <div class="battery-icon"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Screen Body: Quiz Screen -->
+    <div class="screen-body" style="padding: 16px;">
+      
+      <!-- Top Header & Timer -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div>
+          <h2 style="font-size: 15px; font-weight: 700; color: #0f172a;">แบบทดสอบวัดผล</h2>
+          <span style="font-size: 10.5px; color: #64748b;">หมวด: TOEIC & IT Vocab</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px; background: #fffbeb; border: 1px solid #fde68a; color: #b45309; padding: 4px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="timer-val">00:15</span>
+        </div>
+      </div>
+
+      <!-- Question Progress Bar -->
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; font-size: 10.5px; color: #64748b; margin-bottom: 4px;">
+          <span>ความคืบหน้า</span>
+          <span style="font-weight: 700; color: #2563eb;">ข้อที่ 1 / 5</span>
+        </div>
+        <div class="progress-bar-container" style="height: 6px;">
+          <div class="progress-bar-fill" style="width: 20%;"></div>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="quiz-question-box">
+        <span class="badge" style="background: rgba(255,255,255,0.2); color: #ffffff; font-size: 9px; margin-bottom: 6px;">
+          Noun (คำนาม)
+        </span>
+        <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px;">
+          Requirement
+        </h1>
+        <p style="font-size: 11px; opacity: 0.9; font-style: italic;">
+          "The client outlined clear software _______."
+        </p>
+      </div>
+
+      <!-- Choices (4 choices) -->
+      <div style="flex: 1;">
+        <div style="font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px;">
+          เลือกคำแปลภาษาไทยที่ถูกต้อง:
+        </div>
+
+        <button class="choice-btn correct" onclick="selectChoice(this, true)">
+          <span class="choice-letter">ก</span>
+          <span>ความต้องการ, เงื่อนไขที่จำเป็น</span>
+        </button>
+
+        <button class="choice-btn" onclick="selectChoice(this, false)">
+          <span class="choice-letter">ข</span>
+          <span>นำไปปฏิบัติ, ดำเนินการพัฒนาระบบ</span>
+        </button>
+
+        <button class="choice-btn" onclick="selectChoice(this, false)">
+          <span class="choice-letter">ค</span>
+          <span>นำระบบไปติดตั้งและใช้งานจริง</span>
+        </button>
+
+        <button class="choice-btn" onclick="selectChoice(this, false)">
+          <span class="choice-letter">ง</span>
+          <span>กรอบการทำงานหรือโครงสร้างโปรแกรม</span>
+        </button>
+      </div>
+
+      <!-- Hint text -->
+      <div style="text-align: center; font-size: 11px; color: #64748b; margin-top: 6px;">
+        💡 ตอบถูกได้ 1 คะแนน • บันทึกผลลงตาราง <code style="color: #2563eb;">quizzes</code>
+      </div>
+
+    </div>
+
+    <!-- Bottom Navigation: 5 Items (หน้าหลัก, ท่องการ์ด, ทดสอบ [Active], เพิ่มศัพท์, โปรไฟล์) -->
+    <div class="bottom-nav">
+      <a href="screen2_dashboard.html" class="nav-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>หน้าหลัก</span>
+      </a>
+      <a href="screen3_flashcards.html" class="nav-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <span>ท่องการ์ด</span>
+      </a>
+      <a href="screen6_quiz.html" class="nav-tab active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        <span>ทดสอบ</span>
+      </a>
+      <a href="screen4_add_card.html" class="nav-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        <span>เพิ่มศัพท์</span>
+      </a>
+      <a href="screen5_profile.html" class="nav-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>โปรไฟล์</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="screen-caption">
+    <strong>หน้า 6: แบบทดสอบคำศัพท์ (Quiz Screen)</strong><br>
+    รูปแบบปรนัย 4 ตัวเลือก เชื่อมโยงตาราง <code>quizzes</code> และ <code>quiz_answers</code>
+  </div>
+
+  <script>
+    function selectChoice(btn, isCorrect) {
+      if (isCorrect) {
+        alert('🎉 ถูกต้อง! Requirement แปลว่า ความต้องการ, เงื่อนไขที่จำเป็น (ได้ 1 คะแนน)');
+      } else {
+        alert('❌ ยังไม่ถูกต้อง ลองทบทวนคำศัพท์นี้ใหม่อีกครั้ง');
+      }
+    }
+  </script>
+
+</body>
+</html>

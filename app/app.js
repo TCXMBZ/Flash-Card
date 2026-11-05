@@ -1,5 +1,5 @@
 /**
- * Student Vocab - Hybrid App Engine
+ * Student Vocab - Hybrid App Engine (with Live Quiz Mode)
  * Complete interactive logic with LocalStorage persistence & Speech Synthesis
  */
 
@@ -63,6 +63,13 @@ const DEFAULT_USER = {
   is_logged_in: true
 };
 
+const DEFAULT_QUIZ_RESULT = {
+  score: 4,
+  total_questions: 5,
+  percentage: 80,
+  tested_at: "1 พ.ย. 2026 14:30"
+};
+
 // ==========================================
 // STATE MANAGEMENT
 // ==========================================
@@ -77,6 +84,9 @@ class AppState {
     }
     if (!localStorage.getItem('student_user')) {
       localStorage.setItem('student_user', JSON.stringify(DEFAULT_USER));
+    }
+    if (!localStorage.getItem('student_latest_quiz')) {
+      localStorage.setItem('student_latest_quiz', JSON.stringify(DEFAULT_QUIZ_RESULT));
     }
     this.currentView = 'screen2'; // Default to dashboard if logged in
     this.flashcardFilter = 'unremembered'; // 'unremembered' | 'remembered' | 'all'
@@ -99,9 +109,18 @@ class AppState {
     localStorage.setItem('student_user', JSON.stringify(userData));
   }
 
+  get latestQuiz() {
+    return JSON.parse(localStorage.getItem('student_latest_quiz')) || DEFAULT_QUIZ_RESULT;
+  }
+
+  saveLatestQuiz(quizData) {
+    localStorage.setItem('student_latest_quiz', JSON.stringify(quizData));
+  }
+
   resetDefaultData() {
     localStorage.setItem('student_vocabs', JSON.stringify(DEFAULT_VOCABS));
     localStorage.setItem('student_user', JSON.stringify(DEFAULT_USER));
+    localStorage.setItem('student_latest_quiz', JSON.stringify(DEFAULT_QUIZ_RESULT));
     this.flashcardFilter = 'unremembered';
     this.currentCardIndex = 0;
   }
@@ -155,6 +174,7 @@ function navigateTo(screenId) {
   // Trigger screen-specific rendering
   if (screenId === 'screen2') renderDashboard();
   if (screenId === 'screen3') renderFlashcards();
+  if (screenId === 'screen6') startQuiz();
   if (screenId === 'screen5') renderProfile();
 }
 
@@ -181,7 +201,7 @@ function renderNavbar(screenId) {
       </div>
     `;
   } else {
-    // Screens 2 to 5: Exactly 4 Items (NO หมวดหมู่)
+    // Screens 2 to 6: 5 Items (หน้าหลัก, ท่องการ์ด, ทดสอบ, เพิ่มศัพท์, โปรไฟล์)
     navContainer.innerHTML = `
       <div class="nav-item ${screenId === 'screen2' ? 'active' : ''}" onclick="navigateTo('screen2')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -197,7 +217,14 @@ function renderNavbar(screenId) {
         </svg>
         <span>ท่องการ์ด</span>
       </div>
-      <div class="nav-item ${screenId === 'screen4' ? 'active' : ''}" onclick="navigateTo('screen4')">
+      <div class="nav-item ${screenId === 'screen6' ? 'active' : ''}" onclick="navigateTo('screen6')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        <span>ทดสอบ</span>
+      </div>
+      <div class="nav-item ${screenId === 'screen4' ? 'active' : ''}" onclick="openAddForm()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
           <line x1="12" y1="8" x2="12" y2="16"/>
@@ -304,12 +331,20 @@ function renderDashboard() {
     `;
   } else {
     urgentContainer.innerHTML = unrememberedList.map(item => `
-      <div class="card-box" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; margin-bottom: 8px; cursor: pointer;" onclick="openSpecificFlashcard(${item.vocab_id})">
-        <div>
+      <div class="card-box" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; margin-bottom: 8px;">
+        <div style="flex: 1; cursor: pointer;" onclick="openSpecificFlashcard(${item.vocab_id})">
           <div style="font-size: 14px; font-weight: 700; color: #0f172a;">${item.vocab_word}</div>
           <div style="font-size: 11px; color: #64748b;">${item.meaning_th}</div>
         </div>
-        <span class="badge ${item.category_id === 'TOEIC' ? 'badge-warning' : 'badge-primary'}">${item.category_id}</span>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span class="badge ${item.category_id === 'TOEIC' ? 'badge-warning' : 'badge-primary'}">${item.category_id}</span>
+          <button class="btn-icon-action btn-icon-edit" title="แก้ไขคำศัพท์นี้" onclick="event.stopPropagation(); openEditForm(${item.vocab_id});">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="btn-icon-action btn-icon-delete" title="ลบคำศัพท์นี้" onclick="event.stopPropagation(); confirmDeleteVocab(${item.vocab_id});">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          </button>
+        </div>
       </div>
     `).join('');
   }
@@ -443,11 +478,293 @@ function markCardRemembered(status) {
   }
 }
 
+function handleEditCurrentCard() {
+  const currentList = getFilteredVocabs();
+  if (currentList.length === 0) return;
+  const card = currentList[state.currentCardIndex];
+  if (card) {
+    openEditForm(card.vocab_id);
+  }
+}
+
+function handleDeleteCurrentCard() {
+  const currentList = getFilteredVocabs();
+  if (currentList.length === 0) return;
+  const card = currentList[state.currentCardIndex];
+  if (card) {
+    confirmDeleteVocab(card.vocab_id);
+  }
+}
+
 // ==========================================
-// SCREEN 4: ADD CARD CONTROLLER
+// SCREEN 6: QUIZ ENGINE CONTROLLER (NEW)
 // ==========================================
-function handleAddCardSubmit(e) {
+let quizSession = {
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  timerInterval: null,
+  timeLeft: 15,
+  isAnswered: false,
+  answersLog: []
+};
+
+function startQuiz() {
+  const vocabs = state.vocabs;
+  if (vocabs.length === 0) {
+    showToast('ไม่มีคำศัพท์ในระบบสำหรับทำแบบทดสอบ');
+    navigateTo('screen2');
+    return;
+  }
+
+  // Shuffle and pick up to 5 questions
+  const shuffled = [...vocabs].sort(() => 0.5 - Math.random());
+  const selectedVocabs = shuffled.slice(0, 5);
+
+  quizSession.questions = selectedVocabs.map(card => {
+    // Generate 1 correct + 3 distractor choices
+    const correctMeaning = card.meaning_th;
+    const otherMeanings = vocabs.filter(v => v.vocab_id !== card.vocab_id).map(v => v.meaning_th);
+    const shuffledOthers = otherMeanings.sort(() => 0.5 - Math.random()).slice(0, 3);
+    
+    // Fallback if less than 4 words total
+    while (shuffledOthers.length < 3) {
+      shuffledOthers.push("ความหมายเพิ่มเติมสำหรับการทดสอบ " + (shuffledOthers.length + 1));
+    }
+
+    const allChoices = [
+      { text: correctMeaning, isCorrect: true },
+      ...shuffledOthers.map(t => ({ text: t, isCorrect: false }))
+    ].sort(() => 0.5 - Math.random());
+
+    return {
+      card: card,
+      choices: allChoices
+    };
+  });
+
+  quizSession.currentIndex = 0;
+  quizSession.score = 0;
+  quizSession.answersLog = [];
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  clearInterval(quizSession.timerInterval);
+  quizSession.isAnswered = false;
+  quizSession.timeLeft = 15;
+
+  const currentQ = quizSession.questions[quizSession.currentIndex];
+  if (!currentQ) return;
+
+  const total = quizSession.questions.length;
+  const currentNum = quizSession.currentIndex + 1;
+
+  // Header and progress
+  document.getElementById('quiz-question-counter').innerText = `ข้อที่ ${currentNum} / ${total}`;
+  document.getElementById('quiz-progress-fill').style.width = `${(currentNum / total) * 100}%`;
+  document.getElementById('quiz-timer').innerText = `00:15`;
+
+  // Question Card
+  document.getElementById('quiz-cat-badge').innerText = currentQ.card.category_id;
+  document.getElementById('quiz-cat-badge').className = `badge ${currentQ.card.category_id === 'TOEIC' ? 'badge-warning' : 'badge-primary'}`;
+  document.getElementById('quiz-pos-badge').innerText = currentQ.card.part_of_speech;
+  document.getElementById('quiz-word').innerText = currentQ.card.vocab_word;
+  
+  // Blank out word in sentence
+  const sentence = currentQ.card.example_sentence;
+  const blanked = sentence.replace(new RegExp(currentQ.card.vocab_word, 'gi'), '_______');
+  document.getElementById('quiz-sentence').innerText = `"${blanked}"`;
+
+  // Render 4 choices
+  const letters = ['ก', 'ข', 'ค', 'ง'];
+  const container = document.getElementById('quiz-choices-container');
+  container.innerHTML = currentQ.choices.map((c, i) => `
+    <button class="quiz-choice-btn" onclick="selectQuizChoice(this, ${c.isCorrect}, '${c.text.replace(/'/g, "\\'")}')">
+      <span class="choice-key-badge">${letters[i]}</span>
+      <span>${c.text}</span>
+    </button>
+  `).join('');
+
+  // Start timer
+  quizSession.timerInterval = setInterval(() => {
+    quizSession.timeLeft--;
+    const displaySec = quizSession.timeLeft < 10 ? `0${quizSession.timeLeft}` : quizSession.timeLeft;
+    document.getElementById('quiz-timer').innerText = `00:${displaySec}`;
+
+    if (quizSession.timeLeft <= 0) {
+      clearInterval(quizSession.timerInterval);
+      if (!quizSession.isAnswered) {
+        handleQuizTimeout();
+      }
+    }
+  }, 1000);
+}
+
+function selectQuizChoice(btn, isCorrect, choiceText) {
+  if (quizSession.isAnswered) return;
+  quizSession.isAnswered = true;
+  clearInterval(quizSession.timerInterval);
+
+  const currentQ = quizSession.questions[quizSession.currentIndex];
+  quizSession.answersLog.push({
+    card_id: currentQ.card.vocab_id,
+    selected_choice: choiceText,
+    is_correct: isCorrect
+  });
+
+  if (isCorrect) {
+    quizSession.score++;
+    btn.classList.add('correct');
+    showToast('🎉 ถูกต้อง! +1 คะแนน');
+  } else {
+    btn.classList.add('wrong');
+    // Highlight correct choice
+    const allBtns = document.querySelectorAll('.quiz-choice-btn');
+    allBtns.forEach(b => {
+      if (b.innerText.includes(currentQ.card.meaning_th)) {
+        b.classList.add('correct');
+      }
+    });
+    showToast('❌ ยังไม่ถูกต้อง');
+  }
+
+  // Advance to next question after 900ms
+  setTimeout(() => {
+    quizSession.currentIndex++;
+    if (quizSession.currentIndex < quizSession.questions.length) {
+      renderQuizQuestion();
+    } else {
+      finishQuiz();
+    }
+  }, 900);
+}
+
+function handleQuizTimeout() {
+  quizSession.isAnswered = true;
+  showToast('⏰ หมดเวลาข้อนี้!');
+  const currentQ = quizSession.questions[quizSession.currentIndex];
+  quizSession.answersLog.push({
+    card_id: currentQ.card.vocab_id,
+    selected_choice: "หมดเวลา",
+    is_correct: false
+  });
+
+  setTimeout(() => {
+    quizSession.currentIndex++;
+    if (quizSession.currentIndex < quizSession.questions.length) {
+      renderQuizQuestion();
+    } else {
+      finishQuiz();
+    }
+  }, 900);
+}
+
+function finishQuiz() {
+  clearInterval(quizSession.timerInterval);
+  const total = quizSession.questions.length;
+  const score = quizSession.score;
+  const pct = Math.round((score / total) * 100);
+
+  const now = new Date();
+  const dateStr = `${now.getDate()} พ.ย. 2026 ${now.getHours()}:${now.getMinutes() < 10 ? '0' : ''}${now.getMinutes()}`;
+
+  const quizResult = {
+    score: score,
+    total_questions: total,
+    percentage: pct,
+    tested_at: dateStr,
+    answers: quizSession.answersLog
+  };
+
+  state.saveLatestQuiz(quizResult);
+
+  // Update result modal
+  document.getElementById('quiz-result-score').innerText = `${score} / ${total}`;
+  const badgeEl = document.getElementById('quiz-result-badge');
+  const emojiEl = document.getElementById('quiz-result-emoji');
+
+  if (pct >= 80) {
+    emojiEl.innerText = "🏆";
+    badgeEl.className = "badge badge-success";
+    badgeEl.innerText = `${pct}% — ยอดเยี่ยมมาก!`;
+  } else if (pct >= 50) {
+    emojiEl.innerText = "👍";
+    badgeEl.className = "badge badge-warning";
+    badgeEl.innerText = `${pct}% — ผ่านเกณฑ์ ทบทวนอีกนิด`;
+  } else {
+    emojiEl.innerText = "📖";
+    badgeEl.className = "badge badge-danger";
+    badgeEl.innerText = `${pct}% — ต้องรีบทบทวนคำศัพท์`;
+  }
+
+  document.getElementById('quiz-result-modal').classList.add('open');
+}
+
+function closeQuizResultModal() {
+  document.getElementById('quiz-result-modal').classList.remove('open');
+}
+
+// ==========================================
+// SCREEN 4: ADD & EDIT CARD CONTROLLER
+// ==========================================
+function openAddForm() {
+  document.getElementById('edit-vocab-id').value = '';
+  document.getElementById('card-form-title').innerText = 'เพิ่มการ์ดคำศัพท์ใหม่';
+  document.getElementById('card-form-subtitle').innerText = 'กรอกข้อมูลคำศัพท์เพื่อบันทึกลงในคลังคำศัพท์';
+  document.getElementById('card-form-submit-btn').innerText = 'บันทึกคำศัพท์';
+  document.getElementById('add-word').value = '';
+  document.getElementById('add-meaning').value = '';
+  document.getElementById('add-example').value = '';
+  document.getElementById('add-pos').selectedIndex = 0;
+  document.getElementById('add-category').selectedIndex = 0;
+  navigateTo('screen4');
+}
+
+function openEditForm(vocabId) {
+  const vocabs = state.vocabs;
+  const vocab = vocabs.find(v => v.vocab_id === vocabId);
+  if (!vocab) return;
+
+  document.getElementById('edit-vocab-id').value = vocab.vocab_id;
+  document.getElementById('card-form-title').innerText = 'แก้ไขข้อมูลคำศัพท์';
+  document.getElementById('card-form-subtitle').innerText = `แก้ไขข้อมูลของคำศัพท์ "${vocab.vocab_word}"`;
+  document.getElementById('card-form-submit-btn').innerText = 'บันทึกการแก้ไข';
+  document.getElementById('add-word').value = vocab.vocab_word;
+  document.getElementById('add-meaning').value = vocab.meaning_th;
+  document.getElementById('add-example').value = vocab.example_sentence || '';
+  
+  // Select matching options
+  const posSelect = document.getElementById('add-pos');
+  for (let i = 0; i < posSelect.options.length; i++) {
+    if (posSelect.options[i].value === vocab.part_of_speech) {
+      posSelect.selectedIndex = i;
+      break;
+    }
+  }
+  const catSelect = document.getElementById('add-category');
+  for (let i = 0; i < catSelect.options.length; i++) {
+    if (catSelect.options[i].value === vocab.category_id) {
+      catSelect.selectedIndex = i;
+      break;
+    }
+  }
+
+  navigateTo('screen4');
+}
+
+function cancelCardForm() {
+  const editId = document.getElementById('edit-vocab-id').value;
+  if (editId) {
+    openSpecificFlashcard(parseInt(editId));
+  } else {
+    navigateTo('screen2');
+  }
+}
+
+function handleCardFormSubmit(e) {
   e.preventDefault();
+  const editId = document.getElementById('edit-vocab-id').value;
   const word = document.getElementById('add-word').value.trim();
   const pos = document.getElementById('add-pos').value;
   const category = document.getElementById('add-category').value;
@@ -455,28 +772,75 @@ function handleAddCardSubmit(e) {
   const example = document.getElementById('add-example').value.trim();
 
   const vocabs = state.vocabs;
-  const newId = vocabs.length > 0 ? Math.max(...vocabs.map(v => v.vocab_id)) + 1 : 1;
 
-  const newCard = {
-    vocab_id: newId,
-    vocab_word: word,
-    meaning_th: meaning,
-    part_of_speech: pos,
-    category_id: category,
-    example_sentence: example || `Example sentence for ${word}.`,
-    is_remembered: false
-  };
+  if (editId) {
+    // UPDATE MODE
+    const target = vocabs.find(v => v.vocab_id === parseInt(editId));
+    if (target) {
+      target.vocab_word = word;
+      target.part_of_speech = pos;
+      target.category_id = category;
+      target.meaning_th = meaning;
+      target.example_sentence = example || `Example sentence for ${word}.`;
+      state.saveVocabs(vocabs);
+      showToast(`แก้ไขคำศัพท์ "${word}" สำเร็จ!`);
+      openSpecificFlashcard(target.vocab_id);
+    }
+  } else {
+    // ADD MODE
+    const newId = vocabs.length > 0 ? Math.max(...vocabs.map(v => v.vocab_id)) + 1 : 1;
+    const newCard = {
+      vocab_id: newId,
+      vocab_word: word,
+      meaning_th: meaning,
+      part_of_speech: pos,
+      category_id: category,
+      example_sentence: example || `Example sentence for ${word}.`,
+      is_remembered: false
+    };
+    vocabs.push(newCard);
+    state.saveVocabs(vocabs);
+    showToast(`บันทึกคำศัพท์ "${word}" สำเร็จ!`);
+    navigateTo('screen2');
+  }
+}
 
-  vocabs.push(newCard);
+// ==========================================
+// DELETE CONFIRMATION CONTROLLER
+// ==========================================
+let pendingDeleteVocabId = null;
+
+function confirmDeleteVocab(vocabId) {
+  const vocabs = state.vocabs;
+  const card = vocabs.find(v => v.vocab_id === vocabId);
+  if (!card) return;
+  pendingDeleteVocabId = vocabId;
+  document.getElementById('delete-word-target').innerText = `"${card.vocab_word}"`;
+  document.getElementById('delete-confirm-modal').classList.add('open');
+}
+
+function closeDeleteModal() {
+  document.getElementById('delete-confirm-modal').classList.remove('open');
+  pendingDeleteVocabId = null;
+}
+
+function executeDeleteVocab() {
+  if (!pendingDeleteVocabId) return;
+  let vocabs = state.vocabs;
+  const deletedWord = vocabs.find(v => v.vocab_id === pendingDeleteVocabId)?.vocab_word || '';
+  vocabs = vocabs.filter(v => v.vocab_id !== pendingDeleteVocabId);
   state.saveVocabs(vocabs);
-
-  // Clear form
-  document.getElementById('add-word').value = '';
-  document.getElementById('add-meaning').value = '';
-  document.getElementById('add-example').value = '';
-
-  showToast(`บันทึกคำศัพท์ "${word}" สำเร็จ!`);
-  navigateTo('screen2');
+  closeDeleteModal();
+  showToast(`ลบคำศัพท์ "${deletedWord}" เรียบร้อยแล้ว`);
+  
+  // Refresh current view
+  if (state.currentView === 'screen3') {
+    state.currentCardIndex = 0;
+    renderFlashcards();
+  } else {
+    renderDashboard();
+  }
+  renderProfile();
 }
 
 // ==========================================
@@ -488,6 +852,7 @@ function renderProfile() {
   const total = vocabs.length;
   const remembered = vocabs.filter(v => v.is_remembered).length;
   const percentage = total > 0 ? Math.round((remembered / total) * 100) : 0;
+  const latestQuiz = state.latestQuiz;
 
   // Avatar initials
   const initials = user.full_name ? user.full_name.split(' ').map(n => n[0]).join('').slice(0, 2) : "TP";
@@ -506,6 +871,12 @@ function renderProfile() {
   document.getElementById('prof-total-cards').innerText = `${total} ใบ`;
   document.getElementById('prof-remembered-cards').innerText = `${remembered} ใบ (${percentage}%)`;
   document.getElementById('prof-target-badge').innerText = user.target_exam;
+
+  // Latest Quiz Result
+  const quizBadge = document.getElementById('prof-latest-quiz');
+  if (quizBadge && latestQuiz) {
+    quizBadge.innerText = `${latestQuiz.score} / ${latestQuiz.total_questions} (${latestQuiz.percentage}%)`;
+  }
 }
 
 function openEditProfileModal() {
@@ -558,5 +929,5 @@ function closeHelpModal() {
 
 // Initial Boot
 document.addEventListener('DOMContentLoaded', () => {
-  navigateTo('screen2'); // Boot directly into Dashboard, user can test Screen 1 via Navbar or Logout
+  navigateTo('screen2'); // Boot directly into Dashboard
 });

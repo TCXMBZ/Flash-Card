@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Student Vocab — Interactive Application</title>
+  <title>Student Vocab — Interactive Application (with Quiz Mode)</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     /* Audio button style */
@@ -51,8 +51,8 @@
 <body>
 
   <!-- Quick Link to Project Hub / Prototype -->
-  <a href="../prototype/overview_5screens.html" class="portal-link-badge">
-    ← สลับไปดู Prototype (Wireframe)
+  <a href="../prototype/wireframe_flow.html" class="portal-link-badge">
+    ← สลับไปดู Wireframe แบบโยงเส้น
   </a>
 
   <!-- Mobile Viewport Container -->
@@ -169,13 +169,13 @@
             <h2 id="dash-user-name" style="font-size: 16px; font-weight: 700; color: #0f172a;">สวัสดี คุณธีรเดช</h2>
             <p id="dash-target-exam" style="font-size: 11px; color: #64748b;">เป้าหมายสอบ: TOEIC & IT</p>
           </div>
-          <button class="badge badge-primary" style="padding: 6px 12px; font-size: 11px; cursor: pointer; border: none;" onclick="navigateTo('screen4')">
+          <button class="badge badge-primary" style="padding: 6px 12px; font-size: 11px; cursor: pointer; border: none;" onclick="openAddForm()">
             + เพิ่มศัพท์
           </button>
         </div>
 
         <!-- 3 Stat Boxes -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;">
           <div class="card-box" style="text-align: center; padding: 10px 4px; border-color: #bfdbfe;">
             <div id="dash-stat-total" style="font-size: 20px; font-weight: 800; color: #2563eb;">5</div>
             <div style="font-size: 10px; color: #64748b; margin-top: 2px;">คำศัพท์ทั้งหมด</div>
@@ -191,7 +191,7 @@
         </div>
 
         <!-- Progress Box -->
-        <div class="card-box" style="padding: 12px; margin-bottom: 16px;">
+        <div class="card-box" style="padding: 10px; margin-bottom: 12px;">
           <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 6px;">
             <span style="color: #475569; font-weight: 600;">ความคืบหน้าการจำคำศัพท์</span>
             <span id="dash-progress-pct" style="color: #2563eb; font-weight: 800;">40%</span>
@@ -199,6 +199,17 @@
           <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 9999px; overflow: hidden;">
             <div id="dash-progress-fill" style="height: 100%; width: 40%; background: #2563eb; border-radius: 9999px; transition: width 0.3s ease;"></div>
           </div>
+        </div>
+
+        <!-- Quiz Challenge Banner -->
+        <div style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%); color: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);" onclick="navigateTo('screen6')">
+          <div>
+            <div style="font-size: 13px; font-weight: 700;">🎯 ทำแบบทดสอบ (Quiz Mode)</div>
+            <div style="font-size: 10.5px; opacity: 0.9;">วัดผลความจำ 5 ข้อ พร้อมจับเวลา</div>
+          </div>
+          <span style="background: rgba(255,255,255,0.25); padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">
+            เริ่มเลย →
+          </span>
         </div>
 
         <!-- Urgent Review Section -->
@@ -225,7 +236,7 @@
         <!-- Top Row -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <h2 style="font-size: 16px; font-weight: 700; color: #0f172a;">โหมดท่องการ์ด</h2>
-          <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px; border-radius: 6px;" onclick="navigateTo('screen4')">
+          <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px; border-radius: 6px;" onclick="openAddForm()">
             + เพิ่มศัพท์
           </button>
         </div>
@@ -251,11 +262,17 @@
             <div class="flashcard-front">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span id="card-front-cat" class="badge badge-warning">TOEIC</span>
-                <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
                   <button class="btn-speaker" title="ฟังการออกเสียง" onclick="event.stopPropagation(); speakWord(document.getElementById('card-front-word').innerText)">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
                   </button>
                   <span id="card-front-pos" class="badge badge-primary">Noun (คำนาม)</span>
+                  <button class="btn-icon-action btn-icon-edit" title="แก้ไขคำศัพท์นี้" onclick="event.stopPropagation(); handleEditCurrentCard();">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button class="btn-icon-action btn-icon-delete" title="ลบคำศัพท์นี้" onclick="event.stopPropagation(); handleDeleteCurrentCard();">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                  </button>
                 </div>
               </div>
 
@@ -284,7 +301,15 @@
             <div class="flashcard-back">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span id="card-back-cat" class="badge badge-warning">TOEIC</span>
-                <span id="card-back-pos" class="badge badge-primary">Noun (คำนาม)</span>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <span id="card-back-pos" class="badge badge-primary">Noun (คำนาม)</span>
+                  <button class="btn-icon-action btn-icon-edit" title="แก้ไขคำศัพท์นี้" onclick="event.stopPropagation(); handleEditCurrentCard();">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button class="btn-icon-action btn-icon-delete" title="ลบคำศัพท์นี้" onclick="event.stopPropagation(); handleDeleteCurrentCard();">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                  </button>
+                </div>
               </div>
 
               <div style="text-align: center; padding: 14px 0;">
@@ -326,14 +351,69 @@
       </section>
 
       <!-- ====================================================
-           SCREEN 4: ADD CARD VIEW
+           SCREEN 6: QUIZ VIEW (NEW INTERACTIVE FEATURE)
+           ==================================================== -->
+      <section id="screen6" class="view-screen">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <div>
+            <h2 style="font-size: 16px; font-weight: 700; color: #0f172a;">แบบทดสอบวัดผล</h2>
+            <span style="font-size: 11px; color: #64748b;">หมวด: TOEIC & IT Vocab</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 4px; background: #fffbeb; border: 1px solid #fde68a; color: #b45309; padding: 4px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="quiz-timer">00:15</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: #64748b; margin-bottom: 4px;">
+            <span>ความคืบหน้า</span>
+            <span id="quiz-question-counter" style="font-weight: 700; color: #2563eb;">ข้อที่ 1 / 5</span>
+          </div>
+          <div class="progress-bar-container" style="height: 6px;">
+            <div id="quiz-progress-fill" class="progress-bar-fill" style="width: 20%;"></div>
+          </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="quiz-header-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <span id="quiz-cat-badge" class="badge badge-warning" style="font-size: 9px;">TOEIC</span>
+            <span id="quiz-pos-badge" class="badge" style="background: rgba(255,255,255,0.25); color: #fff; font-size: 9px;">Noun</span>
+          </div>
+          <h1 id="quiz-word" style="font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin: 6px 0;">
+            Requirement
+          </h1>
+          <p id="quiz-sentence" style="font-size: 11.5px; opacity: 0.9; font-style: italic;">
+            "The client outlined clear software _______."
+          </p>
+        </div>
+
+        <!-- 4 Choices Container -->
+        <div id="quiz-choices-container" style="flex: 1;">
+          <!-- Dynamically generated choices -->
+        </div>
+
+        <div style="text-align: center; font-size: 11px; color: #64748b; margin-top: 6px;">
+          💡 เลือกคำแปลที่ถูกต้อง • เก็บผลลงตาราง <code style="color:#2563eb;">quizzes</code>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCREEN 4: ADD & EDIT CARD VIEW
            ==================================================== -->
       <section id="screen4" class="view-screen">
-        <h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 14px;">
+        <h2 id="card-form-title" style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 2px;">
           เพิ่มการ์ดคำศัพท์ใหม่
         </h2>
+        <p id="card-form-subtitle" style="font-size: 11px; color: #64748b; margin-bottom: 14px;">
+          กรอกข้อมูลคำศัพท์เพื่อบันทึกลงในคลังคำศัพท์
+        </p>
 
-        <form onsubmit="handleAddCardSubmit(event)">
+        <form onsubmit="handleCardFormSubmit(event)">
+          <input type="hidden" id="edit-vocab-id" value="">
+
           <div class="form-group">
             <label class="form-label">คำศัพท์ภาษาอังกฤษ (vocab_word) *</label>
             <input type="text" id="add-word" class="form-input" placeholder="เช่น Requirement, Architecture" required>
@@ -369,10 +449,10 @@
             <textarea id="add-example" class="form-textarea" placeholder="The system meets all security requirements."></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary" style="width: 100%; height: 44px; margin-bottom: 8px;">
+          <button type="submit" id="card-form-submit-btn" class="btn btn-primary" style="width: 100%; height: 44px; margin-bottom: 8px;">
             บันทึกคำศัพท์
           </button>
-          <button type="button" class="btn btn-outline" style="width: 100%; height: 40px;" onclick="navigateTo('screen2')">
+          <button type="button" class="btn btn-outline" style="width: 100%; height: 40px;" onclick="cancelCardForm()">
             ยกเลิก
           </button>
         </form>
@@ -421,7 +501,7 @@
 
         <!-- Card 2: Learning Stats -->
         <div class="card-box" style="padding: 10px 14px; margin-bottom: 14px; font-size: 12px;">
-          <div style="font-weight: 700; color: #334155; margin-bottom: 4px;">สรุปผลการเรียนรู้</div>
+          <div style="font-weight: 700; color: #334155; margin-bottom: 4px;">สรุปผลการเรียนรู้ & สอบวัดผล</div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px dashed #f1f5f9;">
             <span style="color: #64748b;">การ์ดคำศัพท์ทั้งหมด:</span>
             <span id="prof-total-cards" class="badge badge-primary">5 ใบ</span>
@@ -429,6 +509,10 @@
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px dashed #f1f5f9;">
             <span style="color: #64748b;">จดจำสำเร็จ (is_remembered):</span>
             <span id="prof-remembered-cards" class="badge badge-success">2 ใบ (40%)</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px dashed #f1f5f9;">
+            <span style="color: #64748b;">คะแนนแบบทดสอบล่าสุด (Quiz):</span>
+            <span id="prof-latest-quiz" class="badge badge-success">4 / 5 (80%)</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0;">
             <span style="color: #64748b;">เป้าหมายการสอบ:</span>
@@ -452,13 +536,37 @@
 
     </div>
 
-    <!-- Bottom Navigation Bar (Dynamically switches between 2-item on Screen 1 and 4-item on Screens 2-5) -->
+    <!-- Bottom Navigation Bar (5 tabs on screens 2-6) -->
     <nav id="app-navbar" class="app-navbar">
       <!-- Injected by renderNavbar() in app.js -->
     </nav>
 
     <!-- Floating Toast Notification -->
     <div id="app-toast" class="app-toast"></div>
+
+    <!-- Quiz Result Modal -->
+    <div id="quiz-result-modal" class="app-modal-overlay">
+      <div class="app-modal" style="text-align: center;">
+        <div style="font-size: 44px; margin-bottom: 6px;" id="quiz-result-emoji">🎉</div>
+        <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">สรุปผลการทดสอบ</h3>
+        <p style="font-size: 12px; color: #64748b; margin-bottom: 14px;">บันทึกผลลงตาราง quizzes เรียบร้อยแล้ว</p>
+
+        <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+          <div style="font-size: 11px; color: #2563eb; font-weight: 700;">คะแนนที่ได้</div>
+          <div id="quiz-result-score" style="font-size: 32px; font-weight: 900; color: #1e40af; margin: 4px 0;">4 / 5</div>
+          <div id="quiz-result-badge" class="badge badge-success" style="font-size: 11px;">80% — ยอดเยี่ยมมาก</div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button class="btn btn-primary" style="height: 42px;" onclick="closeQuizResultModal(); startQuiz();">
+            🔄 ทำแบบทดสอบอีกครั้ง
+          </button>
+          <button class="btn btn-outline" style="height: 40px;" onclick="closeQuizResultModal(); navigateTo('screen2');">
+            ← กลับหน้าหลัก Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- Edit Profile Modal -->
     <div id="profile-edit-modal" class="app-modal-overlay">
@@ -492,9 +600,27 @@
         <p style="font-size: 12px; color: #475569; line-height: 1.5; margin-bottom: 14px;">
           • เข้าสู่ระบบโดยใช้อีเมลหรือชื่อผู้ใช้ที่ลงทะเบียนไว้<br>
           • หากยังไม่มีบัญชี สามารถกด <strong>"สมัครใช้งาน"</strong> เพื่อสร้างบัญชีใหม่ได้ทันที<br>
-          • ข้อมูลคำศัพท์ การท่องจำ และโปรไฟล์ทั้งหมดจะถูกบันทึกลงในหน่วยความจำของเบราว์เซอร์อัตโนมัติ
+          • โหมด <strong>"ทดสอบ" (Quiz)</strong> จะสุ่มคำศัพท์ 5 ข้อ ให้เลือกคำตอบภายใน 15 วินาทีต่อข้อ<br>
+          • สามารถกดปุ่ม <strong>แก้ไข (✏️)</strong> หรือ <strong>ลบ (🗑️)</strong> คำศัพท์ได้ทั้งจากหน้าหลัก Dashboard และหน้าท่องการ์ด<br>
+          • ข้อมูลทั้งหมดถูกบันทึกลงในหน่วยความจำของเบราว์เซอร์อัตโนมัติ
         </p>
         <button class="btn btn-primary" style="width: 100%; height: 38px;" onclick="closeHelpModal()">เข้าใจแล้ว</button>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (NEW) -->
+    <div id="delete-confirm-modal" class="app-modal-overlay">
+      <div class="app-modal" style="text-align: center;">
+        <div style="font-size: 38px; margin-bottom: 6px;">🗑️</div>
+        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">ยืนยันการลบคำศัพท์</h3>
+        <p style="font-size: 12.5px; color: #475569; line-height: 1.5; margin-bottom: 16px;">
+          คุณแน่ใจหรือไม่ว่าต้องการลบคำศัพท์ <strong id="delete-word-target" style="color: #dc2626;"></strong> ออกจากระบบ?<br>
+          <span style="font-size: 11px; color: #94a3b8;">ข้อมูลที่ลบจะไม่สามารถกู้คืนได้</span>
+        </p>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-danger" style="flex: 1; height: 40px;" onclick="executeDeleteVocab()">ลบคำศัพท์</button>
+          <button class="btn btn-outline" style="flex: 1; height: 40px;" onclick="closeDeleteModal()">ยกเลิก</button>
+        </div>
       </div>
     </div>
 

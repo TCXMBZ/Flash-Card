@@ -21,6 +21,18 @@
       color: #334155;
       line-height: 1.5;
     }
+    .quiz-banner {
+      background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -39,7 +51,7 @@
     <!-- Screen Body: Dashboard -->
     <div class="screen-body">
       <!-- User Greeting & Header -->
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
         <div>
           <h2 style="font-size: 16px; font-weight: 700; color: #0f172a;">สวัสดี คุณธีรเดช</h2>
           <p style="font-size: 11px; color: #64748b;">เป้าหมายสอบ: TOEIC & IT</p>
@@ -50,23 +62,23 @@
       </div>
 
       <!-- 3 Stat Boxes -->
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;">
-        <div class="card-surface" style="text-align: center; padding: 10px 4px; border-color: #bfdbfe;">
-          <div style="font-size: 20px; font-weight: 700; color: #2563eb;">5</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;">
+        <div class="card-surface" style="text-align: center; padding: 8px 4px; border-color: #bfdbfe;">
+          <div style="font-size: 18px; font-weight: 700; color: #2563eb;">5</div>
           <div style="font-size: 10px; color: #64748b; margin-top: 2px;">คำศัพท์ทั้งหมด</div>
         </div>
-        <div class="card-surface" style="text-align: center; padding: 10px 4px; border-color: #bbf7d0;">
-          <div style="font-size: 20px; font-weight: 700; color: #16a34a;">2</div>
+        <div class="card-surface" style="text-align: center; padding: 8px 4px; border-color: #bbf7d0;">
+          <div style="font-size: 18px; font-weight: 700; color: #16a34a;">2</div>
           <div style="font-size: 10px; color: #64748b; margin-top: 2px;">จำได้แล้ว</div>
         </div>
-        <div class="card-surface" style="text-align: center; padding: 10px 4px; border-color: #fecaca;">
-          <div style="font-size: 20px; font-weight: 700; color: #dc2626;">3</div>
+        <div class="card-surface" style="text-align: center; padding: 8px 4px; border-color: #fecaca;">
+          <div style="font-size: 18px; font-weight: 700; color: #dc2626;">3</div>
           <div style="font-size: 10px; color: #64748b; margin-top: 2px;">ยังจำไม่ได้</div>
         </div>
       </div>
 
       <!-- Progress Section -->
-      <div class="card-surface" style="padding: 12px; margin-bottom: 16px;">
+      <div class="card-surface" style="padding: 10px; margin-bottom: 12px;">
         <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 6px;">
           <span style="color: #475569; font-weight: 500;">ความคืบหน้าการจำคำศัพท์</span>
           <span style="color: #2563eb; font-weight: 700;">40%</span>
@@ -76,48 +88,77 @@
         </div>
       </div>
 
+      <!-- Quiz Challenge Banner (Link to Screen 6) -->
+      <a href="screen6_quiz.html" class="quiz-banner">
+        <div>
+          <div style="font-size: 12px; font-weight: 700;">🎯 ทำแบบทดสอบ (Quiz Mode)</div>
+          <div style="font-size: 10px; opacity: 0.9;">วัดผลความจำ 5 ข้อ พร้อมจับเวลา</div>
+        </div>
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">
+          เริ่มทดสอบ →
+        </span>
+      </a>
+
       <!-- Urgent Review Section (Unremembered) -->
       <div style="flex: 1;">
-        <h3 style="font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 8px;">
+        <h3 style="font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px;">
           คำศัพท์ที่ต้องรีบทบทวน (ยังจำไม่ได้)
         </h3>
 
         <!-- Word Item 1 -->
-        <a href="screen3_flashcards.html" style="text-decoration: none; color: inherit; display: block; margin-bottom: 8px;">
-          <div class="card-surface" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; cursor: pointer;">
-            <div>
-              <div style="font-size: 14px; font-weight: 700; color: #0f172a;">Implement</div>
-              <div style="font-size: 11px; color: #64748b;">นำไปปฏิบัติ, พัฒนาระบบ</div>
-            </div>
-            <span class="badge badge-warning">TOEIC</span>
+        <div class="card-surface" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; margin-bottom: 6px;">
+          <div style="flex: 1; cursor: pointer;" onclick="window.location.href='screen3_flashcards.html'">
+            <div style="font-size: 13px; font-weight: 700; color: #0f172a;">Implement</div>
+            <div style="font-size: 10.5px; color: #64748b;">นำไปปฏิบัติ, พัฒนาระบบ</div>
           </div>
-        </a>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="badge badge-warning">TOEIC</span>
+            <button style="border: 1px solid #bfdbfe; background: #eff6ff; color: #2563eb; border-radius: 6px; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" title="แก้ไขคำศัพท์" onclick="event.stopPropagation(); window.location.href='screen4_add_card.html';">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button style="border: 1px solid #fecaca; background: #fef2f2; color: #dc2626; border-radius: 6px; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" title="ลบคำศัพท์" onclick="event.stopPropagation(); alert('ยืนยันการลบคำศัพท์ Implement ออกจากระบบ?');">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            </button>
+          </div>
+        </div>
 
         <!-- Word Item 2 -->
-        <a href="screen3_flashcards.html" style="text-decoration: none; color: inherit; display: block; margin-bottom: 8px;">
-          <div class="card-surface" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; cursor: pointer;">
-            <div>
-              <div style="font-size: 14px; font-weight: 700; color: #0f172a;">Requirement</div>
-              <div style="font-size: 11px; color: #64748b;">ความต้องการ, เงื่อนไข</div>
-            </div>
-            <span class="badge badge-warning">TOEIC</span>
+        <div class="card-surface" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; margin-bottom: 6px;">
+          <div style="flex: 1; cursor: pointer;" onclick="window.location.href='screen3_flashcards.html'">
+            <div style="font-size: 13px; font-weight: 700; color: #0f172a;">Requirement</div>
+            <div style="font-size: 10.5px; color: #64748b;">ความต้องการ, เงื่อนไข</div>
           </div>
-        </a>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="badge badge-warning">TOEIC</span>
+            <button style="border: 1px solid #bfdbfe; background: #eff6ff; color: #2563eb; border-radius: 6px; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" title="แก้ไขคำศัพท์" onclick="event.stopPropagation(); window.location.href='screen4_add_card.html';">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button style="border: 1px solid #fecaca; background: #fef2f2; color: #dc2626; border-radius: 6px; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" title="ลบคำศัพท์" onclick="event.stopPropagation(); alert('ยืนยันการลบคำศัพท์ Requirement ออกจากระบบ?');">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            </button>
+          </div>
+        </div>
 
         <!-- Word Item 3 -->
-        <a href="screen3_flashcards.html" style="text-decoration: none; color: inherit; display: block;">
-          <div class="card-surface" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; cursor: pointer;">
-            <div>
-              <div style="font-size: 14px; font-weight: 700; color: #0f172a;">Deploy</div>
-              <div style="font-size: 11px; color: #64748b;">นำระบบไปใช้งานจริง</div>
-            </div>
-            <span class="badge badge-primary">IT Vocab</span>
+        <div class="card-surface" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px;">
+          <div style="flex: 1; cursor: pointer;" onclick="window.location.href='screen3_flashcards.html'">
+            <div style="font-size: 13px; font-weight: 700; color: #0f172a;">Deploy</div>
+            <div style="font-size: 10.5px; color: #64748b;">นำระบบไปใช้งานจริง</div>
           </div>
-        </a>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="badge badge-primary">IT Vocab</span>
+            <button style="border: 1px solid #bfdbfe; background: #eff6ff; color: #2563eb; border-radius: 6px; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" title="แก้ไขคำศัพท์" onclick="event.stopPropagation(); window.location.href='screen4_add_card.html';">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button style="border: 1px solid #fecaca; background: #fef2f2; color: #dc2626; border-radius: 6px; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" title="ลบคำศัพท์" onclick="event.stopPropagation(); alert('ยืนยันการลบคำศัพท์ Deploy ออกจากระบบ?');">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Bottom Navigation: Exactly 4 Tabs (NO หมวดหมู่) -->
+    <!-- Bottom Navigation: 5 Tabs (หน้าหลัก, ท่องการ์ด, ทดสอบ, เพิ่มศัพท์, โปรไฟล์) -->
     <div class="bottom-nav">
       <a href="screen2_dashboard.html" class="nav-tab active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -132,6 +173,13 @@
           <line x1="2" y1="10" x2="22" y2="10"/>
         </svg>
         <span>ท่องการ์ด</span>
+      </a>
+      <a href="screen6_quiz.html" class="nav-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        <span>ทดสอบ</span>
       </a>
       <a href="screen4_add_card.html" class="nav-tab">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -153,7 +201,7 @@
 
   <div class="screen-caption">
     <strong>หน้า 2: Dashboard (หน้าหลัก)</strong><br>
-    Bottom Nav มี 4 เมนู: [หน้าหลัก, ท่องการ์ด, เพิ่มศัพท์, โปรไฟล์] (ไม่มีหมวดหมู่)
+    Bottom Nav มี 5 เมนู: [หน้าหลัก, ท่องการ์ด, ทดสอบ, เพิ่มศัพท์, โปรไฟล์]
   </div>
 
 </body>
